@@ -1,0 +1,274 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <script>
+    Object.defineProperty(window, '__initialURL', {
+        value: performance?.getEntriesByType('navigation')?.[0]?.name || window?.location?.href,
+        writable: false,
+        configurable: false,
+        enumerable: true
+    });
+</script>    <script>
+        (function () {
+            window.__nativeDescsForAirgapBypass = {
+                setters: {},
+                methods: {},
+            };
+            var protos = {
+                Element: Element.prototype,
+                Node: Node.prototype,
+            };
+            var setters = [
+                ['Element', 'innerHTML'],
+                ['Element', 'outerHTML'],
+            ];
+            var methods = [
+                ['Element', 'setAttribute'],
+                ['Element', 'setAttributeNS'],
+                ['Element', 'insertAdjacentHTML'],
+                ['Node', 'appendChild'],
+                ['Node', 'insertBefore'],
+                ['Node', 'replaceChild'],
+            ];
+            setters.forEach(function (pair) {
+                var d = Object.getOwnPropertyDescriptor(protos[pair[0]], pair[1]);
+                if (d) window.__nativeDescsForAirgapBypass.setters[pair[0] + '.' + pair[1]] = d;
+            });
+            methods.forEach(function (pair) {
+                var fn = protos[pair[0]][pair[1]];
+                if (typeof fn === 'function') {
+                    window.__nativeDescsForAirgapBypass.methods[pair[0] + '.' + pair[1]] = fn;
+                }
+            });
+        })();
+    </script>
+
+    <script data-cfasync="false" src="https://transcend-cdn.com/cm/ac20155f-a759-4277-8a0e-afec98792414/airgap.js"></script>
+
+    <script>
+        (function () {
+            var captured = window.__nativeDescsForAirgapBypass;
+            if (!captured) return;
+            var protos = {
+                Element: Element.prototype,
+                Node: Node.prototype,
+            };
+            Object.keys(captured.setters).forEach(function (key) {
+                var parts = key.split('.');
+                var proto = protos[parts[0]];
+                if (!proto) return;
+                try {
+                    Object.defineProperty(proto, parts[1], captured.setters[key]);
+                } catch (e) {
+                    console.error('Failed to restore native descriptor', key, e);
+                }
+            });
+            Object.keys(captured.methods).forEach(function (key) {
+                var parts = key.split('.');
+                var proto = protos[parts[0]];
+                if (!proto) return;
+                try {
+                    proto[parts[1]] = captured.methods[key];
+                } catch (e) {
+                    console.error('Failed to restore native method', key, e);
+                }
+            });
+        })();
+    </script>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+    <meta name="csrf-token" content="TyVY1ooNEl83R5GxK6wvnW8BAfBl48foBsvRc7EE">
+    <link rel="apple-touch-icon" href="https://givebutter.com/favicons/apple-touch-icon.png">
+    
+    <title>The Stanford Daily Publishing Corporation – Giving Hub</title>
+    <script>
+        window.__POSTHOG_BOOTSTRAP__ = {"distinctID":"01a1cddf-8093-71c9-9474-3fd40b17f23e","isIdentifiedID":false};
+    </script>
+    <link rel="modulepreload" as="script" href="https://givebuttercdn.com/build/posthog.BU033cXR.1.0.0.js" /><link rel="modulepreload" as="script" href="https://givebuttercdn.com/build/usePosthog.BUO06s-q.1.0.0.js" /><script type="module" src="https://givebuttercdn.com/build/posthog.BU033cXR.1.0.0.js"></script>    <script>window.TURNSTILE_SITE_KEY = "0x4AAAAAAAA2KihRyLSs4aGX";</script>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onloadTurnstileCallback&render=explicit" defer></script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-75318216-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){
+      dataLayer.push(arguments);
+      if (typeof dataLayerAccount != 'undefined') {
+          dataLayerAccount.push(arguments);
+      }
+  }
+  gtag('js', new Date());
+
+  gtag('config', 'UA-75318216-1');
+</script>
+    <script async
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA-HrsGwQ0MW-YRyd-jp_YqJ0RmuY5LLqs&libraries=places&callback=Function.prototype"></script>
+    <script src="https://kit.fontawesome.com/c37fafd8d9.js" defer crossorigin="anonymous"></script>
+    <link rel="preload" as="style" href="https://givebuttercdn.com/build/main.BG9_wlCj.1.0.0.css" /><link rel="stylesheet" href="https://givebuttercdn.com/build/main.BG9_wlCj.1.0.0.css" />    <script src="https://js.sentry-cdn.com/44a003b56550c97fb65c0268563ccf80.min.js" crossorigin="anonymous"></script>
+    <script>
+        window.Sentry && Sentry.onLoad(function() {
+            Sentry.init({
+                maxBreadcrumbs: 50,
+                environment: 'production',
+                tracesSampleRate: 0,
+                replaysSessionSampleRate: 0,
+                replaysOnErrorSampleRate: 0,
+                ignoreErrors: [
+                    "Can't find variable: _AutofillCallbackHandler",
+                    "TypeError: can't access dead object",
+                    "NotFoundError: Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.",
+                    "NotFoundError: Failed to execute 'insertBefore' on 'Node': The node before which the new node is to be inserted is not a child of this node.",
+                ],
+                denyUrls: [
+                    /extensions\//i,
+                    /^chrome:\/\//i,
+                    /graph\.facebook\.com/i,
+                ],
+                allowUrls: [
+                    /https?:\/\/(.*\.)?givebutter(cdn)?\.(com|test)/,
+                ],
+            });
+        });
+    </script>
+    <!-- Givebutter Elements -->
+<script>
+    window.Givebutter=window.Givebutter||function(){(Givebutter.q=Givebutter.q||[]).push(arguments)};Givebutter.l=+new Date;
+    window.Givebutter('setOptions',
+        {"accountId":"YLhr819jjKUImSd5","bubble":false}    );
+</script>
+<script async src="https://js.givebutter.com/elements/latest.js" ></script>
+<!-- End Givebutter Elements -->
+        <link rel="preload" as="style" href="https://givebuttercdn.com/build/commonv2.gPJ8U1OC.1.0.0.css" /><link rel="stylesheet" href="https://givebuttercdn.com/build/commonv2.gPJ8U1OC.1.0.0.css" />    <style>
+        :root {
+            height: auto;
+            
+        }
+
+        .footer {
+            margin-top: 0px;
+        }
+
+        .brand img {
+            height: 16px;
+            display: inline-block;
+            margin-top: -2px;
+        }
+
+        .brand span {
+            font-size: 15px;
+        }
+    </style>
+    </head>
+<body class="h-full">
+<a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-1001 focus:bg-white focus:px-4 focus:py-2 focus:text-cobalt focus:rounded focus:shadow-lg focus:underline">
+    Skip to main content
+</a>
+<main id="main-content" class="h-auto m-auto pl-4 pr-4 pb-16" style="margin-top: 10%;">
+
+            <div class="flex items-center justify-center m-auto mb-4 w-[120px] h-[120px]">
+            <span class="inline-flex h-full">
+                                            <a
+                            class="block h-full"
+                            href="https://stanforddaily.com/" target="_blank" rel="noopener noreferrer"
+                        >
+                            <img class="block h-full object-contain max-w-full w-auto" src="https://givebutter.com/cdn-cgi/image/height=160/https://givebutter.s3.amazonaws.com/profiles/6xS6W7JW91AIzucjCs2lu5fzQZbrn8lD46PJ2NdP.png" alt="The Stanford Daily Publishing Corporation logo" width="120" height="120" draggable="false" />
+                        </a>
+                                </span>
+        </div>
+    
+    <h1 class="text-center text-3xl text-gray-800">The Stanford Daily Publishing Corporation</h1>
+
+    
+    
+    <div class="w-full m-auto mt-10" style="max-width: 400px;">
+        
+                            <h2 class="text-black font-semibold text-lg mb-2 ml-px">Active campaigns</h2>
+            <div id="activeCampaignsFeedContainer" data-id="30831" data-total="1" data-limit="6">
+                                    <div class="campaign" data-id="26481">
+    <a href="https://givebutter.com/h0CJIU" class="hover:no-underline">
+        <div class="flex items-center border border-gray-200 h-auto rounded p-3 pl-4 mb-2 hover:bg-gray-50">
+            <div class="grow">
+                <h3 class="font-semibold text-gray-700">Ongoing Support for The Stanford Daily
+                                    </h3>
+                                <p class="text-gray-500 text-sm mt-1">Created 5 years ago</p>
+            </div>
+            <div class="flex-none pl-4">
+                <img class="" src="/storage/icons/ui/arrow-right-1.png" style="width: 14px;" alt="" aria-hidden="true" />
+            </div>
+        </div>
+    </a>
+</div>
+                                            </div>
+        
+                            <h2 class="text-black font-semibold text-lg mb-2 ml-px mt-6">Past campaigns</h2>
+            <div id="pastCampaignsFeedContainer" data-id="30831" data-total="2" data-limit="6">
+                                    <div class="campaign" data-id="530130">
+    <a href="https://givebutter.com/msB1YJ" class="hover:no-underline">
+        <div class="flex items-center border border-gray-200 h-auto rounded p-3 pl-4 mb-2 hover:bg-gray-50">
+            <div class="grow">
+                <h3 class="font-semibold text-gray-500">Big Game 2025</h3>
+                                <p class="text-gray-500 text-sm mt-1">Created 11 months ago</p>
+            </div>
+            <div class="flex-none pl-4">
+                <img class="" src="/storage/icons/ui/arrow-right-1.png" style="width: 14px;" alt="" aria-hidden="true" />
+            </div>
+        </div>
+    </a>
+</div>
+                                    <div class="campaign" data-id="298253">
+    <a href="https://givebutter.com/fRGluy" class="hover:no-underline">
+        <div class="flex items-center border border-gray-200 h-auto rounded p-3 pl-4 mb-2 hover:bg-gray-50">
+            <div class="grow">
+                <h3 class="font-semibold text-gray-500">Ink Bowl 2024</h3>
+                                <p class="text-gray-500 text-sm mt-1">Created 2 years ago</p>
+            </div>
+            <div class="flex-none pl-4">
+                <img class="" src="/storage/icons/ui/arrow-right-1.png" style="width: 14px;" alt="" aria-hidden="true" />
+            </div>
+        </div>
+    </a>
+</div>
+                                            </div>
+            </div>
+</main>
+<footer class="mt-8 text-center brand pb-4">
+    <a class="no-underline hover:no-underline hover:text-gray-800 text-gray-800 inline-flex items-center justify-center min-h-6 gap-1" href="https://givebutter.com" target="_blank" rel="noopener noreferrer">
+        <img class="" src="https://givebuttercdn.com/build/resources/assets/brand/givebutter/Icon/SVG/Givebutter_Icon_Default.r2vUB8wr.1.0.0.svg" alt="" aria-hidden="true" />
+        <span class="font-medium">Powered by Givebutter</span>
+    </a>
+</footer>
+
+<script>
+    window.intercomSettings = {
+        app_id: "x67ctixq",
+        hide_default_launcher: true,
+            };
+</script>
+<script>
+    (function(){var w=window;var ic=w.Intercom;if(typeof ic==="function"){ic('reattach_activator');ic('update',w.intercomSettings);}else{var d=document;var i=function(){i.c(arguments);};i.q=[];i.c=function(args){i.q.push(args);};w.Intercom=i;var l=function(){var s=d.createElement('script');s.type='text/javascript';s.async=true;s.src='https://widget.intercom.io/widget/x67ctixq';var x=d.getElementsByTagName('script')[0];x.parentNode.insertBefore(s,x);};if(document.readyState==='complete'){l();}else if(w.attachEvent){w.attachEvent('onload',l);}else{w.addEventListener('load',l,false);}}})();
+</script><script>
+  window.stripe_pk_key = "pk_live_517qVRFEBuKNYj3GGrfRFn4DTvNfHqNs8CSXnjmdgbQ9qlum98lytMIwwnDlFQ6QCpBP1OBn3rNGf4lNVfR2VqMa1002t2ZLBrn";
+  window.stripe_pmc_id = "pmc_1TWMbAEBuKNYj3GG3cy9uJH1";
+  window.paypal_bn_code = "Givebutter_SP_PCP";
+  window.paypal_merchant_id = "WGWT7HAPF5FMQ"; // Givebutter-Paypal Connected Path Account
+  window.paypal_client_id = "AUWvqUuYfJOkAOAGSJGIkT_hEvWu21If33mwPzsczKiPk-b5f_z8wf0QLbPSpc61Zeou4sGFo06w_Neh";
+  window.paypal_tips_merchant_id = "ML28EZJ6UFFHW";
+  window.paypal_pa_merchant_id = null;
+  window.braintree_tk_key = "production_x8b56t8s_z75ps4yx924ksytr";
+  window.braintree_env = "production";
+</script>
+<script src="https://js.stripe.com/v3/"></script>
+<style>
+    #venmo-desktop-iframe {
+        z-index: 2147483005 !important;
+    }
+</style>
+<script src="https://js.braintreegateway.com/web/3.131.0/js/client.min.js"></script>
+<script src="https://js.braintreegateway.com/web/3.131.0/js/paypal-checkout.min.js"></script>
+<script src="https://js.braintreegateway.com/web/3.131.0/js/venmo.min.js"></script>
+<script src="https://js.braintreegateway.com/web/3.131.0/js/data-collector.min.js"></script>
+
+
+
+<link rel="preload" as="style" href="https://givebuttercdn.com/build/Flow.CMZMSqft.1.0.0.css" /><link rel="preload" as="style" href="https://givebuttercdn.com/build/Input.CtgW_u9g.1.0.0.css" /><link rel="preload" as="style" href="https://givebuttercdn.com/build/LegalDisclaimerBase.BoxMZLGs.1.0.0.css" /><link rel="preload" as="style" href="https://givebuttercdn.com/build/Anonymous.DpRT4UXI.1.0.0.css" /><link rel="modulepreload" as="script" href="https://givebuttercdn.com/build/givinghub-v1.BbJCf5es.1.0.0.js" /><link rel="modulepreload" as="script" href="https://givebuttercdn.com/build/helpers.N-Fppdnd.1.0.0.js" /><link rel="modulepreload" as="script" href="https://givebuttercdn.com/build/rolldown-runtime.DAXXjFlN.1.0.0.js" /><link rel="modulepreload" as="script" href="https://givebuttercdn.com/build/clsx.CjueKrWZ.1.0.0.js" /><link rel="modulepreload" as="script" href="https://givebuttercdn.com/build/usePosthog.BUO06s-q.1.0.0.js" /><link rel="modulepreload" as="script" href="https://givebuttercdn.com/build/moment-timezone.ccoguHDn.1.0.0.js" /><link rel="modulepreload" as="script" href="https://givebuttercdn.com/build/numeral.DcKCa1yJ.1.0.0.js" /><link rel="modulepreload" as="script" href="https://givebuttercdn.com/build/Flow.szqnDnfs.1.0.0.js" /><link rel="modulepreload" as="script" href="https://givebuttercdn.com/build/Input.VVRZNpVB.1.0.0.js" /><link rel="modulepreload" as="script" href="https://givebuttercdn.com/build/bundle-mjs.BGKWLeGI.1.0.0.js" /><link rel="modulepreload" as="script" href="https://givebuttercdn.com/build/LegalDisclaimerBase.Dh8NsPZi.1.0.0.js" /><link rel="modulepreload" as="script" href="https://givebuttercdn.com/build/filepond-plugin-file-validate-type.CAzfkVoA.1.0.0.js" /><link rel="modulepreload" as="script" href="https://givebuttercdn.com/build/lottie.BX5SO9Xf.1.0.0.js" /><link rel="modulepreload" as="script" href="https://givebuttercdn.com/build/luxon.CZKKCmNG.1.0.0.js" /><link rel="modulepreload" as="script" href="https://givebuttercdn.com/build/CardV2.DcO7xfux.1.0.0.js" /><link rel="modulepreload" as="script" href="https://givebuttercdn.com/build/isObjectLike.DXiYpTmX.1.0.0.js" /><link rel="modulepreload" as="script" href="https://givebuttercdn.com/build/debounce.BO5d2vbg.1.0.0.js" /><link rel="modulepreload" as="script" href="https://givebuttercdn.com/build/Anonymous.TqT0X3dW.1.0.0.js" /><link rel="modulepreload" as="script" href="https://givebuttercdn.com/build/instagram-icon.C8c9_WNh.1.0.0.js" /><link rel="modulepreload" as="script" href="https://givebuttercdn.com/build/isArray.WvNi25NX.1.0.0.js" /><link rel="modulepreload" as="script" href="https://givebuttercdn.com/build/client.Cb8jNJ8n.1.0.0.js" /><link rel="modulepreload" as="script" href="https://givebuttercdn.com/build/prop-types.BNh8bl8s.1.0.0.js" /><link rel="modulepreload" as="script" href="https://givebuttercdn.com/build/patched-micromodal.Big_shp4.1.0.0.js" /><link rel="stylesheet" href="https://givebuttercdn.com/build/Flow.CMZMSqft.1.0.0.css" /><link rel="stylesheet" href="https://givebuttercdn.com/build/Input.CtgW_u9g.1.0.0.css" /><link rel="stylesheet" href="https://givebuttercdn.com/build/LegalDisclaimerBase.BoxMZLGs.1.0.0.css" /><link rel="stylesheet" href="https://givebuttercdn.com/build/Anonymous.DpRT4UXI.1.0.0.css" /><script type="module" src="https://givebuttercdn.com/build/givinghub-v1.BbJCf5es.1.0.0.js"></script>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a592906cbab2a504',t:'MTc5NDQ1NTMzOA=='};var l=window.parent.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/jsd/main.js?ray=a592906cbab2a504',a=document.createElement('script');a.src=o?new URL(u,o).href:u;document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>

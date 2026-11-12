@@ -1,0 +1,42 @@
+name = "ink-bowl-thermometer"
+main = "src/index.js"
+compatibility_date = "2026-04-26"
+compatibility_flags = ["nodejs_compat"]
+
+# Pin deploys to one Cloudflare account so the wrong environment fails loudly
+# instead of landing somewhere else. This is the account whose workers.dev
+# subdomain is dailycal-keepsakes.
+account_id = "3698908aee438e9c20994f722c7e6098"
+workers_dev = true
+
+[vars]
+# --- the only lines that change for 2026: paste the new campaign slugs here ---
+EVENT_LABEL = "Ink Bowl 2025"
+GAME_DATE = "2026-11-21"
+CAL_SLUG = "HbHXTN"          # https://givebutter.com/HbHXTN  (Daily Cal, "Ink Bowl 2025")
+STANFORD_SLUG = "msB1YJ"     # https://givebutter.com/msB1YJ  (Stanford Daily, "Big Game 2025")
+# Server-side PNG at /thermometer.png. Leave "false" on the Workers Free plan
+# (the raster needs ~300ms CPU; Free allows 10ms). Staff get PNGs from /png
+# regardless, rendered in their own browser.
+SERVER_PNG = "false"
+# Optional: numeric campaign ids make the API path a single direct GET.
+# CAL_CAMPAIGN_ID = ""
+# STANFORD_CAMPAIGN_ID = ""
+
+# Secrets (never in this file; set with `wrangler secret put NAME`):
+#   CAL_API_KEY        Givebutter API key from the Daily Cal's account  -> turns on API reads for Cal
+#   STANFORD_API_KEY   Givebutter API key from The Stanford Daily's account -> same for Stanford
+#   ADMIN_TOKEN        enables /admin/pin and /admin/unpin
+
+[triggers]
+crons = ["*/5 * * * *"]   # keep last-good totals warm
+
+# Optional but recommended for production: a KV namespace so last-good values
+# and manual pins are shared across the whole edge and survive deploys.
+# Create it with `wrangler kv namespace create THERMO`, then uncomment:
+# [[kv_namespaces]]
+# binding = "THERMO"
+# id = "PASTE_ID"
+
+[observability]
+enabled = true

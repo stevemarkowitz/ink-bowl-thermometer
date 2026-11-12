@@ -1,0 +1,409 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <script>
+    Object.defineProperty(window, '__initialURL', {
+        value: performance?.getEntriesByType('navigation')?.[0]?.name || window?.location?.href,
+        writable: false,
+        configurable: false,
+        enumerable: true
+    });
+</script>    <script>
+        (function () {
+            window.__nativeDescsForAirgapBypass = {
+                setters: {},
+                methods: {},
+            };
+            var protos = {
+                Element: Element.prototype,
+                Node: Node.prototype,
+            };
+            var setters = [
+                ['Element', 'innerHTML'],
+                ['Element', 'outerHTML'],
+            ];
+            var methods = [
+                ['Element', 'setAttribute'],
+                ['Element', 'setAttributeNS'],
+                ['Element', 'insertAdjacentHTML'],
+                ['Node', 'appendChild'],
+                ['Node', 'insertBefore'],
+                ['Node', 'replaceChild'],
+            ];
+            setters.forEach(function (pair) {
+                var d = Object.getOwnPropertyDescriptor(protos[pair[0]], pair[1]);
+                if (d) window.__nativeDescsForAirgapBypass.setters[pair[0] + '.' + pair[1]] = d;
+            });
+            methods.forEach(function (pair) {
+                var fn = protos[pair[0]][pair[1]];
+                if (typeof fn === 'function') {
+                    window.__nativeDescsForAirgapBypass.methods[pair[0] + '.' + pair[1]] = fn;
+                }
+            });
+        })();
+    </script>
+
+    <script data-cfasync="false" src="https://transcend-cdn.com/cm/ac20155f-a759-4277-8a0e-afec98792414/airgap.js"></script>
+
+    <script>
+        (function () {
+            var captured = window.__nativeDescsForAirgapBypass;
+            if (!captured) return;
+            var protos = {
+                Element: Element.prototype,
+                Node: Node.prototype,
+            };
+            Object.keys(captured.setters).forEach(function (key) {
+                var parts = key.split('.');
+                var proto = protos[parts[0]];
+                if (!proto) return;
+                try {
+                    Object.defineProperty(proto, parts[1], captured.setters[key]);
+                } catch (e) {
+                    console.error('Failed to restore native descriptor', key, e);
+                }
+            });
+            Object.keys(captured.methods).forEach(function (key) {
+                var parts = key.split('.');
+                var proto = protos[parts[0]];
+                if (!proto) return;
+                try {
+                    proto[parts[1]] = captured.methods[key];
+                } catch (e) {
+                    console.error('Failed to restore native method', key, e);
+                }
+            });
+        })();
+    </script>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+    <meta name="csrf-token" content="1NkDrhIJ2GKNo5GGbwN97yMSI2MmmoECS97WKD3a">
+    <link rel="apple-touch-icon" href="https://givebutter.com/favicons/apple-touch-icon.png">
+    
+    <title>The Daily Californian Education Foundation – Giving Hub</title>
+    <script>
+        window.__POSTHOG_BOOTSTRAP__ = {"distinctID":"01a1cde0-26d2-7233-8c47-d77a12a05474","isIdentifiedID":false};
+    </script>
+    <link rel="modulepreload" as="script" href="https://givebuttercdn.com/build/posthog.BU033cXR.1.0.0.js" /><link rel="modulepreload" as="script" href="https://givebuttercdn.com/build/usePosthog.BUO06s-q.1.0.0.js" /><script type="module" src="https://givebuttercdn.com/build/posthog.BU033cXR.1.0.0.js"></script>    <script>window.TURNSTILE_SITE_KEY = "0x4AAAAAAAA2KihRyLSs4aGX";</script>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onloadTurnstileCallback&render=explicit" defer></script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-75318216-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){
+      dataLayer.push(arguments);
+      if (typeof dataLayerAccount != 'undefined') {
+          dataLayerAccount.push(arguments);
+      }
+  }
+  gtag('js', new Date());
+
+  gtag('config', 'UA-75318216-1');
+</script>
+    <script async
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA-HrsGwQ0MW-YRyd-jp_YqJ0RmuY5LLqs&libraries=places&callback=Function.prototype"></script>
+    <script src="https://kit.fontawesome.com/c37fafd8d9.js" defer crossorigin="anonymous"></script>
+    <link rel="preload" as="style" href="https://givebuttercdn.com/build/main.BG9_wlCj.1.0.0.css" /><link rel="stylesheet" href="https://givebuttercdn.com/build/main.BG9_wlCj.1.0.0.css" />    <script src="https://js.sentry-cdn.com/44a003b56550c97fb65c0268563ccf80.min.js" crossorigin="anonymous"></script>
+    <script>
+        window.Sentry && Sentry.onLoad(function() {
+            Sentry.init({
+                maxBreadcrumbs: 50,
+                environment: 'production',
+                tracesSampleRate: 0,
+                replaysSessionSampleRate: 0,
+                replaysOnErrorSampleRate: 0,
+                ignoreErrors: [
+                    "Can't find variable: _AutofillCallbackHandler",
+                    "TypeError: can't access dead object",
+                    "NotFoundError: Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.",
+                    "NotFoundError: Failed to execute 'insertBefore' on 'Node': The node before which the new node is to be inserted is not a child of this node.",
+                ],
+                denyUrls: [
+                    /extensions\//i,
+                    /^chrome:\/\//i,
+                    /graph\.facebook\.com/i,
+                ],
+                allowUrls: [
+                    /https?:\/\/(.*\.)?givebutter(cdn)?\.(com|test)/,
+                ],
+            });
+        });
+    </script>
+    <!-- Givebutter Elements -->
+<script>
+    window.Givebutter=window.Givebutter||function(){(Givebutter.q=Givebutter.q||[]).push(arguments)};Givebutter.l=+new Date;
+    window.Givebutter('setOptions',
+        {"accountId":"iXUm00oQrjP3foyu","bubble":false,"campaign":"JH8Y2L"}    );
+</script>
+<script async src="https://js.givebutter.com/elements/latest.js" ></script>
+<!-- End Givebutter Elements -->
+            <script>
+            window.GB_EVENT_TRACKER = {FB: [], GA: [], TV: []};
+        window.GB_CAMPAIGN = {"id":11195,"type":"general","title":"General Donations","description":null,"url":"https:\/\/givebutter.com\/the-daily-californian-education-foundation","creator_name":"The Daily Californian Education Foundation","goal":null,"raised":"6688.00","raised_percentage":0,"account_id":19258,"cover":{"type":"image","url":"https:\/\/givebutter.s3.amazonaws.com\/media\/EAdATomFfndMDCT3QTCbZU0Ly3jPkXPcQVUBmkiy.png","source":"upload"},"page":null,"mode":null,"tab":null,"code":null,"campaign_code":"JH8Y2L","member":null,"team":null,"user":null,"share_links":{"url":"https:\/\/givebutter.com\/the-daily-californian-education-foundation","facebook":"https:\/\/www.facebook.com\/sharer\/sharer.php?u=https%3A%2F%2Fgivebutter.com%2Fthe-daily-californian-education-foundation","twitter":"https:\/\/x.com\/intent\/post?url=https%3A%2F%2Fgivebutter.com%2Fthe-daily-californian-education-foundation&text=Join me in raising money for The Daily Californian Education Foundation! via @givebutter","linkedin":"https:\/\/www.linkedin.com\/shareArticle?mini=true&url=https%3A%2F%2Fgivebutter.com%2Fthe-daily-californian-education-foundation","whatsapp":"https:\/\/api.whatsapp.com\/send?text=Join%20me%20in%20raising%20money%20for%20The%20Daily%20Californian%20Education%20Foundation%21%20https%3A%2F%2Fgivebutter.com%2Fthe-daily-californian-education-foundation","email":"mailto:?subject=Please%20join%20me%20in%20raising%20money%20for%20The%20Daily%20Californian%20Education%20Foundation&body=Hi there,%0D%0A%0D%0AI am raising money for The%20Daily%20Californian%20Education%20Foundation. Please join me in supporting this cause!%0D%0A%0D%0AYou can easily make a donation by going to https:\/\/givebutter.com\/the-daily-californian-education-foundation%0D%0A%0D%0AThank you!","instagram":null},"settings":[{"id":31642,"configurable_type":"App\\Models\\Campaign\\Campaign","configurable_id":11195,"code":306,"active":true,"created_at":"2020-06-17T17:37:06.000000Z","updated_at":"2021-06-14T22:27:17.000000Z","name":"thank_you_message","type":"text","value":"<p>Our entire team of 300 student journalists and team members at The Daily Californian would like to thank you for your generous contribution . Your generosity helps us keep the lights on.&nbsp;The Daily Californian provides invaluable skills to all of our hardworking student staff members each semester as they learn to operate a 149-year-old award winning newspaper, website and campus institution. Our graduates leverage the skills learned throughout their experience at the Daily Cal and can be found making tangible impact in various industries around the world.&nbsp;Thank you again for contributing to the future of The Daily Californian. We are excited to have your support moving forward. Please feel free to contact me at&nbsp;<a href=\"mailto:editor@dailycal.org\">editor@dailycal.org<\/a>&nbsp;if you would ever like to discuss anything related to The Daily Cal. &nbsp;&nbsp;<\/p>\n<p>With gratitude, &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br><\/p>\n<p>    Jasper Sundeen, &nbsp;Editor in Chief and President&nbsp;<\/p>\n<p><em>The Daily Californian Educational Foundation \u2013 Federal Tax ID #94-3110529<\/em>&nbsp;&nbsp;<em>No goods or services were provided for this donation, which is fully deductible to the extent of the law. This letter fully satisfies requirements for tax-deductible contributions. We recommend you retain it as proof of your contribution.<\/em><\/p>"},{"id":32561,"configurable_type":"App\\Models\\Campaign\\Campaign","configurable_id":11195,"code":302,"active":false,"created_at":"2020-06-23T16:22:05.000000Z","updated_at":"2020-06-23T16:22:15.000000Z","name":"require_donor_phone","type":"boolean","value":false},{"id":411378,"configurable_type":"App\\Models\\Campaign\\Campaign","configurable_id":11195,"code":350,"active":false,"created_at":"2021-06-14T22:27:17.000000Z","updated_at":"2021-06-14T22:27:17.000000Z","name":"hide_fee_collection","type":"boolean","value":false},{"id":411379,"configurable_type":"App\\Models\\Campaign\\Campaign","configurable_id":11195,"code":371,"active":false,"created_at":"2021-06-14T22:27:17.000000Z","updated_at":"2021-06-14T22:27:17.000000Z","name":"remove_tips_increase_fee","type":"boolean","value":false},{"id":411380,"configurable_type":"App\\Models\\Campaign\\Campaign","configurable_id":11195,"code":351,"active":false,"created_at":"2021-06-14T22:27:17.000000Z","updated_at":"2021-06-14T22:27:17.000000Z","name":"force_fee_collection","type":"boolean","value":false},{"id":411381,"configurable_type":"App\\Models\\Campaign\\Campaign","configurable_id":11195,"code":372,"active":false,"created_at":"2021-06-14T22:27:17.000000Z","updated_at":"2021-06-14T22:27:17.000000Z","name":"custom_fee_text","type":"json","value":null},{"id":411382,"configurable_type":"App\\Models\\Campaign\\Campaign","configurable_id":11195,"code":304,"active":false,"created_at":"2021-06-14T22:27:17.000000Z","updated_at":"2021-06-14T22:27:17.000000Z","name":"enforce_end_at","type":"boolean","value":false},{"id":411383,"configurable_type":"App\\Models\\Campaign\\Campaign","configurable_id":11195,"code":203,"active":false,"created_at":"2021-06-14T22:27:17.000000Z","updated_at":"2021-06-14T22:27:17.000000Z","name":"hide_money_raised","type":"boolean","value":false},{"id":411384,"configurable_type":"App\\Models\\Campaign\\Campaign","configurable_id":11195,"code":210,"active":false,"created_at":"2021-06-14T22:27:17.000000Z","updated_at":"2021-06-14T22:27:17.000000Z","name":"custom_donate_text","type":"string","value":null},{"id":411385,"configurable_type":"App\\Models\\Campaign\\Campaign","configurable_id":11195,"code":369,"active":false,"created_at":"2021-06-14T22:27:17.000000Z","updated_at":"2021-06-14T22:27:17.000000Z","name":"hide_other_option","type":"boolean","value":false},{"id":411386,"configurable_type":"App\\Models\\Campaign\\Campaign","configurable_id":11195,"code":301,"active":false,"created_at":"2021-06-14T22:27:17.000000Z","updated_at":"2021-06-14T22:27:17.000000Z","name":"minimum_donation","type":"decimal","value":null},{"id":4650689,"configurable_type":"App\\Models\\Campaign\\Campaign","configurable_id":11195,"code":300,"active":true,"created_at":"2025-03-06T23:53:45.000000Z","updated_at":"2025-03-06T23:53:45.000000Z","name":"disable_donations","type":"boolean","value":true}],"funds":[],"event":null,"amounts":[{"value":1000},{"value":500},{"value":250},{"value":100},{"value":55},{"value":25}],"mt_variant":null,"mt_segment":null,"mt_rendered_tier_set_id":null,"tip_ui_variant":null,"teams":[],"members":[],"stretch_goal":{"prior_goals":[]},"account_name":"The Daily Californian Education Foundation","account_logo":"https:\/\/givebutter.s3.amazonaws.com\/profiles\/rQbwX2wIbOp731IioAne0yeCHj0N09Fr2DU3P5dT.png","custom_fields":[],"ticket_custom_fields":[],"items":[],"display_items":[],"applied_promo":null,"errors":[],"transactionsPermitted":false,"promo_code_count":0,"url_params":[],"allow_auto_registration":false,"auction_requires_registration":false,"auction_offers_checkout_registration":false,"configurations":{"hide_message_creation":true,"show_donation_flow_checkout_anonymous":false,"has_team_fundraising":false,"has_multi_team_fundraising":false,"require_team_for_members":false,"join_choice_ui":false,"donation_confirmation_redesign":false,"has_descriptions":false,"has_match":false,"dedications":true,"require_phone":false,"require_address":false,"disable_company_field":false,"post_checkout_redirect":null,"flow_heading":"Choose amount","collect_email_first":true,"funds":{"enabled":true,"default":null,"required":false,"funds":[]},"pricing":{"fees_enabled":true,"can_edit_fee":true,"tips_enabled":true},"recurring":{"enabled":true,"default":"once","frequencies":["once","monthly"]},"amounts_by_frequency":{"once":[{"value":1000},{"value":500},{"value":250},{"value":100},{"value":55},{"value":25}],"quarterly":[{"value":1000},{"value":500},{"value":250},{"value":100},{"value":50},{"value":25}],"monthly":[{"value":250},{"value":100},{"value":50},{"value":25},{"value":15},{"value":5}],"yearly":[{"value":2500},{"value":1000},{"value":500},{"value":250},{"value":100},{"value":50}]},"default_frequency":"once","registration":{"minimum":null,"goal":[],"description":[]},"accepted_payment_methods":["ach","card","digital_wallet","donor_advised_fund","venmo","cashapp","donor_advised_fund"],"payment_methods":{"is_admin":false,"check":{"message":null,"locked":false},"chariot":{"key":"live_2f9e987e6d50ebda2f02bec67212db9a8a1f43343e137b87449da6e072058486"}}}};
+            window.givebutterDefaults = window.GB_CAMPAIGN.url_params;
+        </script>
+        <script>
+    window.GB_CUSTOM_FIELD_MAX_FILE_SIZE_MB = 5;
+    window.GB_CUSTOM_FIELD_ALLOWED_MIME_TYPES = ["image\/png","image\/bmp","image\/jpeg","image\/gif","image\/tiff","image\/webp","application\/msword","application\/vnd.openxmlformats-officedocument.wordprocessingml.document","application\/vnd.ms-powerpoint","application\/vnd.openxmlformats-officedocument.presentationml.presentation","application\/vnd.ms-excel","application\/vnd.openxmlformats-officedocument.spreadsheetml.sheet","application\/pdf","application\/rtf","text\/plain","text\/csv"];
+</script>
+                <link rel="preload" as="style" href="https://givebuttercdn.com/build/commonv2.gPJ8U1OC.1.0.0.css" /><link rel="stylesheet" href="https://givebuttercdn.com/build/commonv2.gPJ8U1OC.1.0.0.css" />    <style>
+        :root {
+            height: auto;
+            --color-gbtheme-50: 205 236 253;--color-gbtheme-100: 161 219 252;--color-gbtheme-200: 117 202 251;--color-gbtheme-300: 73 186 250;--color-gbtheme-400: 29 169 249;--color-gbtheme-500: 6 147 227;--color-gbtheme-550: 5 124 191;--color-gbtheme-600: 4 101 156;--color-gbtheme-700: 3 78 120;--color-gbtheme-800: 2 55 85;--color-gbtheme-900: 1 32 49;
+        }
+
+        .footer {
+            margin-top: 0px;
+        }
+
+        .brand img {
+            height: 16px;
+            display: inline-block;
+            margin-top: -2px;
+        }
+
+        .brand span {
+            font-size: 15px;
+        }
+    </style>
+    </head>
+<body class="h-full">
+<a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-1001 focus:bg-white focus:px-4 focus:py-2 focus:text-cobalt focus:rounded focus:shadow-lg focus:underline">
+    Skip to main content
+</a>
+<main id="main-content" class="h-auto m-auto pl-4 pr-4 pb-16" style="margin-top: 10%;">
+
+            <div class="flex items-center justify-center m-auto mb-4 w-[120px] h-[120px]">
+            <span class="inline-flex h-full">
+                                            <img class="block h-full object-contain max-w-full w-auto" src="https://givebutter.com/cdn-cgi/image/height=160/https://givebutter.s3.amazonaws.com/profiles/rQbwX2wIbOp731IioAne0yeCHj0N09Fr2DU3P5dT.png" alt="The Daily Californian Education Foundation logo" width="120" height="120" draggable="false" />
+                                </span>
+        </div>
+    
+    <h1 class="text-center text-3xl text-gray-800">The Daily Californian Education Foundation</h1>
+
+    
+    
+    <div class="w-full m-auto mt-10" style="max-width: 400px;">
+        
+                            <h2 class="text-black font-semibold text-lg mb-2 ml-px">Active campaigns</h2>
+            <div id="activeCampaignsFeedContainer" data-id="19258" data-total="5" data-limit="6">
+                                    <div class="campaign" data-id="780401">
+    <a href="https://givebutter.com/inkbowl-trivia-night-2026-gzugpm" class="hover:no-underline">
+        <div class="flex items-center border border-gray-200 h-auto rounded p-3 pl-4 mb-2 hover:bg-gray-50">
+            <div class="grow">
+                <h3 class="font-semibold text-gray-700">Ink Bowl Trivia Night 2026
+                                            <span class="bg-blue-500 text-xs text-white font-semibold pl-1 pr-1 pb-px ml-1">New</span>
+                                    </h3>
+                                <p class="text-gray-500 text-sm mt-1">Created 1 week ago</p>
+            </div>
+            <div class="flex-none pl-4">
+                <img class="" src="/storage/icons/ui/arrow-right-1.png" style="width: 14px;" alt="" aria-hidden="true" />
+            </div>
+        </div>
+    </a>
+</div>
+                                    <div class="campaign" data-id="719143">
+    <a href="https://givebutter.com/daily-cal-membership-campaign" class="hover:no-underline">
+        <div class="flex items-center border border-gray-200 h-auto rounded p-3 pl-4 mb-2 hover:bg-gray-50">
+            <div class="grow">
+                <h3 class="font-semibold text-gray-700">The Daily Cal Membership Campaign
+                                    </h3>
+                                <p class="text-gray-500 text-sm mt-1">Created 2 months ago</p>
+            </div>
+            <div class="flex-none pl-4">
+                <img class="" src="/storage/icons/ui/arrow-right-1.png" style="width: 14px;" alt="" aria-hidden="true" />
+            </div>
+        </div>
+    </a>
+</div>
+                                    <div class="campaign" data-id="500640">
+    <a href="https://givebutter.com/Vsyl0J" class="hover:no-underline">
+        <div class="flex items-center border border-gray-200 h-auto rounded p-3 pl-4 mb-2 hover:bg-gray-50">
+            <div class="grow">
+                <h3 class="font-semibold text-gray-700">Stacks: Daily Californian Magazine Fund
+                                    </h3>
+                                <p class="text-gray-500 text-sm mt-1">Created 1 year ago</p>
+            </div>
+            <div class="flex-none pl-4">
+                <img class="" src="/storage/icons/ui/arrow-right-1.png" style="width: 14px;" alt="" aria-hidden="true" />
+            </div>
+        </div>
+    </a>
+</div>
+                                    <div class="campaign" data-id="235212">
+    <a href="https://givebutter.com/EXz8NV" class="hover:no-underline">
+        <div class="flex items-center border border-gray-200 h-auto rounded p-3 pl-4 mb-2 hover:bg-gray-50">
+            <div class="grow">
+                <h3 class="font-semibold text-gray-700">T. Christian Miller Investigative Initiative
+                                    </h3>
+                                    <p class="text-sm text-gray-700 leading-tight mt-1">Cultivate a new generation of investigative reporters at The Daily Cal!</p>
+                                <p class="text-gray-500 text-sm mt-1">Created 2 years ago</p>
+            </div>
+            <div class="flex-none pl-4">
+                <img class="" src="/storage/icons/ui/arrow-right-1.png" style="width: 14px;" alt="" aria-hidden="true" />
+            </div>
+        </div>
+    </a>
+</div>
+                                    <div class="campaign" data-id="11459">
+    <a href="https://givebutter.com/w68cQv" class="hover:no-underline">
+        <div class="flex items-center border border-gray-200 h-auto rounded p-3 pl-4 mb-2 hover:bg-gray-50">
+            <div class="grow">
+                <h3 class="font-semibold text-gray-700">Ongoing Support for The Daily Californian
+                                    </h3>
+                                <p class="text-gray-500 text-sm mt-1">Created 6 years ago</p>
+            </div>
+            <div class="flex-none pl-4">
+                <img class="" src="/storage/icons/ui/arrow-right-1.png" style="width: 14px;" alt="" aria-hidden="true" />
+            </div>
+        </div>
+    </a>
+</div>
+                                            </div>
+        
+                            <h2 class="text-black font-semibold text-lg mb-2 ml-px mt-6">Past campaigns</h2>
+            <div id="pastCampaignsFeedContainer" data-id="19258" data-total="12" data-limit="6">
+                                    <div class="campaign" data-id="728476">
+    <a href="https://givebutter.com/back-to-school-happy-hour-2026-w6gyny" class="hover:no-underline">
+        <div class="flex items-center border border-gray-200 h-auto rounded p-3 pl-4 mb-2 hover:bg-gray-50">
+            <div class="grow">
+                <h3 class="font-semibold text-gray-500">Fall Happy Hour 2026</h3>
+                                    <p class="text-sm text-gray-700 leading-tight mt-1">Join us to celebrate the beginning of the 2026-2027 school year!</p>
+                                <p class="text-gray-500 text-sm mt-1">Created 2 months ago</p>
+            </div>
+            <div class="flex-none pl-4">
+                <img class="" src="/storage/icons/ui/arrow-right-1.png" style="width: 14px;" alt="" aria-hidden="true" />
+            </div>
+        </div>
+    </a>
+</div>
+                                    <div class="campaign" data-id="645360">
+    <a href="https://givebutter.com/the-berkeley-angle-the-daily-californians-high-school-journalism-intensive-cygdjg" class="hover:no-underline">
+        <div class="flex items-center border border-gray-200 h-auto rounded p-3 pl-4 mb-2 hover:bg-gray-50">
+            <div class="grow">
+                <h3 class="font-semibold text-gray-500">The Daily Californian’s High School Journalism Intensive</h3>
+                                <p class="text-gray-500 text-sm mt-1">Created 6 months ago</p>
+            </div>
+            <div class="flex-none pl-4">
+                <img class="" src="/storage/icons/ui/arrow-right-1.png" style="width: 14px;" alt="" aria-hidden="true" />
+            </div>
+        </div>
+    </a>
+</div>
+                                    <div class="campaign" data-id="573877">
+    <a href="https://givebutter.com/2026DCHallOfFame" class="hover:no-underline">
+        <div class="flex items-center border border-gray-200 h-auto rounded p-3 pl-4 mb-2 hover:bg-gray-50">
+            <div class="grow">
+                <h3 class="font-semibold text-gray-500">2026 Daily Californian Hall of Fame</h3>
+                                    <p class="text-sm text-gray-700 leading-tight mt-1">Plus Alumnus of the Year and Friend of the Daily Cal</p>
+                                <p class="text-gray-500 text-sm mt-1">Created 9 months ago</p>
+            </div>
+            <div class="flex-none pl-4">
+                <img class="" src="/storage/icons/ui/arrow-right-1.png" style="width: 14px;" alt="" aria-hidden="true" />
+            </div>
+        </div>
+    </a>
+</div>
+                                    <div class="campaign" data-id="551014">
+    <a href="https://givebutter.com/yoT6Mt" class="hover:no-underline">
+        <div class="flex items-center border border-gray-200 h-auto rounded p-3 pl-4 mb-2 hover:bg-gray-50">
+            <div class="grow">
+                <h3 class="font-semibold text-gray-500">Goodbye &#039;25 End-of-Year Giving</h3>
+                                    <p class="text-sm text-gray-700 leading-tight mt-1">Two-for-One Giving!</p>
+                                <p class="text-gray-500 text-sm mt-1">Created 10 months ago</p>
+            </div>
+            <div class="flex-none pl-4">
+                <img class="" src="/storage/icons/ui/arrow-right-1.png" style="width: 14px;" alt="" aria-hidden="true" />
+            </div>
+        </div>
+    </a>
+</div>
+                                    <div class="campaign" data-id="549461">
+    <a href="https://givebutter.com/5xMTFU" class="hover:no-underline">
+        <div class="flex items-center border border-gray-200 h-auto rounded p-3 pl-4 mb-2 hover:bg-gray-50">
+            <div class="grow">
+                <h3 class="font-semibold text-gray-500">2025 End-of-the-Year Giving</h3>
+                                    <p class="text-sm text-gray-700 leading-tight mt-1">2-for-1 Deal With our Matching Fund!</p>
+                                <p class="text-gray-500 text-sm mt-1">Created 10 months ago</p>
+            </div>
+            <div class="flex-none pl-4">
+                <img class="" src="/storage/icons/ui/arrow-right-1.png" style="width: 14px;" alt="" aria-hidden="true" />
+            </div>
+        </div>
+    </a>
+</div>
+                                    <div class="campaign" data-id="541956">
+    <a href="https://givebutter.com/jpPYqT" class="hover:no-underline">
+        <div class="flex items-center border border-gray-200 h-auto rounded p-3 pl-4 mb-2 hover:bg-gray-50">
+            <div class="grow">
+                <h3 class="font-semibold text-gray-500">Giving Tuesday 2025</h3>
+                                <p class="text-gray-500 text-sm mt-1">Created 11 months ago</p>
+            </div>
+            <div class="flex-none pl-4">
+                <img class="" src="/storage/icons/ui/arrow-right-1.png" style="width: 14px;" alt="" aria-hidden="true" />
+            </div>
+        </div>
+    </a>
+</div>
+                                                    <form class="flex justify-center" id="pastCampaignsFeed" action="">
+                        <button class="rounded mt-1 px-4 bg-gray-100 h-7 min-w-32" id="pastCampaignsLoadMore">
+                                <span data-part="text" class="flex items-center justify-center rounded-md">
+                                    <p class="font-semibold text-sm text-gray-600">Show more</p>
+                                    <img class="ml-1 h-2 w-auto mt-0.5" src="https://givebutter.com/storage/icons/ui/arrow-down-1@4x.png" alt="" aria-hidden="true" />
+                                </span>
+                            <div data-part="loading" style="display: none">
+                                <i class="fa-regular fa-spinner fa-spin"></i>
+                            </div>
+                        </button>
+                    </form>
+                            </div>
+            </div>
+</main>
+<footer class="mt-8 text-center brand pb-4">
+    <a class="no-underline hover:no-underline hover:text-gray-800 text-gray-800 inline-flex items-center justify-center min-h-6 gap-1" href="https://givebutter.com" target="_blank" rel="noopener noreferrer">
+        <img class="" src="https://givebuttercdn.com/build/resources/assets/brand/givebutter/Icon/SVG/Givebutter_Icon_Default.r2vUB8wr.1.0.0.svg" alt="" aria-hidden="true" />
+        <span class="font-medium">Powered by Givebutter</span>
+    </a>
+</footer>
+
+<script>
+    window.intercomSettings = {
+        app_id: "x67ctixq",
+        hide_default_launcher: true,
+            };
+</script>
+<script>
+    (function(){var w=window;var ic=w.Intercom;if(typeof ic==="function"){ic('reattach_activator');ic('update',w.intercomSettings);}else{var d=document;var i=function(){i.c(arguments);};i.q=[];i.c=function(args){i.q.push(args);};w.Intercom=i;var l=function(){var s=d.createElement('script');s.type='text/javascript';s.async=true;s.src='https://widget.intercom.io/widget/x67ctixq';var x=d.getElementsByTagName('script')[0];x.parentNode.insertBefore(s,x);};if(document.readyState==='complete'){l();}else if(w.attachEvent){w.attachEvent('onload',l);}else{w.addEventListener('load',l,false);}}})();
+</script><script>
+  window.stripe_pk_key = "pk_live_517qVRFEBuKNYj3GGrfRFn4DTvNfHqNs8CSXnjmdgbQ9qlum98lytMIwwnDlFQ6QCpBP1OBn3rNGf4lNVfR2VqMa1002t2ZLBrn";
+  window.stripe_pmc_id = "pmc_1TWMbAEBuKNYj3GG3cy9uJH1";
+  window.paypal_bn_code = "Givebutter_SP_PCP";
+  window.paypal_merchant_id = "WGWT7HAPF5FMQ"; // Givebutter-Paypal Connected Path Account
+  window.paypal_client_id = "AUWvqUuYfJOkAOAGSJGIkT_hEvWu21If33mwPzsczKiPk-b5f_z8wf0QLbPSpc61Zeou4sGFo06w_Neh";
+  window.paypal_tips_merchant_id = "ML28EZJ6UFFHW";
+  window.paypal_pa_merchant_id = null;
+  window.braintree_tk_key = "production_x8b56t8s_z75ps4yx924ksytr";
+  window.braintree_env = "production";
+</script>
+<script src="https://js.stripe.com/v3/"></script>
+<style>
+    #venmo-desktop-iframe {
+        z-index: 2147483005 !important;
+    }
+</style>
+<script src="https://js.braintreegateway.com/web/3.131.0/js/client.min.js"></script>
+<script src="https://js.braintreegateway.com/web/3.131.0/js/paypal-checkout.min.js"></script>
+<script src="https://js.braintreegateway.com/web/3.131.0/js/venmo.min.js"></script>
+<script src="https://js.braintreegateway.com/web/3.131.0/js/data-collector.min.js"></script>
+
+
+
+    <script src="https://cdn.givechariot.com/chariot-connect.umd.js"></script>
+    <style>
+        .z-\[99999\] {
+            z-index: 2147483005 !important;
+        }
+    </style>
+<link rel="preload" as="style" href="https://givebuttercdn.com/build/Flow.CMZMSqft.1.0.0.css" /><link rel="preload" as="style" href="https://givebuttercdn.com/build/Input.CtgW_u9g.1.0.0.css" /><link rel="preload" as="style" href="https://givebuttercdn.com/build/LegalDisclaimerBase.BoxMZLGs.1.0.0.css" /><link rel="preload" as="style" href="https://givebuttercdn.com/build/Anonymous.DpRT4UXI.1.0.0.css" /><link rel="modulepreload" as="script" href="https://givebuttercdn.com/build/givinghub-v1.BbJCf5es.1.0.0.js" /><link rel="modulepreload" as="script" href="https://givebuttercdn.com/build/helpers.N-Fppdnd.1.0.0.js" /><link rel="modulepreload" as="script" href="https://givebuttercdn.com/build/rolldown-runtime.DAXXjFlN.1.0.0.js" /><link rel="modulepreload" as="script" href="https://givebuttercdn.com/build/clsx.CjueKrWZ.1.0.0.js" /><link rel="modulepreload" as="script" href="https://givebuttercdn.com/build/usePosthog.BUO06s-q.1.0.0.js" /><link rel="modulepreload" as="script" href="https://givebuttercdn.com/build/moment-timezone.ccoguHDn.1.0.0.js" /><link rel="modulepreload" as="script" href="https://givebuttercdn.com/build/numeral.DcKCa1yJ.1.0.0.js" /><link rel="modulepreload" as="script" href="https://givebuttercdn.com/build/Flow.szqnDnfs.1.0.0.js" /><link rel="modulepreload" as="script" href="https://givebuttercdn.com/build/Input.VVRZNpVB.1.0.0.js" /><link rel="modulepreload" as="script" href="https://givebuttercdn.com/build/bundle-mjs.BGKWLeGI.1.0.0.js" /><link rel="modulepreload" as="script" href="https://givebuttercdn.com/build/LegalDisclaimerBase.Dh8NsPZi.1.0.0.js" /><link rel="modulepreload" as="script" href="https://givebuttercdn.com/build/filepond-plugin-file-validate-type.CAzfkVoA.1.0.0.js" /><link rel="modulepreload" as="script" href="https://givebuttercdn.com/build/lottie.BX5SO9Xf.1.0.0.js" /><link rel="modulepreload" as="script" href="https://givebuttercdn.com/build/luxon.CZKKCmNG.1.0.0.js" /><link rel="modulepreload" as="script" href="https://givebuttercdn.com/build/CardV2.DcO7xfux.1.0.0.js" /><link rel="modulepreload" as="script" href="https://givebuttercdn.com/build/isObjectLike.DXiYpTmX.1.0.0.js" /><link rel="modulepreload" as="script" href="https://givebuttercdn.com/build/debounce.BO5d2vbg.1.0.0.js" /><link rel="modulepreload" as="script" href="https://givebuttercdn.com/build/Anonymous.TqT0X3dW.1.0.0.js" /><link rel="modulepreload" as="script" href="https://givebuttercdn.com/build/instagram-icon.C8c9_WNh.1.0.0.js" /><link rel="modulepreload" as="script" href="https://givebuttercdn.com/build/isArray.WvNi25NX.1.0.0.js" /><link rel="modulepreload" as="script" href="https://givebuttercdn.com/build/client.Cb8jNJ8n.1.0.0.js" /><link rel="modulepreload" as="script" href="https://givebuttercdn.com/build/prop-types.BNh8bl8s.1.0.0.js" /><link rel="modulepreload" as="script" href="https://givebuttercdn.com/build/patched-micromodal.Big_shp4.1.0.0.js" /><link rel="stylesheet" href="https://givebuttercdn.com/build/Flow.CMZMSqft.1.0.0.css" /><link rel="stylesheet" href="https://givebuttercdn.com/build/Input.CtgW_u9g.1.0.0.css" /><link rel="stylesheet" href="https://givebuttercdn.com/build/LegalDisclaimerBase.BoxMZLGs.1.0.0.css" /><link rel="stylesheet" href="https://givebuttercdn.com/build/Anonymous.DpRT4UXI.1.0.0.css" /><script type="module" src="https://givebuttercdn.com/build/givinghub-v1.BbJCf5es.1.0.0.js"></script>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a5929176b9192c24',t:'MTc5NDQ1NTM4MQ=='};var l=window.parent.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/jsd/main.js?ray=a5929176b9192c24',a=document.createElement('script');a.src=o?new URL(u,o).href:u;document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>

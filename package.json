@@ -1,0 +1,22 @@
+{
+  "name": "ink-bowl-thermometer",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Head-to-head Cal vs. Stanford fundraising thermometer for the Ink Bowl, served from a Cloudflare Worker.",
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "test:integration": "node scripts/integration.cjs",
+    "preview": "node scripts/preview.cjs",
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^4.160.1"
+  },
+  "dependencies": {
+    "@fontsource/oswald": "^5.3.0",
+    "@fontsource/playfair-display": "^5.3.0",
+    "@resvg/resvg-wasm": "^2.6.2"
+  }
+}
