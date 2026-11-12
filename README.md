@@ -85,7 +85,8 @@ Staff never need it: `/png` makes email PNGs in their own browser on any plan.
 Prerequisites: Node 22, a Cloudflare account. `wrangler.toml` pins `account_id` so a
 deploy from the wrong environment fails instead of landing in the wrong account.
 The Worker is served at `inkbowl.giving` (a custom domain on a zone in that account;
-workers.dev is turned off).
+workers.dev is turned off). `docs/STATUS.md` has the current state, accounts and runbooks;
+`docs/HISTORY.md` the research and decisions; `CHANGELOG.md` every change.
 
 ```bash
 npm install
@@ -123,7 +124,7 @@ working in stories; this is the one step that can only be checked in their edito
 ## Email
 
 Open `/png`, click **Download PNG**, attach or upload the file to the email tool. It
-is a snapshot of that moment, 1200×1724, with the same fonts and colours as the SVG.
+is a snapshot of that moment, 1200×1800, with the same fonts and colours as the SVG.
 
 ## Development
 
@@ -131,13 +132,15 @@ is a snapshot of that moment, 1200×1724, with the same fonts and colours as the
 npm test                               # unit: parser, board maths, source fallbacks
 npm run preview -- 1391 2805           # renders docs/preview-{desktop,phone}.png
 python3 scripts/build-glyphs.py        # regenerate src/glyphs.js (only if the typefaces or charset change)
+python3 scripts/trace-logos.py A.jpg B.jpg      # regenerate src/logos.js from the two avatars
+python3 scripts/trace-wordmarks.py crop.png s.svg  # regenerate src/wordmarks.js (see script header)
 ```
 
 `test/fixtures/` holds real Givebutter pages captured 2026-11-12. If Givebutter
 changes its page markup, `npm test` fails first — update `src/givebutter.js`.
 
 Layout: `src/model.js` (board maths, team palettes) → `src/render.js` (SVG) →
-`src/text.js` (text as outlines, data in generated `src/glyphs.js`) → `src/png.js` (resvg) / `src/page.js` (HTML). Data: `src/sources.js` (fallback chain),
+`src/text.js` (text as outlines, data in generated `src/glyphs.js`; marks in `src/logos.js`, nameplates in `src/wordmarks.js`) → `src/png.js` (resvg) / `src/page.js` (HTML). Data: `src/sources.js` (fallback chain),
 `src/givebutter.js` (page parser), `src/givebutter-api.js` (API), `src/store.js` (KV or memory).
 
 ## Design notes
@@ -156,12 +159,13 @@ Layout: `src/model.js` (board maths, team palettes) → `src/render.js` (SVG) �
   it). Outlines have nothing to wait for, so the board is complete on first paint in
   every browser and in Givebutter. `test/render.test.mjs` fails if `<text>`,
   `@font-face` or `font-family` ever creep back in.
-- Logos replace the old italic masthead as each side's identity (one element per side,
-  so the board gains recognition without gaining clutter): the paper's white mark on a
-  tile in its team colour, ringed in gold (Cal) / sandstone (Stanford), with the name
-  beside it. The marks are vector traces of each paper's avatar (`scripts/trace-logos.py`
-  -> `src/logos.js`), so they stay sharp at any size and nothing has to load. If either
-  paper has an official vector logo, paste its path into `src/logos.js`. These are the
-  papers' trademarks: each should approve their use.
+- Each side's identity is its **logo plus its own nameplate**: the paper's white mark on a tile in
+  its team colour (ringed in gold for Cal, sandstone for Stanford), with the paper's nameplate
+  beneath it. One identity element per side, so the board gains recognition without clutter. The
+  Stanford Daily nameplate is its published SVG; the Daily Cal nameplate is traced from its site
+  (`scripts/trace-wordmarks.py`), and the marks are traced from the avatars
+  (`scripts/trace-logos.py`). All are vectors, so they are sharp at any size and nothing loads. If
+  either paper has an official vector, paste its path into `src/logos.js` / `src/wordmarks.js`.
+  These are the papers' trademarks: each should approve their use.
 - Colours: Berkeley Blue `#003262`, California Gold `#FDB515`, Stanford Cardinal
   `#8C1515`, Sandstone `#D2C295`.

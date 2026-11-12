@@ -21,9 +21,10 @@
  */
 import { TextLayer } from './text.js';
 import { LOGOS } from './logos.js';
+import { WORDMARKS } from './wordmarks.js';
 
 export const W = 600;
-export const H = 862;
+export const H = 900;
 
 const PAPER = '#FBFAF6';
 const INK = '#161616';
@@ -41,36 +42,39 @@ const r2 = (n) => Math.round(n * 100) / 100;
 // Vertical rhythm (SVG units). Keep in one place so the PNG and SVG agree.
 const Y = {
   title: 72, countdown: 105, rule: 126,
-  tileTop: 148,                     // logo lockup: tile + paper name
-  amount: 310, pct: 340,
-  tubeTop: 366, tubeBottom: 602,
-  nudge: 724,
-  bandTop: 754, bandH: 60, bandText: 794,
-  footer: 842,
+  tileTop: 146,                     // logo lockup: tile, then the paper's nameplate beneath
+  wmTop: 236,                       // nameplate box top (box height WM_BOX)
+  amount: 348, pct: 378,
+  tubeTop: 404, tubeBottom: 640,
+  nudge: 762,
+  bandTop: 792, bandH: 60, bandText: 832,
+  footer: 880,
 };
-const TILE = 84;                    // logo tile size
-const TILE_GAP = 14;                // tile -> name
+const TILE = 76;                    // logo tile size
+const WM_BOX = 40;                  // vertical room for the nameplate
+const WM_MAX_W = 246;               // widest a nameplate may be: leaves a clear gutter between the two columns
+const WM_TARGET_H = { cal: 22, stanford: 36 }; // each nameplate's natural weight; the wide thin Cal line is capped by width                // tile -> name
 const TUBE_W = 78;
 const BULB_R = 48;
 const COL = { cal: 158, stanford: 442 };
 
-/** Logo tile (white mark on the team colour) + the paper's name, centred on the column. */
-function lockup(side, { cx, layer, T }) {
-  const lines = side.nameLines;
-  const nameW = Math.max(...lines.map((l) => layer.measure('serifItalic700', l, 24)));
-  const left = cx - (TILE + TILE_GAP + nameW) / 2;
+/** Logo tile (white mark on the team colour) with the paper's own nameplate beneath, centred on the column. */
+function lockup(side, { cx }) {
   const L = LOGOS[side.key];
   const sc = Math.min((TILE * 0.84) / L.w, (TILE * 0.78) / L.h);
+  const left = cx - TILE / 2;
   const mx = left + (TILE - L.w * sc) / 2;
   const my = Y.tileTop + (TILE - L.h * sc) / 2;
-  const cy = Y.tileTop + TILE / 2;
-  const tx = left + TILE + TILE_GAP;
+
+  const W_ = WORDMARKS[side.key];
+  const ws = Math.min(WM_MAX_W / W_.w, WM_TARGET_H[side.key] / W_.h);
+  const wx = cx - (W_.w * ws) / 2 - W_.x * ws;
+  const wy = Y.wmTop + (WM_BOX - W_.h * ws) / 2 - W_.y * ws;
   return `
-    <rect x="${r2(left)}" y="${Y.tileTop}" width="${TILE}" height="${TILE}" rx="19" fill="${side.primary}"/>
-    <rect x="${r2(left + 1.5)}" y="${Y.tileTop + 1.5}" width="${TILE - 3}" height="${TILE - 3}" rx="17.5" fill="none" stroke="${side.accent}" stroke-width="3"/>
+    <rect x="${r2(left)}" y="${Y.tileTop}" width="${TILE}" height="${TILE}" rx="17" fill="${side.primary}"/>
+    <rect x="${r2(left + 1.5)}" y="${Y.tileTop + 1.5}" width="${TILE - 3}" height="${TILE - 3}" rx="15.5" fill="none" stroke="${side.accent}" stroke-width="3"/>
     <use xlink:href="#logo-${side.key}" transform="translate(${r2(mx)} ${r2(my)}) scale(${Math.round(sc * 10000) / 10000})" fill="#FFFFFF"/>
-    ${T(lines[0], { face: 'serifItalic700', size: 24, x: tx, y: cy - 4, fill: INK })}
-    ${T(lines[1], { face: 'serifItalic700', size: 24, x: tx, y: cy + 24, fill: INK })}`;
+    <use xlink:href="#wm-${side.key}" transform="translate(${r2(wx)} ${r2(wy)}) scale(${Math.round(ws * 10000) / 10000})" fill="${side.primary}"/>`;
 }
 
 function thermometer(side, { cx, flip, T }) {
@@ -139,7 +143,7 @@ export function renderSvg(board) {
     const nudgeColor = side.trailing ? side.primary : INK_SOFT;
     const nudgeFace = side.trailing ? 'display700' : 'display500';
     return `
-    ${lockup(side, { cx, layer, T })}
+    ${lockup(side, { cx })}
     ${T(side.raisedText, { face: 'display700', size: 66, x: cx, y: Y.amount, anchor: 'middle', spacing: -1, fill: side.primary })}
     ${T(side.goalText ? `${side.pctOfGoal}% OF ${side.goalText} GOAL` : 'RAISED SO FAR', { face: 'display500', size: 20, x: cx, y: Y.pct, anchor: 'middle', spacing: 1.5, fill: INK_SOFT })}
     ${thermometer(side, { cx, flip, T })}
@@ -178,6 +182,7 @@ export function renderSvg(board) {
     <linearGradient id="band-stan" x1="0" x2="1"><stop offset="0" stop-color="${stan.primary}"/><stop offset="1" stop-color="${stan.primaryDeep}"/></linearGradient>
     <clipPath id="card"><rect x="0" y="0" width="${W}" height="${H}" rx="22"/></clipPath>
     ${Object.entries(LOGOS).map(([k, l]) => `<path id="logo-${k}" d="${l.d}" fill-rule="evenodd"/>`).join('')}
+    ${Object.entries(WORDMARKS).map(([k, w]) => `<path id="wm-${k}" d="${w.d}" fill-rule="${w.rule}"/>`).join('')}
     ${layer.defs()}
   </defs>
   <g clip-path="url(#card)">${body}

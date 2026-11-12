@@ -58,3 +58,11 @@ test('both papers\' logos are drawn, as vectors, on team-colour tiles', () => {
   assert.equal([...svg.matchAll(/xlink:href="#logo-(cal|stanford)"/g)].length, 2);
   assert.doesNotMatch(svg, /<image|data:image|\.(jpg|png)/i);   // no raster, nothing to load
 });
+
+test('each paper\'s own nameplate is drawn as vectors (no fonts)', () => {
+  const svg = renderSvg(board);
+  assert.match(svg, /<path id="wm-cal"/);
+  assert.match(svg, /<path id="wm-stanford"/);
+  assert.equal([...svg.matchAll(/xlink:href="#wm-(cal|stanford)"/g)].length, 2);
+  assert.doesNotMatch(svg, /<text[\s>]|font-family|@font-face/);
+});
