@@ -53,14 +53,17 @@ jobs:
       - name: Smoke test
         run: |
           set -euo pipefail
-          for host in inkbowl.dcsearch.vip ink-bowl-thermometer.dailycal-keepsakes.workers.dev; do
-            for i in 1 2 3 4 5 6; do
-              if curl -fsS --max-time 20 "https://${host}/api/totals.json" -o totals.json; then
-                echo "== ${host} =="; jq '{headline, leader, store, stale, sides: (.sides | map_values({raised, goal, source, ok}))}' totals.json
-                break
-              fi
-              echo "${host}: not ready (attempt ${i}); waiting"; sleep 10
-            done
+          HOST=inkbowl.dcsearch.vip
+          for i in 1 2 3 4 5 6 7 8; do
+            curl -fsS --max-time 20 "https://${HOST}/api/totals.json" -o totals.json && break
+            echo "not ready (attempt ${i}); waiting"; sleep 10
           done
-          [ -s totals.json ] || { echo "no host answered"; exit 1; }
-          jq -e '.sides.cal.ok and .sides.stanford.ok' totals.json
+          jq '{headline, leader, store, stale, sides: (.sides | map_values({raised, goal, source, ok}))}' totals.json
+          jq -e '.sides.cal.ok and .sides.stanford.ok and .store == "kv"' totals.json
+          # The image and page routes are the CPU-heavy ones (Workers Free allows 10ms): request them for real.
+          curl -fsS --max-time 20 "https://${HOST}/thermometer.svg?nocache=1" -o board.svg
+          head -c 4 board.svg | grep -q '<svg'; test "$(wc -c < board.svg)" -gt 50000
+          curl -fsS --max-time 20 "https://${HOST}/" | grep -q 'Give to The Daily Californian'
+          curl -fsS --max-time 20 "https://${HOST}/png" | grep -q 'Download PNG'
+          test "$(curl -s -o /dev/null -w '%{http_code}' "https://${HOST}/thermometer.png")" = 404   # server PNG is off by design
+          echo "smoke OK: json, svg, page, png page, server-png gate"

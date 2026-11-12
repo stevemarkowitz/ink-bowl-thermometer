@@ -7,7 +7,7 @@ compatibility_flags = ["nodejs_compat"]
 # instead of landing somewhere else. This is the account whose workers.dev
 # subdomain is dailycal-keepsakes.
 account_id = "3698908aee438e9c20994f722c7e6098"
-workers_dev = true
+workers_dev = false   # served only at the custom domain below
 
 [vars]
 # --- the only lines that change for 2026: paste the new campaign slugs here ---
