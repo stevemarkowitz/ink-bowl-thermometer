@@ -20,9 +20,10 @@
  * stayed invisible on first load. Outlines look identical everywhere, immediately.
  */
 import { TextLayer } from './text.js';
+import { LOGOS } from './logos.js';
 
 export const W = 600;
-export const H = 790;
+export const H = 862;
 
 const PAPER = '#FBFAF6';
 const INK = '#161616';
@@ -40,15 +41,37 @@ const r2 = (n) => Math.round(n * 100) / 100;
 // Vertical rhythm (SVG units). Keep in one place so the PNG and SVG agree.
 const Y = {
   title: 72, countdown: 105, rule: 126,
-  masthead: 168, amount: 236, pct: 266,
-  tubeTop: 294, tubeBottom: 530,
-  nudge: 652,
-  bandTop: 682, bandH: 60, bandText: 722,
-  footer: 770,
+  tileTop: 148,                     // logo lockup: tile + paper name
+  amount: 310, pct: 340,
+  tubeTop: 366, tubeBottom: 602,
+  nudge: 724,
+  bandTop: 754, bandH: 60, bandText: 794,
+  footer: 842,
 };
+const TILE = 84;                    // logo tile size
+const TILE_GAP = 14;                // tile -> name
 const TUBE_W = 78;
 const BULB_R = 48;
 const COL = { cal: 158, stanford: 442 };
+
+/** Logo tile (white mark on the team colour) + the paper's name, centred on the column. */
+function lockup(side, { cx, layer, T }) {
+  const lines = side.nameLines;
+  const nameW = Math.max(...lines.map((l) => layer.measure('serifItalic700', l, 24)));
+  const left = cx - (TILE + TILE_GAP + nameW) / 2;
+  const L = LOGOS[side.key];
+  const sc = Math.min((TILE * 0.84) / L.w, (TILE * 0.78) / L.h);
+  const mx = left + (TILE - L.w * sc) / 2;
+  const my = Y.tileTop + (TILE - L.h * sc) / 2;
+  const cy = Y.tileTop + TILE / 2;
+  const tx = left + TILE + TILE_GAP;
+  return `
+    <rect x="${r2(left)}" y="${Y.tileTop}" width="${TILE}" height="${TILE}" rx="19" fill="${side.primary}"/>
+    <rect x="${r2(left + 1.5)}" y="${Y.tileTop + 1.5}" width="${TILE - 3}" height="${TILE - 3}" rx="17.5" fill="none" stroke="${side.accent}" stroke-width="3"/>
+    <use xlink:href="#logo-${side.key}" transform="translate(${r2(mx)} ${r2(my)}) scale(${Math.round(sc * 10000) / 10000})" fill="#FFFFFF"/>
+    ${T(lines[0], { face: 'serifItalic700', size: 24, x: tx, y: cy - 4, fill: INK })}
+    ${T(lines[1], { face: 'serifItalic700', size: 24, x: tx, y: cy + 24, fill: INK })}`;
+}
 
 function thermometer(side, { cx, flip, T }) {
   const tubeH = Y.tubeBottom - Y.tubeTop;
@@ -116,7 +139,7 @@ export function renderSvg(board) {
     const nudgeColor = side.trailing ? side.primary : INK_SOFT;
     const nudgeFace = side.trailing ? 'display700' : 'display500';
     return `
-    ${T(side.masthead, { face: 'serifItalic700', size: 24, x: cx, y: Y.masthead, anchor: 'middle', fill: INK })}
+    ${lockup(side, { cx, layer, T })}
     ${T(side.raisedText, { face: 'display700', size: 66, x: cx, y: Y.amount, anchor: 'middle', spacing: -1, fill: side.primary })}
     ${T(side.goalText ? `${side.pctOfGoal}% OF ${side.goalText} GOAL` : 'RAISED SO FAR', { face: 'display500', size: 20, x: cx, y: Y.pct, anchor: 'middle', spacing: 1.5, fill: INK_SOFT })}
     ${thermometer(side, { cx, flip, T })}
@@ -154,6 +177,7 @@ export function renderSvg(board) {
     <linearGradient id="band-cal" x1="0" x2="1"><stop offset="0" stop-color="${cal.primaryDeep}"/><stop offset="1" stop-color="${cal.primary}"/></linearGradient>
     <linearGradient id="band-stan" x1="0" x2="1"><stop offset="0" stop-color="${stan.primary}"/><stop offset="1" stop-color="${stan.primaryDeep}"/></linearGradient>
     <clipPath id="card"><rect x="0" y="0" width="${W}" height="${H}" rx="22"/></clipPath>
+    ${Object.entries(LOGOS).map(([k, l]) => `<path id="logo-${k}" d="${l.d}" fill-rule="evenodd"/>`).join('')}
     ${layer.defs()}
   </defs>
   <g clip-path="url(#card)">${body}

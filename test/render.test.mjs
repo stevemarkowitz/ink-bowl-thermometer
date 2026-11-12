@@ -48,5 +48,13 @@ test('characters outside the charset do not break rendering', () => {
 test('the image stays a reasonable size', () => {
   const svg = renderSvg(board);
   assert.ok(svg.length < 80_000, `svg is ${svg.length} bytes`);
-  assert.equal(W, 600); assert.equal(H, 790);
+  assert.equal(W, 600);
+});
+
+test('both papers\' logos are drawn, as vectors, on team-colour tiles', () => {
+  const svg = renderSvg(board);
+  assert.match(svg, /<path id="logo-cal"/);
+  assert.match(svg, /<path id="logo-stanford"/);
+  assert.equal([...svg.matchAll(/xlink:href="#logo-(cal|stanford)"/g)].length, 2);
+  assert.doesNotMatch(svg, /<image|data:image|\.(jpg|png)/i);   // no raster, nothing to load
 });

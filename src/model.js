@@ -9,6 +9,7 @@ export const TEAMS = {
     key: 'cal',
     short: 'DAILY CAL',
     masthead: 'The Daily Californian',
+    nameLines: ['The Daily', 'Californian'],
     school: 'CAL',
     // Official UC Berkeley brand: Berkeley Blue + California Gold.
     primary: '#003262',
@@ -19,6 +20,7 @@ export const TEAMS = {
     key: 'stanford',
     short: 'STANFORD DAILY',
     masthead: 'The Stanford Daily',
+    nameLines: ['The Stanford', 'Daily'],
     school: 'STANFORD',
     // Official Stanford brand: Cardinal Red + Cool Grey.
     primary: '#8C1515',

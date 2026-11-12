@@ -123,7 +123,7 @@ working in stories; this is the one step that can only be checked in their edito
 ## Email
 
 Open `/png`, click **Download PNG**, attach or upload the file to the email tool. It
-is a snapshot of that moment, 1200×1580, with the same fonts and colours as the SVG.
+is a snapshot of that moment, 1200×1724, with the same fonts and colours as the SVG.
 
 ## Development
 
@@ -156,7 +156,12 @@ Layout: `src/model.js` (board maths, team palettes) → `src/render.js` (SVG) �
   it). Outlines have nothing to wait for, so the board is complete on first paint in
   every browser and in Givebutter. `test/render.test.mjs` fails if `<text>`,
   `@font-face` or `font-family` ever creep back in.
-- Mastheads are typographic. If the papers supply logo files, drop them into
-  `src/render.js` in place of the masthead `<text>`; everything else stays.
+- Logos replace the old italic masthead as each side's identity (one element per side,
+  so the board gains recognition without gaining clutter): the paper's white mark on a
+  tile in its team colour, ringed in gold (Cal) / sandstone (Stanford), with the name
+  beside it. The marks are vector traces of each paper's avatar (`scripts/trace-logos.py`
+  -> `src/logos.js`), so they stay sharp at any size and nothing has to load. If either
+  paper has an official vector logo, paste its path into `src/logos.js`. These are the
+  papers' trademarks: each should approve their use.
 - Colours: Berkeley Blue `#003262`, California Gold `#FDB515`, Stanford Cardinal
   `#8C1515`, Sandstone `#D2C295`.
