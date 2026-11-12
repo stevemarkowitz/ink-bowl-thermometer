@@ -14,6 +14,9 @@ export const TEAMS = {
     primary: '#003262',
     accent: '#FDB515',
     primaryDeep: '#041E42',
+    // The paper's own blue (sampled from its avatar) for the logo tile. The thermometer, amount and
+    // nameplate stay Berkeley Blue: light-blue lettering was too faint on cream at phone size.
+    tileFill: '#4B9BD0',
   },
   stanford: {
     key: 'stanford',

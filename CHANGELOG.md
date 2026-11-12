@@ -3,7 +3,13 @@
 All notable changes. Newest first. Everything below shipped on 2026-11-12 unless noted; commit
 hashes are on `main`. Live site: **https://inkbowl.giving**.
 
-## Official nameplates (this change)
+## Daily Cal logo tile in the paper's own blue (this change)
+- The Daily Cal's logo tile uses its avatar's own light blue (`#4B9BD0`); thermometer, amount and
+  nameplate stay Berkeley Blue (`#003262`). Four options were compared at phone size
+  (`docs/design/daily-cal-colour-options.png`): light-blue lettering was too faint on cream, so the
+  nameplate stays navy. Stanford needs no change (its avatar red is its cardinal).
+
+## Official nameplates (`e7122ed`)
 - Each column now shows the paper's own nameplate under its logo tile: **The Stanford Daily** uses
   the official SVG published on its site (`StanfordDailyLogo-01.svg`, blackletter); **The Daily
   Californian** is traced from a clean capture of its site's nameplate (dailycal.org blocks

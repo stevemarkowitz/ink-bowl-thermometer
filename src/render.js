@@ -71,10 +71,10 @@ function lockup(side, { cx }) {
   const wx = cx - (W_.w * ws) / 2 - W_.x * ws;
   const wy = Y.wmTop + (WM_BOX - W_.h * ws) / 2 - W_.y * ws;
   return `
-    <rect x="${r2(left)}" y="${Y.tileTop}" width="${TILE}" height="${TILE}" rx="17" fill="${side.primary}"/>
-    <rect x="${r2(left + 1.5)}" y="${Y.tileTop + 1.5}" width="${TILE - 3}" height="${TILE - 3}" rx="15.5" fill="none" stroke="${side.accent}" stroke-width="3"/>
+    <rect x="${r2(left)}" y="${Y.tileTop}" width="${TILE}" height="${TILE}" rx="17" fill="${side.tileFill ?? side.primary}"/>
+    <rect x="${r2(left + 1.5)}" y="${Y.tileTop + 1.5}" width="${TILE - 3}" height="${TILE - 3}" rx="15.5" fill="none" stroke="${side.ring ?? side.accent}" stroke-width="3"/>
     <use xlink:href="#logo-${side.key}" transform="translate(${r2(mx)} ${r2(my)}) scale(${Math.round(sc * 10000) / 10000})" fill="#FFFFFF"/>
-    <use xlink:href="#wm-${side.key}" transform="translate(${r2(wx)} ${r2(wy)}) scale(${Math.round(ws * 10000) / 10000})" fill="${side.primary}"/>`;
+    <use xlink:href="#wm-${side.key}" transform="translate(${r2(wx)} ${r2(wy)}) scale(${Math.round(ws * 10000) / 10000})" fill="${side.wmFill ?? side.primary}"/>`;
 }
 
 function thermometer(side, { cx, flip, T }) {

@@ -167,5 +167,5 @@ Layout: `src/model.js` (board maths, team palettes) â†’ `src/render.js` (SVG) â†
   (`scripts/trace-logos.py`). All are vectors, so they are sharp at any size and nothing loads. If
   either paper has an official vector, paste its path into `src/logos.js` / `src/wordmarks.js`.
   These are the papers' trademarks: each should approve their use.
-- Colours: Berkeley Blue `#003262`, California Gold `#FDB515`, Stanford Cardinal
+- Colours: the Daily Cal's logo tile is the paper's own blue `#4B9BD0`; the thermometer and amounts use Berkeley Blue `#003262`, California Gold `#FDB515`, Stanford Cardinal
   `#8C1515`, Sandstone `#D2C295`.

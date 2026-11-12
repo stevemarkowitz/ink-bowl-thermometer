@@ -60,6 +60,9 @@ Whoever ran the earlier thermometer is not documented; we could not confirm what
 8. **Papers' own identity:** logo marks (vector-traced from their avatars) on team-colour tiles, and
    each paper's own nameplate (Stanford: its published SVG; Daily Cal: traced). Subject to each
    paper's approval.
+9. **Paper brand vs team colours.** The Daily Cal's logo tile uses the paper's own light blue; the
+   thermometer, amount and nameplate use Berkeley Blue. Distinct brands, coherent column; light-blue
+   lettering failed on legibility (see `docs/design/daily-cal-colour-options.png`).
 
 ## Incidents and lessons
 - **Invisible text on a phone's first load.** An SVG in an `<img>` paints once; text waiting on an

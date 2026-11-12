@@ -69,8 +69,10 @@ Story images max out at 600 px wide; the board is designed for that.
    TXT `_dmarc` = `v=DMARC1; p=reject; adkim=s; aspf=s`. No DKIM needed (nothing sends mail).
 5. **`ADMIN_TOKEN`** (optional) and **API keys** (optional) as above.
 6. **Repo visibility:** the repo was created public; make it private if intended.
-7. Daily Cal brand blue: its avatar uses a lighter blue than Berkeley Blue (`#003262`), which the
-   board uses for coherence. One-line change in `src/model.js` if preferred.
+7. Daily Cal colours: the logo tile is the paper's own light blue (`#4B9BD0`), the rest of the Cal side
+   Berkeley Blue. Options compared in `docs/design/daily-cal-colour-options.png`; a black nameplate (their
+   own black-on-white version) is a one-line change (`wmFill` in `src/model.js` + `src/render.js`).
+
 
 ## Limits to remember (Workers Free plan)
 - 10 ms CPU per request: the server-side PNG (`/thermometer.png`, ~300 ms) is **off** by default

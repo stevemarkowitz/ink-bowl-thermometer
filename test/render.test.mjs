@@ -66,3 +66,9 @@ test('each paper\'s own nameplate is drawn as vectors (no fonts)', () => {
   assert.equal([...svg.matchAll(/xlink:href="#wm-(cal|stanford)"/g)].length, 2);
   assert.doesNotMatch(svg, /<text[\s>]|font-family|@font-face/);
 });
+
+test('the Daily Cal logo tile uses the paper\'s own blue; the thermometer stays Berkeley Blue', () => {
+  const svg = renderSvg(board);
+  assert.match(svg, /fill="#4B9BD0"/);             // the tile
+  assert.match(svg, /stop-color="#003262"/);       // the mercury
+});
