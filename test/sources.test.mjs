@@ -75,3 +75,12 @@ test('a manual pin wins over everything', async () => {
   assert.equal(r.source, 'pin');
   assert.equal(r.raised, 9999);
 });
+
+test('unchanged reads do not rewrite last-good (KV Free write budget)', async () => {
+  const store = makeStore({});
+  let writes = 0; const orig = store.setLastGood; store.setLastGood = (...a) => { writes++; return orig(...a); };
+  const fetchImpl = async () => html(page);
+  // unique side key: the in-memory store is module-global, shared with the other tests
+  for (let i = 0; i < 5; i++) await readSide({ key: 'write-budget', slug: 'HbHXTN', apiKey: null }, { fetchImpl, store });
+  assert.equal(writes, 1);
+});

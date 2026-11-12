@@ -57,7 +57,11 @@ export async function readSide(cfg, { fetchImpl = fetch, store, now = new Date()
         rawRaised: r.rawRaised ?? null, campaignId: r.campaignId ?? cfg.campaignId ?? null,
         ok: true, stale: false, readAt: now.getTime(), error: errors.join('; ') || null,
       };
-      await store?.setLastGood(cfg.key, good);
+      // KV Free allows 1,000 writes/day: persist only on change (or a 6h refresh), never per read.
+      const prev = await store?.getLastGood(cfg.key);
+      const changed = !prev || prev.raised !== good.raised || prev.goal !== good.goal
+        || prev.source !== good.source || now.getTime() - (prev.writtenAt || 0) > 6 * 3600 * 1000;
+      if (changed) await store?.setLastGood(cfg.key, { ...good, writtenAt: now.getTime() });
       return good;
     } catch (e) {
       errors.push(`${name}: ${e.message}`);

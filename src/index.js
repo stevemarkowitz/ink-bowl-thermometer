@@ -38,19 +38,21 @@ function cfg(env) {
   return e;
 }
 
+const memo = new Map(); // per-isolate: side key -> { at, slug, value }
+
 async function collect(env, { force = false } = {}) {
   const store = makeStore(env);
   const now = new Date();
   const sides = {};
   await Promise.all(SIDE_KEYS.map(async (key) => {
     const c = sideConfig(env, key);
-    if (!force) {
-      const [pin, last] = await Promise.all([store.getPin(key), store.getLastGood(key)]);
-      if (!pin && last?.readAt && now.getTime() - last.readAt < FRESH_MS && last.slug === c.slug) {
-        sides[key] = last; return;
-      }
+    const m = memo.get(key);
+    if (!force && m && m.slug === c.slug && now.getTime() - m.at < FRESH_MS && !(await store.getPin(key))) {
+      sides[key] = m.value; return;
     }
-    sides[key] = await readSide(c, { store, now, log: (m) => console.log(m) });
+    const value = await readSide(c, { store, now, log: (msg) => console.log(msg) });
+    if (value.ok) memo.set(key, { at: now.getTime(), slug: c.slug, value });
+    sides[key] = value;
   }));
   return { store, now, sides };
 }

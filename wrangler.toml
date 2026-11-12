@@ -31,12 +31,17 @@ SERVER_PNG = "false"
 [triggers]
 crons = ["*/5 * * * *"]   # keep last-good totals warm
 
-# Optional but recommended for production: a KV namespace so last-good values
-# and manual pins are shared across the whole edge and survive deploys.
-# Create it with `wrangler kv namespace create THERMO`, then uncomment:
-# [[kv_namespaces]]
-# binding = "THERMO"
-# id = "PASTE_ID"
+# KV namespace: shares last-good values and manual pins across the whole edge and
+# survives deploys. The deploy workflow finds-or-creates the namespace titled
+# "ink-bowl-thermometer-THERMO" and substitutes its id for PASTE_ID before deploying.
+[[kv_namespaces]]
+binding = "THERMO"
+id = "PASTE_ID"
+
+# Public hostname on the dcsearch.vip zone. Cloudflare creates the DNS record and cert.
+[[routes]]
+pattern = "inkbowl.dcsearch.vip"
+custom_domain = true
 
 [observability]
 enabled = true
