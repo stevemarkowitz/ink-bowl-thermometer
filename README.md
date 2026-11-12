@@ -20,8 +20,8 @@ Givebutter campaign pages, any web page, and (as a PNG) in email.
 
 | Path | What it is |
 | --- | --- |
-| `/thermometer.svg` | The board. 600×790, crisp at any size. Put this URL in a Givebutter story or any `<img>`. |
-| `/` | Shared rivalry page: the board + a donate button for each paper. Works in an iframe. |
+| `/` (the bare domain, `https://inkbowl.giving`) | **The whole site.** A browser gets the rivalry page (the board + a donate button for each paper; works in an iframe). Anything loading it as an image — an `<img>` tag, a Givebutter story image — gets the board itself, 600×790 SVG. Chosen from the request's `Sec-Fetch-Dest` / `Accept` headers. |
+| `/thermometer.svg` | The same board at an explicit file path. Fallback for any tool that insists on a file-style URL. |
 | `/png` | Staff page: **Download PNG** renders the board to a 1200px PNG *in the browser* (no Worker CPU). For email blasts. |
 | `/thermometer.png` | Server-rendered PNG, same pixels. **Off by default** — see *Server PNG* below. |
 | `/api/totals.json` | Numbers plus which source produced each one. First stop when something looks wrong. |
@@ -111,8 +111,7 @@ Both sides should show `ok: true` and `source: "json-scoped"` with the right tot
 ## Putting it on the Givebutter pages
 
 In each campaign's **Story** editor, insert an image **by URL** pointing at
-`https://…/thermometer.svg`, then select the image and link it to the shared page
-(`/`) or to that paper's own donate page. Story images are capped at 600px wide,
+`https://inkbowl.giving` (or `https://inkbowl.giving/thermometer.svg` if the editor insists on a file-style URL), then select the image and link it to `https://inkbowl.giving` or to that paper's own donate page. Story images are capped at 600px wide,
 which this board is designed for.
 
 **Verify once, on a draft campaign:** after saving, inspect the image. If its address

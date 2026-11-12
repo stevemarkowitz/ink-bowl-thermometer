@@ -63,7 +63,10 @@ jobs:
           # The image and page routes are the CPU-heavy ones (Workers Free allows 10ms): request them for real.
           curl -fsS --max-time 20 "https://${HOST}/thermometer.svg?nocache=1" -o board.svg
           head -c 4 board.svg | grep -q '<svg'; test "$(wc -c < board.svg)" -gt 50000
-          curl -fsS --max-time 20 "https://${HOST}/" | grep -q 'Give to The Daily Californian'
+          curl -fsS --max-time 20 -H 'Accept: text/html' "https://${HOST}/" | grep -q 'Give to The Daily Californian'
+          # the bare domain doubles as the image URL for <img> requests
+          curl -fsS --max-time 20 -H 'Accept: image/avif,image/webp,image/*,*/*;q=0.8' -H 'Sec-Fetch-Dest: image' -D - -o bare.svg "https://${HOST}/" | grep -qi 'content-type: image/svg+xml'
+          head -c 4 bare.svg | grep -q '<svg'
           curl -fsS --max-time 20 "https://${HOST}/png" | grep -q 'Download PNG'
           test "$(curl -s -o /dev/null -w '%{http_code}' "https://${HOST}/thermometer.png")" = 404   # server PNG is off by design
           echo "smoke OK: json, svg, page, png page, server-png gate"

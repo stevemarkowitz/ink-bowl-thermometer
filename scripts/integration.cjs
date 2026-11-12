@@ -17,7 +17,7 @@ const fixtures = http.createServer((req, res) => {
   res.writeHead(200, { 'content-type': 'text/html' }); fs.createReadStream(f).pipe(res);
 });
 
-const get = (p, as = 'text') => fetch(`http://127.0.0.1:${DEV_PORT}${p}`).then(async (r) => ({ status: r.status, headers: r.headers, body: as === 'json' ? await r.json() : as === 'buf' ? Buffer.from(await r.arrayBuffer()) : await r.text() }));
+const get = (p, as = 'text', headers = {}) => fetch(`http://127.0.0.1:${DEV_PORT}${p}`, { headers }).then(async (r) => ({ status: r.status, headers: r.headers, body: as === 'json' ? await r.json() : as === 'buf' ? Buffer.from(await r.arrayBuffer()) : await r.text() }));
 const step = (m) => console.log('  … ' + m);
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -43,6 +43,11 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
     assert.equal(png.body.readUInt32BE(16), 1200, 'png width');
     step('pages + admin'); const pngPage = await get('/png');
     assert.match(pngPage.body, /Download PNG/);
+    const asImg = await get('/', 'text', { accept: 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8', 'sec-fetch-dest': 'image' });
+    assert.match(asImg.headers.get('content-type'), /svg/, 'bare domain serves the image to <img> requests'); assert.match(asImg.body, /^<svg/);
+    assert.match(asImg.headers.get('vary') || '', /Accept/i);
+    const asDoc = await get('/', 'text', { accept: 'text/html,application/xhtml+xml,*/*;q=0.8', 'sec-fetch-dest': 'document' });
+    assert.match(asDoc.headers.get('content-type'), /html/, 'bare domain serves the page to browsers'); assert.match(asDoc.body, /Give to The Stanford Daily/);
     const page = await get('/');
     assert.match(page.body, /Give to The Daily Californian/); assert.match(page.body, /Give to The Stanford Daily/);
     assert.equal((await get('/admin/pin?side=cal&raised=5')).status, 403, 'admin needs token');

@@ -1,8 +1,9 @@
 /**
  * Ink Bowl thermometer — Cloudflare Worker.
  *
- *   GET /                    shared rivalry page (board + a donate button per paper)
- *   GET /thermometer.svg     the board, 600px wide, for Givebutter stories and web pages
+ *   GET /                    the whole site lives at the bare domain: browsers get the rivalry page
+ *                            (board + a donate button per paper); image requests (<img>, Givebutter) get the board
+ *   GET /thermometer.svg     the board explicitly, 600px wide — fallback for tools that need a file path
  *   GET /png                 staff page: renders the board to a PNG in the browser (no Worker CPU)
  *   GET /thermometer.png     the same board rasterised server-side at 2x — OFF unless SERVER_PNG=true,
  *                            because the raster needs ~300ms CPU (fine on Workers Paid, over Free's 10ms)
@@ -74,6 +75,20 @@ function imageHeaders(type, sides) {
   };
 }
 
+/**
+ * The bare address (https://inkbowl.giving) is both the page and the image:
+ * a browser navigating to it gets the page, while an <img> / image fetch gets the
+ * thermometer. Browsers say so with Sec-Fetch-Dest and an image/* Accept header.
+ * /thermometer.svg stays as an explicit fallback for tools that need a file path.
+ */
+function wantsImage(request) {
+  const dest = request.headers.get('sec-fetch-dest');
+  if (dest === 'image') return true;
+  if (dest === 'document' || dest === 'iframe' || dest === 'frame') return false;
+  const accept = request.headers.get('accept') || '';
+  return /image\//i.test(accept) && !/text\/html/i.test(accept);
+}
+
 function timingSafeEqual(a, b) {
   const enc = new TextEncoder();
   const x = enc.encode(String(a)); const y = enc.encode(String(b));
@@ -86,7 +101,9 @@ export default {
   async fetch(request, rawEnv, ctx) {
     const env = cfg(rawEnv);
     const url = new URL(request.url);
-    const path = url.pathname.replace(/\/+$/, '') || '/';
+    let path = url.pathname.replace(/\/+$/, '') || '/';
+    const viaRoot = path === '/';
+    if (viaRoot && wantsImage(request)) path = '/thermometer.svg';
 
     if (path === '/health') return new Response('ok', { headers: { 'content-type': 'text/plain' } });
 
@@ -98,7 +115,12 @@ export default {
     const cacheKey = new Request(`${url.origin}${path}`, { method: 'GET' });
     if (cacheable && !url.searchParams.has('nocache')) {
       const hit = await cache.match(cacheKey);
-      if (hit) return hit;
+      if (hit) {
+        if (!viaRoot) return hit;
+        const r = new Response(hit.body, hit); // cached copy may predate the root alias: always mark the variance
+        r.headers.set('vary', 'Accept, Sec-Fetch-Dest');
+        return r;
+      }
     }
 
     const data = await collect(env);
@@ -107,6 +129,7 @@ export default {
     let res;
     if (path === '/thermometer.svg') {
       res = new Response(renderSvg(board, { css: FONT_CSS }), { headers: imageHeaders('image/svg+xml; charset=utf-8', data.sides) });
+      if (viaRoot) res.headers.set('vary', 'Accept, Sec-Fetch-Dest');
     } else if (path === '/thermometer.png') {
       if (String(env.SERVER_PNG) !== 'true') {
         return new Response('Server-side PNG is off. Use /png (renders in the browser), or set SERVER_PNG=true on a Workers Paid plan.\n', { status: 404, headers: { 'content-type': 'text/plain', 'cache-control': 'no-store' } });
@@ -128,7 +151,7 @@ export default {
       };
       res = new Response(JSON.stringify(body, null, 2), { headers: { 'content-type': 'application/json', 'cache-control': 'no-store', 'access-control-allow-origin': '*' } });
     } else if (path === '/' || path === '/embed') {
-      res = new Response(embedPage(board, { origin: url.origin, serverPng: String(env.SERVER_PNG) === 'true' }), { headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'public, max-age=30' } });
+      res = new Response(embedPage(board, { origin: url.origin, serverPng: String(env.SERVER_PNG) === 'true' }), { headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'public, max-age=30', vary: 'Accept, Sec-Fetch-Dest' } });
     } else if (path === '/png') {
       res = new Response(pngPage(board, { origin: url.origin, serverPng: String(env.SERVER_PNG) === 'true' }), { headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' } });
     } else {
