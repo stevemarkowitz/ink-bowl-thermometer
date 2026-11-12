@@ -38,9 +38,9 @@ crons = ["*/5 * * * *"]   # keep last-good totals warm
 binding = "THERMO"
 id = "PASTE_ID"
 
-# Public hostname on the dcsearch.vip zone. Cloudflare creates the DNS record and cert.
+# Public hostname (the inkbowl.giving zone, same Cloudflare account). Cloudflare creates the DNS record and cert.
 [[routes]]
-pattern = "inkbowl.dcsearch.vip"
+pattern = "inkbowl.giving"
 custom_domain = true
 
 [observability]

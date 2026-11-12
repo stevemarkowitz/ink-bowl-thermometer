@@ -53,7 +53,7 @@ jobs:
       - name: Smoke test
         run: |
           set -euo pipefail
-          HOST=inkbowl.dcsearch.vip
+          HOST=inkbowl.giving
           for i in 1 2 3 4 5 6 7 8; do
             curl -fsS --max-time 20 "https://${HOST}/api/totals.json" -o totals.json && break
             echo "not ready (attempt ${i}); waiting"; sleep 10

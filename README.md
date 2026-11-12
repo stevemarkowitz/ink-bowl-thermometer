@@ -84,6 +84,8 @@ Staff never need it: `/png` makes email PNGs in their own browser on any plan.
 
 Prerequisites: Node 22, a Cloudflare account. `wrangler.toml` pins `account_id` so a
 deploy from the wrong environment fails instead of landing in the wrong account.
+The Worker is served at `inkbowl.giving` (a custom domain on a zone in that account;
+workers.dev is turned off).
 
 ```bash
 npm install
@@ -101,7 +103,7 @@ it the Worker uses per-isolate memory — fine for a proof of concept.
 After deploying, check:
 
 ```bash
-curl -s https://ink-bowl-thermometer.<subdomain>.workers.dev/api/totals.json
+curl -s https://inkbowl.giving/api/totals.json
 ```
 
 Both sides should show `ok: true` and `source: "json-scoped"` with the right totals.
