@@ -74,7 +74,7 @@ jobs:
           jq -e '.sides.cal.ok and .sides.stanford.ok and .store == "kv"' totals.json
           # The image and page routes are the CPU-heavy ones (Workers Free allows 10ms): request them for real.
           curl "${EXTRA[@]}" -fsS --max-time 20 "https://${HOST}/thermometer.svg?nocache=1" -o board.svg
-          head -c 4 board.svg | grep -q '<svg'; test "$(wc -c < board.svg)" -gt 50000
+          head -c 4 board.svg | grep -q '<svg'; test "$(wc -c < board.svg)" -gt 20000
           curl "${EXTRA[@]}" -fsS --max-time 20 -H 'Accept: text/html' "https://${HOST}/" | grep -q 'Give to The Daily Californian'
           # the bare domain doubles as the image URL for <img> requests
           curl "${EXTRA[@]}" -fsS --max-time 20 -H 'Accept: image/avif,image/webp,image/*,*/*;q=0.8' -H 'Sec-Fetch-Dest: image' -D - -o bare.svg "https://${HOST}/" | grep -qi 'content-type: image/svg+xml'

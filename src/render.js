@@ -4,7 +4,7 @@
  * Givebutter caps story images at 600px, and on a phone that same image is
  * drawn at roughly 340px wide (a 0.57x scale). So the canvas is 600 units wide
  * and every type size below is chosen for the PHONE: nothing a donor needs is
- * under 20 units (~11px on a phone), the amounts are 66 units (~38px), and the
+ * under 18 units (~10px on a phone), the amounts are 66 units (~38px), and the
  * action line under the trailing side is 25 units bold. Height is free —
  * phones scroll — so the board is portrait.
  *
@@ -15,9 +15,11 @@
  *  - a Big Game countdown for urgency and a combined total for unity;
  *  - official UC Berkeley and Stanford palettes.
  *
- * `fonts.css` embeds @font-face data so the SVG renders with the same
- * typefaces in a browser <img>, in Givebutter, and in the PNG rasteriser.
+ * All text is drawn as outlined shapes (src/text.js), never as <text> with a web
+ * font: an SVG in an <img> is painted once, so text waiting on an embedded font
+ * stayed invisible on first load. Outlines look identical everywhere, immediately.
  */
+import { TextLayer } from './text.js';
 
 export const W = 600;
 export const H = 790;
@@ -28,12 +30,6 @@ const INK_SOFT = '#5F5D58';
 const INK_FAINT = '#8F8C84';
 const RULE = '#E4E0D5';
 const TRACK = '#ECE8DF';
-
-export const DEFAULT_FONTS = {
-  display: "'Oswald', 'Arial Narrow', 'Helvetica Neue', Arial, sans-serif",
-  serif: "'Playfair Display', Georgia, 'Times New Roman', serif",
-  css: '',
-};
 
 export function esc(s) {
   return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -54,7 +50,7 @@ const TUBE_W = 78;
 const BULB_R = 48;
 const COL = { cal: 158, stanford: 442 };
 
-function thermometer(side, { cx, fonts, flip }) {
+function thermometer(side, { cx, flip, T }) {
   const tubeH = Y.tubeBottom - Y.tubeTop;
   const x = cx - TUBE_W / 2;
   const rx = TUBE_W / 2;
@@ -68,13 +64,13 @@ function thermometer(side, { cx, fonts, flip }) {
   const ticks = [0.5, 1].map((f) => {
     const y = r2(Y.tubeBottom - tubeH * f);
     return `<line x1="${tickX}" y1="${y}" x2="${tickX + dir * 12}" y2="${y}" stroke="${INK_FAINT}" stroke-width="2" stroke-linecap="round"/>
-      <text x="${tickX + dir * 18}" y="${y + 6}" text-anchor="${flip ? 'end' : 'start'}" font-family="${fonts.display}" font-size="18" font-weight="500" letter-spacing="0.5" fill="${INK_FAINT}">${esc(side.scaleLabels[f])}</text>`;
+      ${T(side.scaleLabels[f], { face: 'display500', size: 18, x: tickX + dir * 18, y: y + 6, anchor: flip ? 'end' : 'start', spacing: 0.5, fill: INK_FAINT })}`;
   }).join('');
 
   const goal = side.goalFrac != null ? (() => {
     const y = r2(Y.tubeBottom - tubeH * side.goalFrac);
     return `<line x1="${x - 10}" y1="${y}" x2="${x + TUBE_W + 10}" y2="${y}" stroke="${INK}" stroke-width="2" stroke-dasharray="4 4"/>
-      <text x="${cx}" y="${y - 7}" text-anchor="middle" font-family="${fonts.display}" font-size="16" font-weight="700" letter-spacing="1.5" fill="${INK}">GOAL</text>`;
+      ${T('GOAL', { face: 'display700', size: 16, x: cx, y: y - 7, anchor: 'middle', spacing: 1.5, fill: INK })}`;
   })() : '';
 
   const cap = side.frac > 0
@@ -110,53 +106,57 @@ function thermometer(side, { cx, fonts, flip }) {
   </g>`;
 }
 
-export function renderSvg(board, fonts = DEFAULT_FONTS) {
-  fonts = { ...DEFAULT_FONTS, ...fonts };
+export function renderSvg(board) {
+  const layer = new TextLayer();
+  const T = (str, o) => layer.text(str, o);
   const [cal, stan] = board.sides;
   const leaderColor = board.leader ? board.sides.find((s) => s.key === board.leader).primary : INK;
 
   const column = (side, cx, flip) => {
     const nudgeColor = side.trailing ? side.primary : INK_SOFT;
-    const nudgeWeight = side.trailing ? 700 : 500;
+    const nudgeFace = side.trailing ? 'display700' : 'display500';
     return `
-    <text x="${cx}" y="${Y.masthead}" text-anchor="middle" font-family="${fonts.serif}" font-size="24" font-weight="700" font-style="italic" fill="${INK}">${esc(side.masthead)}</text>
-    <text x="${cx}" y="${Y.amount}" text-anchor="middle" font-family="${fonts.display}" font-size="66" font-weight="700" letter-spacing="-1" fill="${side.primary}">${esc(side.raisedText)}</text>
-    <text x="${cx}" y="${Y.pct}" text-anchor="middle" font-family="${fonts.display}" font-size="20" font-weight="500" letter-spacing="1.5" fill="${INK_SOFT}">${side.goalText ? `${side.pctOfGoal}% OF ${esc(side.goalText)} GOAL` : 'RAISED SO FAR'}</text>
-    ${thermometer(side, { cx, fonts, flip })}
-    <text x="${cx}" y="${Y.nudge}" text-anchor="middle" font-family="${fonts.display}" font-size="25" font-weight="${nudgeWeight}" letter-spacing="1" fill="${nudgeColor}">${esc(side.nudge.toUpperCase())}</text>`;
+    ${T(side.masthead, { face: 'serifItalic700', size: 24, x: cx, y: Y.masthead, anchor: 'middle', fill: INK })}
+    ${T(side.raisedText, { face: 'display700', size: 66, x: cx, y: Y.amount, anchor: 'middle', spacing: -1, fill: side.primary })}
+    ${T(side.goalText ? `${side.pctOfGoal}% OF ${side.goalText} GOAL` : 'RAISED SO FAR', { face: 'display500', size: 20, x: cx, y: Y.pct, anchor: 'middle', spacing: 1.5, fill: INK_SOFT })}
+    ${thermometer(side, { cx, flip, T })}
+    ${T(side.nudge.toUpperCase(), { face: nudgeFace, size: 25, x: cx, y: Y.nudge, anchor: 'middle', spacing: 1, fill: nudgeColor })}`;
   };
 
-  const updated = `${board.stale ? 'LAST KNOWN  ·  ' : ''}UPDATED ${esc(board.updatedText.toUpperCase())}`;
+  const updated = `${board.stale ? 'LAST KNOWN · ' : ''}UPDATED ${board.updatedText.toUpperCase()}`;
+  const midY = (Y.tubeTop + Y.tubeBottom) / 2;
 
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(board.event)}: ${esc(board.headline)}. ${esc(cal.short)} ${esc(cal.raisedText)}, ${esc(stan.short)} ${esc(stan.raisedText)}.">
-  <style>${fonts.css}</style>
-  <defs>
-    <linearGradient id="band-cal" x1="0" x2="1"><stop offset="0" stop-color="${cal.primaryDeep}"/><stop offset="1" stop-color="${cal.primary}"/></linearGradient>
-    <linearGradient id="band-stan" x1="0" x2="1"><stop offset="0" stop-color="${stan.primary}"/><stop offset="1" stop-color="${stan.primaryDeep}"/></linearGradient>
-    <clipPath id="card"><rect x="0" y="0" width="${W}" height="${H}" rx="22"/></clipPath>
-  </defs>
-  <g clip-path="url(#card)">
+  const body = `
     <rect x="0" y="0" width="${W}" height="${H}" fill="${PAPER}"/>
     <rect x="0" y="0" width="${W / 2}" height="12" fill="url(#band-cal)"/>
     <rect x="0" y="12" width="${W / 2}" height="4" fill="${cal.accent}"/>
     <rect x="${W / 2}" y="0" width="${W / 2}" height="12" fill="url(#band-stan)"/>
     <rect x="${W / 2}" y="12" width="${W / 2}" height="4" fill="${stan.accent}"/>
 
-    <text x="${W / 2}" y="${Y.title}" text-anchor="middle" font-family="${fonts.display}" font-size="46" font-weight="700" letter-spacing="5" fill="${INK}">${esc(board.event.toUpperCase())}</text>
-    <text x="${W / 2}" y="${Y.countdown}" text-anchor="middle" font-family="${fonts.display}" font-size="20" font-weight="500" letter-spacing="3" fill="${INK_SOFT}">${esc(board.countdown)}  ·  NOV 21</text>
+    ${T(board.event.toUpperCase(), { face: 'display700', size: 46, x: W / 2, y: Y.title, anchor: 'middle', spacing: 5, fill: INK })}
+    ${T(`${board.countdown} · NOV 21`, { face: 'display500', size: 20, x: W / 2, y: Y.countdown, anchor: 'middle', spacing: 3, fill: INK_SOFT })}
     <line x1="40" y1="${Y.rule}" x2="${W - 40}" y2="${Y.rule}" stroke="${RULE}" stroke-width="1.5"/>
 
     ${column(cal, COL.cal, true)}
     ${column(stan, COL.stanford, false)}
 
-    <circle cx="${W / 2}" cy="${(Y.tubeTop + Y.tubeBottom) / 2}" r="30" fill="${INK}"/>
-    <text x="${W / 2}" y="${(Y.tubeTop + Y.tubeBottom) / 2 + 9}" text-anchor="middle" font-family="${fonts.display}" font-size="25" font-weight="700" letter-spacing="1.5" fill="${PAPER}">VS</text>
+    <circle cx="${W / 2}" cy="${midY}" r="30" fill="${INK}"/>
+    ${T('VS', { face: 'display700', size: 25, x: W / 2, y: midY + 9, anchor: 'middle', spacing: 1.5, fill: PAPER })}
 
     <rect x="0" y="${Y.bandTop}" width="${W}" height="${Y.bandH}" fill="${leaderColor}"/>
-    <text x="${W / 2}" y="${Y.bandText}" text-anchor="middle" font-family="${fonts.display}" font-size="30" font-weight="700" letter-spacing="3" fill="#FFFFFF">${esc(board.headline)}</text>
+    ${T(board.headline, { face: 'display700', size: 30, x: W / 2, y: Y.bandText, anchor: 'middle', spacing: 3, fill: '#FFFFFF' })}
 
-    <text x="24" y="${Y.footer}" font-family="${fonts.display}" font-size="18" font-weight="500" letter-spacing="0.8" fill="${INK_FAINT}">TOGETHER ${esc(board.combinedText)} FOR STUDENT JOURNALISM</text>
-    <text x="${W - 24}" y="${Y.footer}" text-anchor="end" font-family="${fonts.display}" font-size="18" font-weight="500" letter-spacing="0.8" fill="${INK_FAINT}">${updated}</text>
+    ${T(`TOGETHER ${board.combinedText} FOR STUDENT JOURNALISM`, { face: 'display500', size: 18, x: 24, y: Y.footer, spacing: 0.8, fill: INK_FAINT })}
+    ${T(updated, { face: 'display500', size: 18, x: W - 24, y: Y.footer, anchor: 'end', spacing: 0.8, fill: INK_FAINT })}`;
+
+  return `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(board.event)}: ${esc(board.headline)}. ${esc(cal.short)} ${esc(cal.raisedText)}, ${esc(stan.short)} ${esc(stan.raisedText)}.">
+  <defs>
+    <linearGradient id="band-cal" x1="0" x2="1"><stop offset="0" stop-color="${cal.primaryDeep}"/><stop offset="1" stop-color="${cal.primary}"/></linearGradient>
+    <linearGradient id="band-stan" x1="0" x2="1"><stop offset="0" stop-color="${stan.primary}"/><stop offset="1" stop-color="${stan.primaryDeep}"/></linearGradient>
+    <clipPath id="card"><rect x="0" y="0" width="${W}" height="${H}" rx="22"/></clipPath>
+    ${layer.defs()}
+  </defs>
+  <g clip-path="url(#card)">${body}
   </g>
 </svg>`;
 }

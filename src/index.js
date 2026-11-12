@@ -17,7 +17,6 @@
  */
 import { buildBoard } from './model.js';
 import { renderSvg } from './render.js';
-import { FONT_CSS } from './fonts.js';
 import { readSide, sideConfig, SIDE_KEYS } from './sources.js';
 import { makeStore } from './store.js';
 import { ensureResvg, svgToPng } from './png.js';
@@ -131,14 +130,14 @@ export default {
 
     let res;
     if (path === '/thermometer.svg') {
-      res = new Response(renderSvg(board, { css: FONT_CSS }), { headers: imageHeaders('image/svg+xml; charset=utf-8', data.sides) });
+      res = new Response(renderSvg(board), { headers: imageHeaders('image/svg+xml; charset=utf-8', data.sides) });
       if (viaRoot) res.headers.set('vary', 'Accept, Sec-Fetch-Dest');
     } else if (path === '/thermometer.png') {
       if (String(env.SERVER_PNG) !== 'true') {
         return new Response('Server-side PNG is off. Use /png (renders in the browser), or set SERVER_PNG=true on a Workers Paid plan.\n', { status: 404, headers: { 'content-type': 'text/plain', 'cache-control': 'no-store' } });
       }
       await ensureResvg(resvgWasm);
-      const png = svgToPng(renderSvg(board, { css: FONT_CSS }), { scale: 2 });
+      const png = svgToPng(renderSvg(board), { scale: 2 });
       res = new Response(png, { headers: imageHeaders('image/png', data.sides) });
     } else if (path === '/api/totals.json') {
       const body = {

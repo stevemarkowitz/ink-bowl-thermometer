@@ -130,14 +130,14 @@ is a snapshot of that moment, 1200×1580, with the same fonts and colours as the
 ```bash
 npm test                               # unit: parser, board maths, source fallbacks
 npm run preview -- 1391 2805           # renders docs/preview-{desktop,phone}.png
-python3 scripts/subset-fonts.py        # regenerate src/fonts.js (only if fonts change)
+python3 scripts/build-glyphs.py        # regenerate src/glyphs.js (only if the typefaces or charset change)
 ```
 
 `test/fixtures/` holds real Givebutter pages captured 2026-11-12. If Givebutter
 changes its page markup, `npm test` fails first — update `src/givebutter.js`.
 
 Layout: `src/model.js` (board maths, team palettes) → `src/render.js` (SVG) →
-`src/png.js` (resvg) / `src/page.js` (HTML). Data: `src/sources.js` (fallback chain),
+`src/text.js` (text as outlines, data in generated `src/glyphs.js`) → `src/png.js` (resvg) / `src/page.js` (HTML). Data: `src/sources.js` (fallback chain),
 `src/givebutter.js` (page parser), `src/givebutter-api.js` (API), `src/store.js` (KV or memory).
 
 ## Design notes
@@ -149,9 +149,13 @@ Layout: `src/model.js` (board maths, team palettes) → `src/render.js` (SVG) �
 - The trailing side's line is the persuasive one: a concrete dollar figure that
   would take the lead. The leader's line is deliberately quieter.
 - Typefaces: Oswald (scoreboard numerals, condensed so big numbers fit a phone
-  column) and Playfair Display italic (newspaper mastheads). Both are SIL Open Font
-  License and are subset and embedded, so the SVG renders identically everywhere
-  — including inside `<img>`, where external fonts are not allowed.
+  column) and Playfair Display italic (newspaper mastheads), both SIL Open Font
+  License. **All text is drawn as outlined shapes, not `<text>`.** An SVG shown in an
+  `<img>` is painted once and never repaints, so text waiting on an embedded web font
+  stayed invisible on a phone's first load (shapes drew, words didn't; a reload fixed
+  it). Outlines have nothing to wait for, so the board is complete on first paint in
+  every browser and in Givebutter. `test/render.test.mjs` fails if `<text>`,
+  `@font-face` or `font-family` ever creep back in.
 - Mastheads are typographic. If the papers supply logo files, drop them into
   `src/render.js` in place of the masthead `<text>`; everything else stays.
 - Colours: Berkeley Blue `#003262`, California Gold `#FDB515`, Stanford Cardinal
