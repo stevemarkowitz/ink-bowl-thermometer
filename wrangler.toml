@@ -43,5 +43,10 @@ id = "PASTE_ID"
 pattern = "inkbowl.giving"
 custom_domain = true
 
+# www redirects to the bare domain (see canonicalRedirect in src/index.js).
+[[routes]]
+pattern = "www.inkbowl.giving"
+custom_domain = true
+
 [observability]
 enabled = true

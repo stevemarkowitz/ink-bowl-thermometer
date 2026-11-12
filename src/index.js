@@ -22,6 +22,7 @@ import { readSide, sideConfig, SIDE_KEYS } from './sources.js';
 import { makeStore } from './store.js';
 import { ensureResvg, svgToPng } from './png.js';
 import { embedPage, pngPage } from './page.js';
+import { canonicalRedirect } from './host.js';
 import resvgWasm from '../node_modules/@resvg/resvg-wasm/index_bg.wasm';
 
 const FRESH_MS = 120_000;      // reuse a side's last read for 2 min before re-fetching
@@ -101,6 +102,8 @@ export default {
   async fetch(request, rawEnv, ctx) {
     const env = cfg(rawEnv);
     const url = new URL(request.url);
+    const canonical = canonicalRedirect(url);
+    if (canonical) return Response.redirect(canonical, 301);
     let path = url.pathname.replace(/\/+$/, '') || '/';
     const viaRoot = path === '/';
     if (viaRoot && wantsImage(request)) path = '/thermometer.svg';

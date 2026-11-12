@@ -81,4 +81,9 @@ jobs:
           head -c 4 bare.svg | grep -q '<svg'
           curl "${EXTRA[@]}" -fsS --max-time 20 "https://${HOST}/png" | grep -q 'Download PNG'
           test "$(curl "${EXTRA[@]}" -s -o /dev/null -w '%{http_code}' "https://${HOST}/thermometer.png")" = 404   # server PNG is off by design
+          # www redirects to the bare domain (informational: its DNS can lag separately)
+          WWW_EXTRA=()
+          [ ${#EXTRA[@]} -gt 0 ] && WWW_EXTRA=(--resolve "www.${HOST}:443:104.18.2.1")
+          wwwres=$(curl "${WWW_EXTRA[@]}" -s -o /dev/null -w '%{http_code} -> %{redirect_url}' --max-time 20 "https://www.${HOST}/png?x=1" || true)
+          echo "www.${HOST}/png?x=1 : ${wwwres}"
           echo "smoke OK: json, svg, page, bare-domain image, png page, server-png gate"
