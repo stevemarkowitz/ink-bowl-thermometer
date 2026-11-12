@@ -54,19 +54,31 @@ jobs:
         run: |
           set -euo pipefail
           HOST=inkbowl.giving
-          for i in 1 2 3 4 5 6 7 8; do
-            curl -fsS --max-time 20 "https://${HOST}/api/totals.json" -o totals.json && break
+          EXTRA=()
+          seen=""
+          for i in 1 2 3 4; do
+            if getent hosts "$HOST" >/dev/null; then seen=1; break; fi
+            echo "public DNS for ${HOST} not visible yet (attempt ${i})"; sleep 10
+          done
+          if [ -z "$seen" ]; then
+            # A brand-new zone can take a while to reach public resolvers. Verify the Worker itself
+            # through Cloudflare's edge directly (TLS is still verified), and flag the DNS lag.
+            echo "::warning::Public DNS for ${HOST} has not propagated yet; testing the Worker via Cloudflare's edge directly."
+            EXTRA=(--resolve "${HOST}:443:104.18.2.1")
+          fi
+          for i in 1 2 3 4 5 6; do
+            curl "${EXTRA[@]}" -fsS --max-time 20 "https://${HOST}/api/totals.json" -o totals.json && break
             echo "not ready (attempt ${i}); waiting"; sleep 10
           done
           jq '{headline, leader, store, stale, sides: (.sides | map_values({raised, goal, source, ok}))}' totals.json
           jq -e '.sides.cal.ok and .sides.stanford.ok and .store == "kv"' totals.json
           # The image and page routes are the CPU-heavy ones (Workers Free allows 10ms): request them for real.
-          curl -fsS --max-time 20 "https://${HOST}/thermometer.svg?nocache=1" -o board.svg
+          curl "${EXTRA[@]}" -fsS --max-time 20 "https://${HOST}/thermometer.svg?nocache=1" -o board.svg
           head -c 4 board.svg | grep -q '<svg'; test "$(wc -c < board.svg)" -gt 50000
-          curl -fsS --max-time 20 -H 'Accept: text/html' "https://${HOST}/" | grep -q 'Give to The Daily Californian'
+          curl "${EXTRA[@]}" -fsS --max-time 20 -H 'Accept: text/html' "https://${HOST}/" | grep -q 'Give to The Daily Californian'
           # the bare domain doubles as the image URL for <img> requests
-          curl -fsS --max-time 20 -H 'Accept: image/avif,image/webp,image/*,*/*;q=0.8' -H 'Sec-Fetch-Dest: image' -D - -o bare.svg "https://${HOST}/" | grep -qi 'content-type: image/svg+xml'
+          curl "${EXTRA[@]}" -fsS --max-time 20 -H 'Accept: image/avif,image/webp,image/*,*/*;q=0.8' -H 'Sec-Fetch-Dest: image' -D - -o bare.svg "https://${HOST}/" | grep -qi 'content-type: image/svg+xml'
           head -c 4 bare.svg | grep -q '<svg'
-          curl -fsS --max-time 20 "https://${HOST}/png" | grep -q 'Download PNG'
-          test "$(curl -s -o /dev/null -w '%{http_code}' "https://${HOST}/thermometer.png")" = 404   # server PNG is off by design
-          echo "smoke OK: json, svg, page, png page, server-png gate"
+          curl "${EXTRA[@]}" -fsS --max-time 20 "https://${HOST}/png" | grep -q 'Download PNG'
+          test "$(curl "${EXTRA[@]}" -s -o /dev/null -w '%{http_code}' "https://${HOST}/thermometer.png")" = 404   # server PNG is off by design
+          echo "smoke OK: json, svg, page, bare-domain image, png page, server-png gate"
