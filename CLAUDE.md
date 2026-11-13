@@ -23,7 +23,8 @@ are. Update `CHANGELOG.md` and the relevant doc with every change (commit docs w
 - The board is 600 wide (Givebutter story max); keep type sizes legible at ~340 px.
 - **Neither paper may look favoured** (`docs/FAIRNESS.md`). Anything shown per paper is sized for equal visual
   size, never by one dimension: nameplates share a baseline and equal footprint (`nameplateLayout()`), logo
-  marks equal ink (`markLayout()`), accents neutral and identical (`ACCENTS`). Check every visual change at
+  marks equal footprint (`markLayout()`), accents structurally identical (`ACCENTS`; the owner chose the brand
+  gold/sandstone knowing gold is more vivid, so do not "fix" that without asking). Check every visual change at
   phone width, including the swapped case, and keep the `FAIRNESS:` tests passing.
 - Server-side PNG stays off (`SERVER_PNG=false`) on Workers Free (10 ms CPU). Staff use `/png`.
 - KV writes stay write-on-change (Free allows 1,000/day).

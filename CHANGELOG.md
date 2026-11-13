@@ -3,7 +3,15 @@
 All notable changes. Newest first. Everything below shipped on 2026-11-12 unless noted; commit
 hashes are on `main`. Live site: **https://inkbowl.giving**.
 
-## Fairness audit: equal visual size, equal marks, neutral accents (this change)
+## Equal-footprint logo marks; brand accents restored (this change)
+- **Brand accents back** (California Gold / Stanford Sandstone) at the owner's request, after seeing the
+  vividness asymmetry side by side. Treatment stays structurally identical for both sides; tests now assert
+  that. `ACCENTS = 'neutral'` reverts. Recorded as the owner's decision in `docs/FAIRNESS.md`.
+- **Logo marks** now use **equal footprint** (the same rule as the nameplates) instead of equal ink: DC 67x32,
+  S 47x46. The DC mark is already as wide as its tile allows, so only the S could change. Candidates:
+  `docs/design/logo-mark-size-rules.png`.
+
+## Fairness audit (`e2a5224`)
 - **Nameplates** now sized to **equal footprint** on one baseline. Equal cap height (the previous
   change) left the Daily Cal's very wide line covering more of the page, so it looked bigger; equal
   width (before that) made Stanford look bigger. Four rules were compared at phone size

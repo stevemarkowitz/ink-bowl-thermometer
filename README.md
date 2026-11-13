@@ -161,17 +161,17 @@ Layout: `src/model.js` (board maths, team palettes) â†’ `src/render.js` (SVG) â†
   every browser and in Givebutter. `test/render.test.mjs` fails if `<text>`,
   `@font-face` or `font-family` ever creep back in.
 - Each side's identity is its **logo plus its own nameplate**: the paper's white mark on a tile in
-  its team colour (the Daily Cal's own light blue for Cal), with the paper's nameplate
+  its team colour (the Daily Cal's own light blue for Cal) ringed in each brand's accent, with the paper's nameplate
   beneath it. One identity element per side, so the board gains recognition without clutter. The
   Per-paper art is sized for **equal visual size** so neither paper looks favoured: nameplates share a
-  baseline and equal footprint, logo marks equal ink, accents are one neutral treatment for both
-  (`docs/FAIRNESS.md`). The Stanford Daily
+  baseline and equal footprint, logo marks equal footprint, and the brand accents get an identical
+  treatment (`docs/FAIRNESS.md`). The Stanford Daily
   nameplate is its published SVG; the Daily Cal nameplate is traced from its site
   (`scripts/trace-wordmarks.py`), and the marks are traced from the avatars
   (`scripts/trace-logos.py`). All are vectors, so they are sharp at any size and nothing loads. If
   either paper has an official vector, paste its path into `src/logos.js` / `src/wordmarks.js`.
   These are the papers' trademarks: each should approve their use.
 - Colours: each side keeps its own official primary: Berkeley Blue `#003262` and Stanford Cardinal `#8C1515`. The
-  Daily Cal's logo tile is the paper's own blue `#4B9BD0`. The brands' secondary accents (California Gold
-  `#FDB515`, Stanford Sandstone `#D2C295`) are **off** for parity (`ACCENTS` in `src/render.js`): gold is far
-  more vivid than sandstone.
+  Daily Cal's logo tile is the paper's own blue `#4B9BD0`. Each brand's accent (California Gold `#FDB515`,
+  Stanford Sandstone `#D2C295`) rings its tile, caps its mercury and underlines its half of the top bar: the
+  owner chose to keep them, though gold is more vivid than sandstone (`ACCENTS` in `src/render.js`).

@@ -86,15 +86,25 @@ test('FAIRNESS: the two nameplates are sized to equal visual size and share a ba
   for (const k of ['cal', 'stanford']) assert.ok(n[k].width <= 264 + 1e-9, `${k} fits its column`);
 });
 
-test('FAIRNESS: the two logo marks carry equal ink inside equal-size tiles', () => {
+test('FAIRNESS: the two logo marks have equal footprint inside equal-size tiles', () => {
   const m = markLayout();
-  assert.ok(Math.abs(m.stanford.ink / m.cal.ink - 1) < 0.01, `mark ink ratio ${m.stanford.ink / m.cal.ink}`);
+  assert.ok(Math.abs(m.stanford.footprint / m.cal.footprint - 1) < 0.01, `mark footprint ratio ${m.stanford.footprint / m.cal.footprint}`);
+  const ink = m.stanford.ink / m.cal.ink;
+  assert.ok(ink > 0.75 && ink < 1.35, `mark ink ratio ${ink} must not drift far`);
   for (const k of ['cal', 'stanford']) assert.ok(m[k].width <= 76 * 0.88 + 1e-9 && m[k].height <= 76 * 0.8 + 1e-9, `${k} mark fits its tile`);
 });
 
-test('FAIRNESS: decorative accents are identical for both sides (no vivid gold vs muted sandstone)', () => {
+test('FAIRNESS: accents get a structurally identical treatment for both sides', () => {
   const svg = renderSvg(board);
-  assert.doesNotMatch(svg, /#FDB515|#D2C295/i);
-  const other = renderSvg(buildBoard({ event: 'X', gameDate: '2026-11-21', now: new Date('2026-11-12T20:00:00Z'), cal: side(3000), stanford: side(1000) }));
-  assert.doesNotMatch(other, /#FDB515|#D2C295/i);
+  // brand accents are on by the owner's choice: both papers' accents appear, and symmetrically
+  assert.match(svg, /#FDB515/i); assert.match(svg, /#D2C295/i);
+  const rings = [...svg.matchAll(/fill="none" stroke="(#[0-9A-F]{6})" stroke-opacity="([\d.]+)" stroke-width="(\d+)"/gi)];
+  assert.equal(rings.length, 2, 'one ring per tile');
+  assert.equal(rings[0][2], rings[1][2], 'same ring opacity'); assert.equal(rings[0][3], rings[1][3], 'same ring width');
+  const caps = [...svg.matchAll(/height="7" rx="3.5" fill="(#[0-9A-F]{6})" fill-opacity="([\d.]+)"/gi)];
+  assert.equal(caps.length, 2, 'one mercury cap per side');
+  assert.equal(caps[0][2], caps[1][2], 'same cap opacity');
+  // and the neutral mode really is identical and brand-free
+  const neutral = renderSvg(board, { accents: 'neutral' });
+  assert.doesNotMatch(neutral, /#FDB515|#D2C295/i);
 });

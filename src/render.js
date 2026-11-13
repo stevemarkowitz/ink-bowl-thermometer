@@ -75,12 +75,12 @@ const NAMEPLATE_METRICS = {
 export const NAMEPLATE_RULE = 'footprint';
 
 /**
- * Decorative accents (tile ring, mercury cap, top-bar underline). The papers' brand accents are not equally
- * vivid: California Gold is far more saturated than Stanford's Sandstone, so Cal's ring/cap would pop and
- * Stanford's would recede. 'neutral' gives both sides the identical treatment (a pale highlight); 'brand'
- * restores gold/sandstone.
+ * Decorative accents (tile ring, mercury cap, top-bar underline). 'brand' uses each paper's own accent
+ * (California Gold / Stanford Sandstone): the treatment is structurally identical for both, but the colours
+ * are not equally vivid (gold is far more saturated), which the project owner has accepted. 'neutral' gives
+ * both sides one identical pale highlight. See docs/FAIRNESS.md.
  */
-export const ACCENTS = 'neutral';
+export const ACCENTS = 'brand';
 const accentFor = (side, mode) => (mode === 'brand'
   ? { color: side.ring ?? side.accent, opacity: 1 }
   : { color: '#FFFFFF', opacity: 0.55 });
@@ -106,14 +106,32 @@ export function nameplateLayout(rule = NAMEPLATE_RULE) {
   }]));
 }
 
-/** Logo marks inside their (equal-size) tiles: equal ink, limited by the tile. */
-export function markLayout() {
+/**
+ * Logo marks inside their (equal-size) tiles. The two marks differ in shape: the DC mark is wide and flat, the S is
+ * square and dense. Rules (compared in docs/design/): 'ink' equal filled area; 'footprint' equal bounding-box
+ * area; 'fill' each mark fills the tile's inner box along its longest side.
+ */
+export const MARK_RULE = 'footprint';
+const MARK_METRICS = {
+  ink: (l, k) => Math.sqrt(INK_AREA.logos[k]),
+  footprint: (l) => Math.sqrt(l.w * l.h),
+};
+export function markLayout(rule = MARK_RULE) {
   const entries = Object.entries(LOGOS);
-  const c = Math.min(...entries.map(([k, l]) => Math.min(MARK_MAX_W / l.w, MARK_MAX_H / l.h) * Math.sqrt(INK_AREA.logos[k])));
-  return Object.fromEntries(entries.map(([k, l]) => {
-    const scale = c / Math.sqrt(INK_AREA.logos[k]);
-    return [k, { scale, width: l.w * scale, height: l.h * scale, ink: INK_AREA.logos[k] * scale ** 2 }];
-  }));
+  const fit = (l) => Math.min(MARK_MAX_W / l.w, MARK_MAX_H / l.h);
+  const scales = {};
+  if (rule === 'fill') {
+    for (const [k, l] of entries) scales[k] = fit(l);
+  } else {
+    const metric = MARK_METRICS[rule];
+    if (!metric) throw new Error(`unknown mark rule ${rule}`);
+    const c = Math.min(...entries.map(([k, l]) => fit(l) * metric(l, k)));
+    for (const [k, l] of entries) scales[k] = c / metric(l, k);
+  }
+  return Object.fromEntries(entries.map(([k, l]) => [k, {
+    scale: scales[k], width: l.w * scales[k], height: l.h * scales[k],
+    footprint: l.w * l.h * scales[k] ** 2, ink: INK_AREA.logos[k] * scales[k] ** 2,
+  }]));
 }
 
 const TUBE_W = 78;
@@ -124,7 +142,7 @@ const COL = { cal: 158, stanford: 442 };
 function lockup(side, { cx, opts }) {
   const acc = accentFor(side, opts.accents ?? ACCENTS);
   const L = LOGOS[side.key];
-  const sc = markLayout()[side.key].scale;
+  const sc = markLayout(opts.markRule)[side.key].scale;
   const left = cx - TILE / 2;
   const mx = left + (TILE - L.w * sc) / 2;
   const my = Y.tileTop + (TILE - L.h * sc) / 2;

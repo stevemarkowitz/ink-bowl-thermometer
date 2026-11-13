@@ -51,7 +51,7 @@ Whoever ran the earlier thermometer is not documented; we could not confirm what
    the lead"). Goal shown as a percentage and a dashed line once within range.
 4. **Mobile-first**: a Givebutter story image shows at ~340 px on a phone; type sizes are chosen for
    that. Official primaries: Berkeley Blue `#003262` and Stanford Cardinal `#8C1515`
-   (the brands' secondary accents, California Gold `#FDB515` and Sandstone `#D2C295`, are unused: see decision 10).
+   (plus each brand's accent, California Gold `#FDB515` / Sandstone `#D2C295`: see decision 11).
 5. **PNG for email without Worker CPU:** staff download it from `/png`, rendered in their browser.
    Server-side PNG exists but is off (Workers Free CPU limit).
 6. **One address.** `https://inkbowl.giving` serves the page to browsers and the image to image
@@ -65,10 +65,14 @@ Whoever ran the earlier thermometer is not documented; we could not confirm what
    lettering failed on legibility (see `docs/design/daily-cal-colour-options.png`).
 10. **Fairness in all respects** (see `FAIRNESS.md`). Sizing by one measure always favoured someone: equal
    width made Stanford's blackletter look bigger, equal cap height made the Daily Cal's very wide line
-   look bigger. Nameplates are now sized to equal footprint on a shared baseline, logo marks to equal ink,
-   and decorative accents are neutral and identical (gold is more vivid than sandstone). Rule of thumb:
+   look bigger. Nameplates are now sized to equal footprint on a shared baseline and logo marks to equal footprint
+   too (see decision 11 for accents). Rule of thumb:
    never size per-paper art by a single dimension; compare rules visually at phone size
    (`docs/design/`) and guard the result with tests.
+11. **Brand accents kept, by the owner's choice.** After seeing neutral vs brand accents side by side, the owner
+   chose California Gold and Stanford Sandstone (2026-11-13). The treatment is identical in structure; the
+   inherent difference in vividness is accepted and recorded in `FAIRNESS.md`. Logo marks use the same
+   equal-footprint rule as the nameplates.
 
 ## Incidents and lessons
 - **Invisible text on a phone's first load.** An SVG in an `<img>` paints once; text waiting on an
