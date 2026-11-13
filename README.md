@@ -14,7 +14,7 @@ Givebutter campaign pages, any web page, and (as a PNG) in email.
   (`$1,415 TAKES THE LEAD`), a Big Game countdown, and a combined total.
 - **Mobile-first**: designed for the ~340px a phone gives a Givebutter story image.
 - Never goes blank: a failed read serves the last good number, marked as such.
-- Official palettes: Berkeley Blue / California Gold and Stanford Cardinal / Sandstone.
+- Each side in its own official primary: Berkeley Blue and Stanford Cardinal. Everything per paper is sized and styled for parity (`docs/FAIRNESS.md`).
 
 ## Routes
 
@@ -134,6 +134,7 @@ npm run preview -- 1391 2805           # renders docs/preview-{desktop,phone}.pn
 python3 scripts/build-glyphs.py        # regenerate src/glyphs.js (only if the typefaces or charset change)
 python3 scripts/trace-logos.py A.jpg B.jpg      # regenerate src/logos.js from the two avatars
 python3 scripts/trace-wordmarks.py crop.png s.svg  # regenerate src/wordmarks.js (see script header)
+node scripts/measure-ink.cjs                    # regenerate src/ink.js (run after logos/wordmarks change)
 ```
 
 `test/fixtures/` holds real Givebutter pages captured 2026-11-12. If Givebutter
@@ -160,14 +161,17 @@ Layout: `src/model.js` (board maths, team palettes) â†’ `src/render.js` (SVG) â†
   every browser and in Givebutter. `test/render.test.mjs` fails if `<text>`,
   `@font-face` or `font-family` ever creep back in.
 - Each side's identity is its **logo plus its own nameplate**: the paper's white mark on a tile in
-  its team colour (ringed in gold for Cal, sandstone for Stanford), with the paper's nameplate
+  its team colour (the Daily Cal's own light blue for Cal), with the paper's nameplate
   beneath it. One identity element per side, so the board gains recognition without clutter. The
-  Both nameplates are drawn at the **same cap height on the same baseline** so neither paper looks
-  bigger (equal width would not do it; see `docs/design/nameplate-sizing.png`). The Stanford Daily
+  Per-paper art is sized for **equal visual size** so neither paper looks favoured: nameplates share a
+  baseline and equal footprint, logo marks equal ink, accents are one neutral treatment for both
+  (`docs/FAIRNESS.md`). The Stanford Daily
   nameplate is its published SVG; the Daily Cal nameplate is traced from its site
   (`scripts/trace-wordmarks.py`), and the marks are traced from the avatars
   (`scripts/trace-logos.py`). All are vectors, so they are sharp at any size and nothing loads. If
   either paper has an official vector, paste its path into `src/logos.js` / `src/wordmarks.js`.
   These are the papers' trademarks: each should approve their use.
-- Colours: the Daily Cal's logo tile is the paper's own blue `#4B9BD0`; the thermometer and amounts use Berkeley Blue `#003262`, California Gold `#FDB515`, Stanford Cardinal
-  `#8C1515`, Sandstone `#D2C295`.
+- Colours: each side keeps its own official primary: Berkeley Blue `#003262` and Stanford Cardinal `#8C1515`. The
+  Daily Cal's logo tile is the paper's own blue `#4B9BD0`. The brands' secondary accents (California Gold
+  `#FDB515`, Stanford Sandstone `#D2C295`) are **off** for parity (`ACCENTS` in `src/render.js`): gold is far
+  more vivid than sandstone.

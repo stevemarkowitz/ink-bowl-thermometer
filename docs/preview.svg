@@ -10,9 +10,9 @@
   <g clip-path="url(#card)">
     <rect x="0" y="0" width="600" height="900" fill="#FBFAF6"/>
     <rect x="0" y="0" width="300" height="12" fill="url(#band-cal)"/>
-    <rect x="0" y="12" width="300" height="4" fill="#FDB515"/>
+    
     <rect x="300" y="0" width="300" height="12" fill="url(#band-stan)"/>
-    <rect x="300" y="12" width="300" height="4" fill="#D2C295"/>
+    
 
     <g transform="translate(124.13 72) scale(0.046 -0.046)" fill="#161616"><use xlink:href="#d700-73" x="0"/><use xlink:href="#d700-78" x="409.7"/><use xlink:href="#d700-75" x="1079.39"/><use xlink:href="#d700-66" x="2119.78"/><use xlink:href="#d700-79" x="2816.48"/><use xlink:href="#d700-87" x="3511.17"/><use xlink:href="#d700-76" x="4316.87"/><use xlink:href="#d700-50" x="5233.26"/><use xlink:href="#d700-48" x="5855.96"/><use xlink:href="#d700-50" x="6514.65"/><use xlink:href="#d700-53" x="7137.35"/></g>
     <g transform="translate(146.06 105) scale(0.02 -0.02)" fill="#5F5D58"><use xlink:href="#d500-57" x="0"/><use xlink:href="#d500-68" x="1064"/><use xlink:href="#d500-65" x="1762"/><use xlink:href="#d500-89" x="2392"/><use xlink:href="#d500-83" x="3023"/><use xlink:href="#d500-84" x="4060"/><use xlink:href="#d500-79" x="4634"/><use xlink:href="#d500-66" x="5740"/><use xlink:href="#d500-73" x="6447"/><use xlink:href="#d500-71" x="6872"/><use xlink:href="#d500-71" x="7974"/><use xlink:href="#d500-65" x="8683"/><use xlink:href="#d500-77" x="9355"/><use xlink:href="#d500-69" x="10188"/><use xlink:href="#d500-183" x="11159"/><use xlink:href="#d500-78" x="11904"/><use xlink:href="#d500-79" x="12599"/><use xlink:href="#d500-86" x="13306"/><use xlink:href="#d500-50" x="14365"/><use xlink:href="#d500-49" x="15012"/></g>
@@ -21,8 +21,8 @@
     
     
     <rect x="120" y="146" width="76" height="76" rx="17" fill="#4B9BD0"/>
-    <rect x="121.5" y="147.5" width="73" height="73" rx="15.5" fill="none" stroke="#FDB515" stroke-width="3"/>
-    <use xlink:href="#logo-cal" transform="translate(126.08 168.69) scale(0.2107)" fill="#FFFFFF"/>
+    <rect x="121.5" y="147.5" width="73" height="73" rx="15.5" fill="none" stroke="#FFFFFF" stroke-opacity="0.55" stroke-width="3"/>
+    <use xlink:href="#logo-cal" transform="translate(124.56 167.96) scale(0.2207)" fill="#FFFFFF"/>
     <use xlink:href="#wm-cal" transform="translate(26 246.05) scale(0.352)" fill="#003262"/>
     <g transform="translate(76.51 348) scale(0.066 -0.066)" fill="#003262"><use xlink:href="#d700-36" x="0"/><use xlink:href="#d700-49" x="469.85"/><use xlink:href="#d700-44" x="839.7"/><use xlink:href="#d700-51" x="1062.55"/><use xlink:href="#d700-57" x="1561.39"/><use xlink:href="#d700-49" x="2084.24"/></g>
     <g transform="translate(56.34 378) scale(0.02 -0.02)" fill="#5F5D58"><use xlink:href="#d500-49" x="0"/><use xlink:href="#d500-52" x="457"/><use xlink:href="#d500-37" x="1036"/><use xlink:href="#d500-79" x="2379"/><use xlink:href="#d500-70" x="3017"/><use xlink:href="#d500-36" x="3823"/><use xlink:href="#d500-49" x="4386"/><use xlink:href="#d500-48" x="4843"/><use xlink:href="#d500-44" x="5452"/><use xlink:href="#d500-48" x="5740"/><use xlink:href="#d500-48" x="6349"/><use xlink:href="#d500-48" x="6958"/><use xlink:href="#d500-71" x="7885"/><use xlink:href="#d500-79" x="8519"/><use xlink:href="#d500-65" x="9148"/><use xlink:href="#d500-76" x="9745"/></g>
@@ -49,7 +49,7 @@
       <g transform="translate(39.97 410) scale(0.018 -0.018)" fill="#8F8C84"><use xlink:href="#d500-36" x="0"/><use xlink:href="#d500-52" x="515.78"/><use xlink:href="#d500-44" x="1047.56"/><use xlink:href="#d500-48" x="1288.33"/><use xlink:href="#d500-48" x="1850.11"/><use xlink:href="#d500-48" x="2411.89"/></g>
     <rect x="119" y="404" width="78" height="264.8" rx="39" fill="url(#glass-cal)" stroke="#E4E0D5" stroke-width="2"/>
     <rect x="119" y="557.93" width="78" height="130.07" fill="url(#merc-cal)" clip-path="url(#tube-cal)"/>
-    <rect x="123" y="557.93" width="70" height="7" rx="3.5" fill="#FDB515" clip-path="url(#tube-cal)"/>
+    <rect x="123" y="557.93" width="70" height="7" rx="3.5" fill="#FFFFFF" fill-opacity="0.55" clip-path="url(#tube-cal)"/>
     <rect x="128" y="416" width="8" height="212" rx="4" fill="#FFFFFF" fill-opacity="0.28"/>
     <circle cx="158" cy="669.76" r="48" fill="url(#bulb-cal)" stroke="#FBFAF6" stroke-width="5"/>
     <circle cx="143.6" cy="654.4" r="10.56" fill="#FFFFFF" fill-opacity="0.22"/>
@@ -59,9 +59,9 @@
     
     
     <rect x="404" y="146" width="76" height="76" rx="17" fill="#8C1515"/>
-    <rect x="405.5" y="147.5" width="73" height="73" rx="15.5" fill="none" stroke="#D2C295" stroke-width="3"/>
-    <use xlink:href="#logo-stanford" transform="translate(411.89 154.36) scale(0.1894)" fill="#FFFFFF"/>
-    <use xlink:href="#wm-stanford" transform="translate(350.11 242.36) scale(0.3689)" fill="#8C1515"/>
+    <rect x="405.5" y="147.5" width="73" height="73" rx="15.5" fill="none" stroke="#FFFFFF" stroke-opacity="0.55" stroke-width="3"/>
+    <use xlink:href="#logo-stanford" transform="translate(417.39 159.78) scale(0.1548)" fill="#FFFFFF"/>
+    <use xlink:href="#wm-stanford" transform="translate(339.75 239.92) scale(0.4104)" fill="#8C1515"/>
     <g transform="translate(351.54 348) scale(0.066 -0.066)" fill="#8C1515"><use xlink:href="#d700-36" x="0"/><use xlink:href="#d700-50" x="469.85"/><use xlink:href="#d700-44" x="968.7"/><use xlink:href="#d700-56" x="1191.55"/><use xlink:href="#d700-48" x="1697.39"/><use xlink:href="#d700-53" x="2232.24"/></g>
     <g transform="translate(339.13 378) scale(0.02 -0.02)" fill="#5F5D58"><use xlink:href="#d500-50" x="0"/><use xlink:href="#d500-56" x="572"/><use xlink:href="#d500-37" x="1157"/><use xlink:href="#d500-79" x="2500"/><use xlink:href="#d500-70" x="3138"/><use xlink:href="#d500-36" x="3944"/><use xlink:href="#d500-49" x="4507"/><use xlink:href="#d500-48" x="4964"/><use xlink:href="#d500-44" x="5573"/><use xlink:href="#d500-48" x="5861"/><use xlink:href="#d500-48" x="6470"/><use xlink:href="#d500-48" x="7079"/><use xlink:href="#d500-71" x="8006"/><use xlink:href="#d500-79" x="8640"/><use xlink:href="#d500-65" x="9269"/><use xlink:href="#d500-76" x="9866"/></g>
     
@@ -87,7 +87,7 @@
       <g transform="translate(507 410) scale(0.018 -0.018)" fill="#8F8C84"><use xlink:href="#d500-36" x="0"/><use xlink:href="#d500-52" x="515.78"/><use xlink:href="#d500-44" x="1047.56"/><use xlink:href="#d500-48" x="1288.33"/><use xlink:href="#d500-48" x="1850.11"/><use xlink:href="#d500-48" x="2411.89"/></g>
     <rect x="403" y="404" width="78" height="264.8" rx="39" fill="url(#glass-stanford)" stroke="#E4E0D5" stroke-width="2"/>
     <rect x="403" y="474.5" width="78" height="213.5" fill="url(#merc-stanford)" clip-path="url(#tube-stanford)"/>
-    <rect x="407" y="474.5" width="70" height="7" rx="3.5" fill="#D2C295" clip-path="url(#tube-stanford)"/>
+    <rect x="407" y="474.5" width="70" height="7" rx="3.5" fill="#FFFFFF" fill-opacity="0.55" clip-path="url(#tube-stanford)"/>
     <rect x="412" y="416" width="8" height="212" rx="4" fill="#FFFFFF" fill-opacity="0.28"/>
     <circle cx="442" cy="669.76" r="48" fill="url(#bulb-stanford)" stroke="#FBFAF6" stroke-width="5"/>
     <circle cx="427.6" cy="654.4" r="10.56" fill="#FFFFFF" fill-opacity="0.22"/>
@@ -102,6 +102,6 @@
     <g transform="translate(51.72 832) scale(0.03 -0.03)" fill="#FFFFFF"><use xlink:href="#d700-83" x="0"/><use xlink:href="#d700-84" x="614"/><use xlink:href="#d700-65" x="1114"/><use xlink:href="#d700-78" x="1765"/><use xlink:href="#d700-70" x="2426"/><use xlink:href="#d700-79" x="2960"/><use xlink:href="#d700-82" x="3646"/><use xlink:href="#d700-68" x="4346"/><use xlink:href="#d700-68" x="5388"/><use xlink:href="#d700-65" x="6061"/><use xlink:href="#d700-73" x="6712"/><use xlink:href="#d700-76" x="7113"/><use xlink:href="#d700-89" x="7572"/><use xlink:href="#d700-76" x="8521"/><use xlink:href="#d700-69" x="9064"/><use xlink:href="#d700-65" x="9611"/><use xlink:href="#d700-68" x="10262"/><use xlink:href="#d700-83" x="10948"/><use xlink:href="#d700-66" x="11918"/><use xlink:href="#d700-89" x="12579"/><use xlink:href="#d700-36" x="13528"/><use xlink:href="#d700-49" x="14113"/><use xlink:href="#d700-44" x="14598"/><use xlink:href="#d700-52" x="14936"/><use xlink:href="#d700-49" x="15543"/><use xlink:href="#d700-52" x="16028"/></g>
 
     <g transform="translate(24 880) scale(0.018 -0.018)" fill="#8F8C84"><use xlink:href="#d500-84" x="0"/><use xlink:href="#d500-79" x="468.44"/><use xlink:href="#d500-71" x="1075.89"/><use xlink:href="#d500-69" x="1679.33"/><use xlink:href="#d500-84" x="2151.78"/><use xlink:href="#d500-72" x="2626.22"/><use xlink:href="#d500-69" x="3256.67"/><use xlink:href="#d500-82" x="3729.11"/><use xlink:href="#d500-36" x="4622"/><use xlink:href="#d500-52" x="5154.44"/><use xlink:href="#d500-44" x="5702.89"/><use xlink:href="#d500-49" x="5960.33"/><use xlink:href="#d500-57" x="6386.78"/><use xlink:href="#d500-54" x="6952.22"/><use xlink:href="#d500-70" x="7805.11"/><use xlink:href="#d500-79" x="8262.56"/><use xlink:href="#d500-82" x="8870"/><use xlink:href="#d500-83" x="9762.89"/><use xlink:href="#d500-84" x="10301.33"/><use xlink:href="#d500-85" x="10775.78"/><use xlink:href="#d500-68" x="11386.22"/><use xlink:href="#d500-69" x="11987.67"/><use xlink:href="#d500-78" x="12460.11"/><use xlink:href="#d500-84" x="13049.56"/><use xlink:href="#d500-74" x="13811.44"/><use xlink:href="#d500-79" x="14181.89"/><use xlink:href="#d500-85" x="14789.33"/><use xlink:href="#d500-82" x="15399.78"/><use xlink:href="#d500-78" x="16005.22"/><use xlink:href="#d500-65" x="16594.67"/><use xlink:href="#d500-76" x="17161.11"/><use xlink:href="#d500-73" x="17626.56"/><use xlink:href="#d500-83" x="17946"/><use xlink:href="#d500-77" x="18478.44"/></g>
-    <g transform="translate(405.13 880) scale(0.018 -0.018)" fill="#8F8C84"><use xlink:href="#d500-85" x="0"/><use xlink:href="#d500-80" x="610.44"/><use xlink:href="#d500-68" x="1181.89"/><use xlink:href="#d500-65" x="1774.33"/><use xlink:href="#d500-84" x="2297.78"/><use xlink:href="#d500-69" x="2772.22"/><use xlink:href="#d500-68" x="3244.67"/><use xlink:href="#d500-52" x="4133.56"/><use xlink:href="#d500-58" x="4682"/><use xlink:href="#d500-48" x="4965.44"/><use xlink:href="#d500-50" x="5543.89"/><use xlink:href="#d500-80" x="6372.78"/><use xlink:href="#d500-77" x="6944.22"/><use xlink:href="#d500-80" x="7959.11"/><use xlink:href="#d500-83" x="8524.56"/><use xlink:href="#d500-84" x="9063"/></g>
+    <g transform="translate(407.74 880) scale(0.018 -0.018)" fill="#8F8C84"><use xlink:href="#d500-85" x="0"/><use xlink:href="#d500-80" x="610.44"/><use xlink:href="#d500-68" x="1181.89"/><use xlink:href="#d500-65" x="1774.33"/><use xlink:href="#d500-84" x="2297.78"/><use xlink:href="#d500-69" x="2772.22"/><use xlink:href="#d500-68" x="3244.67"/><use xlink:href="#d500-52" x="4133.56"/><use xlink:href="#d500-58" x="4682"/><use xlink:href="#d500-49" x="4965.44"/><use xlink:href="#d500-52" x="5391.89"/><use xlink:href="#d500-80" x="6227.78"/><use xlink:href="#d500-77" x="6799.22"/><use xlink:href="#d500-80" x="7814.11"/><use xlink:href="#d500-83" x="8379.56"/><use xlink:href="#d500-84" x="8918"/></g>
   </g>
 </svg>

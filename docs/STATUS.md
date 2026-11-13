@@ -74,6 +74,9 @@ Story images max out at 600 px wide; the board is designed for that.
    own black-on-white version) is a one-line change (`wmFill` in `src/model.js` + `src/render.js`).
 
 
+8. **Fairness:** see `FAIRNESS.md`. Open question: left/right order (Daily Cal left, Stanford right); ask both
+   papers whether they care, and whether to alternate by year.
+
 ## Limits to remember (Workers Free plan)
 - 10 ms CPU per request: the server-side PNG (`/thermometer.png`, ~300 ms) is **off** by default
   (`SERVER_PNG=false`); staff use `/png`, which renders in their browser. Enable it only on Workers

@@ -22,6 +22,7 @@
 import { TextLayer } from './text.js';
 import { LOGOS } from './logos.js';
 import { WORDMARKS } from './wordmarks.js';
+import { INK_AREA } from './ink.js';
 
 export const W = 600;
 export const H = 900;
@@ -52,47 +53,96 @@ const Y = {
 const TILE = 76;                    // logo tile size
 const WM_MAX_W = 264;               // widest a nameplate may be (a column is 300 wide); leaves a clear gutter
 const WM_BASE = 264;                // both nameplates sit on this baseline
-const WM_CAP_MAX = 18;              // preferred cap height in board units
+const MARK_MAX_W = TILE * 0.88;     // widest/tallest a logo mark may be inside its tile
+const MARK_MAX_H = TILE * 0.8;
 
 /**
- * Both nameplates are drawn at the SAME CAP HEIGHT on the SAME BASELINE, so neither paper looks bigger
- * or favoured. (Matching widths would not do it: Stanford's blackletter is far taller than the Daily
- * Cal's thin small capitals at equal width.) The wide Daily Cal line is what limits the common cap
- * height; the narrower Stanford nameplate simply takes less width.
+ * FAIRNESS: neither paper may look bigger or favoured, so the two nameplates (and the two logo marks)
+ * are sized to equal *visual size*, not equal width. Each rule scales a shape by 1/metric, so the metric
+ * comes out equal for both; the widest shape then sits at its limit. Measures disagree when shapes differ
+ * (Stanford's blackletter is tall, heavy and compact; the Daily Cal's capitals are thin and very wide), so
+ * the rule is a documented choice, compared in docs/design/.
+ *   cap        equal capital height
+ *   ink        equal filled area (visual mass)
+ *   footprint  equal bounding-box area (what the eye covers)
+ *   blend      geometric mean of the width-matched and cap-matched scale: neither width nor height dominates
  */
-export function nameplateLayout() {
-  const cap = (m) => m.base - m.top;
-  const capH = Math.min(WM_CAP_MAX, ...Object.values(WORDMARKS).map((m) => (WM_MAX_W / m.w) * cap(m)));
-  return Object.fromEntries(Object.entries(WORDMARKS).map(([k, m]) => {
-    const scale = capH / cap(m);
-    return [k, { scale, capH, baseline: WM_BASE, width: m.w * scale }];
+const NAMEPLATE_METRICS = {
+  cap: (m) => m.base - m.top,
+  ink: (m, k) => Math.sqrt(INK_AREA.wordmarks[k]),
+  footprint: (m) => Math.sqrt(m.w * m.h),
+};
+export const NAMEPLATE_RULE = 'footprint';
+
+/**
+ * Decorative accents (tile ring, mercury cap, top-bar underline). The papers' brand accents are not equally
+ * vivid: California Gold is far more saturated than Stanford's Sandstone, so Cal's ring/cap would pop and
+ * Stanford's would recede. 'neutral' gives both sides the identical treatment (a pale highlight); 'brand'
+ * restores gold/sandstone.
+ */
+export const ACCENTS = 'neutral';
+const accentFor = (side, mode) => (mode === 'brand'
+  ? { color: side.ring ?? side.accent, opacity: 1 }
+  : { color: '#FFFFFF', opacity: 0.55 });
+
+export function nameplateLayout(rule = NAMEPLATE_RULE) {
+  const entries = Object.entries(WORDMARKS);
+  const scales = {};
+  if (rule === 'blend') {
+    // width-matched scale is WM_MAX_W / w; cap-matched is c / cap with c from the widest. Their geometric mean:
+    const capScale = nameplateLayout('cap');
+    for (const [k, m] of entries) scales[k] = Math.sqrt((WM_MAX_W / m.w) * capScale[k].scale);
+    const widest = Math.max(...entries.map(([k, m]) => m.w * scales[k]));
+    for (const [k] of entries) scales[k] *= WM_MAX_W / widest;
+  } else {
+    const metric = NAMEPLATE_METRICS[rule];
+    if (!metric) throw new Error(`unknown nameplate rule ${rule}`);
+    const c = Math.min(...entries.map(([k, m]) => (WM_MAX_W * metric(m, k)) / m.w));
+    for (const [k, m] of entries) scales[k] = c / metric(m, k);
+  }
+  return Object.fromEntries(entries.map(([k, m]) => [k, {
+    scale: scales[k], baseline: WM_BASE, width: m.w * scales[k], capH: (m.base - m.top) * scales[k],
+    footprint: m.w * m.h * scales[k] ** 2, ink: INK_AREA.wordmarks[k] * scales[k] ** 2,
+  }]));
+}
+
+/** Logo marks inside their (equal-size) tiles: equal ink, limited by the tile. */
+export function markLayout() {
+  const entries = Object.entries(LOGOS);
+  const c = Math.min(...entries.map(([k, l]) => Math.min(MARK_MAX_W / l.w, MARK_MAX_H / l.h) * Math.sqrt(INK_AREA.logos[k])));
+  return Object.fromEntries(entries.map(([k, l]) => {
+    const scale = c / Math.sqrt(INK_AREA.logos[k]);
+    return [k, { scale, width: l.w * scale, height: l.h * scale, ink: INK_AREA.logos[k] * scale ** 2 }];
   }));
 }
+
 const TUBE_W = 78;
 const BULB_R = 48;
 const COL = { cal: 158, stanford: 442 };
 
 /** Logo tile (white mark on the team colour) with the paper's own nameplate beneath, centred on the column. */
-function lockup(side, { cx }) {
+function lockup(side, { cx, opts }) {
+  const acc = accentFor(side, opts.accents ?? ACCENTS);
   const L = LOGOS[side.key];
-  const sc = Math.min((TILE * 0.84) / L.w, (TILE * 0.78) / L.h);
+  const sc = markLayout()[side.key].scale;
   const left = cx - TILE / 2;
   const mx = left + (TILE - L.w * sc) / 2;
   const my = Y.tileTop + (TILE - L.h * sc) / 2;
 
   const W_ = WORDMARKS[side.key];
-  const nl = nameplateLayout()[side.key];
+  const nl = nameplateLayout(opts.nameplateRule)[side.key];
   const ws = nl.scale;
   const wx = cx - (W_.w * ws) / 2 - W_.x * ws;
   const wy = nl.baseline - W_.base * ws;
   return `
     <rect x="${r2(left)}" y="${Y.tileTop}" width="${TILE}" height="${TILE}" rx="17" fill="${side.tileFill ?? side.primary}"/>
-    <rect x="${r2(left + 1.5)}" y="${Y.tileTop + 1.5}" width="${TILE - 3}" height="${TILE - 3}" rx="15.5" fill="none" stroke="${side.ring ?? side.accent}" stroke-width="3"/>
+    <rect x="${r2(left + 1.5)}" y="${Y.tileTop + 1.5}" width="${TILE - 3}" height="${TILE - 3}" rx="15.5" fill="none" stroke="${acc.color}" stroke-opacity="${acc.opacity}" stroke-width="3"/>
     <use xlink:href="#logo-${side.key}" transform="translate(${r2(mx)} ${r2(my)}) scale(${Math.round(sc * 10000) / 10000})" fill="#FFFFFF"/>
     <use xlink:href="#wm-${side.key}" transform="translate(${r2(wx)} ${r2(wy)}) scale(${Math.round(ws * 10000) / 10000})" fill="${side.wmFill ?? side.primary}"/>`;
 }
 
-function thermometer(side, { cx, flip, T }) {
+function thermometer(side, { cx, flip, T, accents }) {
+  const acc = accentFor(side, accents);
   const tubeH = Y.tubeBottom - Y.tubeTop;
   const x = cx - TUBE_W / 2;
   const rx = TUBE_W / 2;
@@ -116,7 +166,7 @@ function thermometer(side, { cx, flip, T }) {
   })() : '';
 
   const cap = side.frac > 0
-    ? `<rect x="${x + 4}" y="${fillY}" width="${TUBE_W - 8}" height="7" rx="3.5" fill="${side.accent}" clip-path="url(#tube-${id})"/>`
+    ? `<rect x="${x + 4}" y="${fillY}" width="${TUBE_W - 8}" height="7" rx="3.5" fill="${acc.color}" fill-opacity="${acc.opacity}" clip-path="url(#tube-${id})"/>`
     : '';
 
   return `
@@ -148,7 +198,8 @@ function thermometer(side, { cx, flip, T }) {
   </g>`;
 }
 
-export function renderSvg(board) {
+export function renderSvg(board, opts = {}) {
+  const accents = opts.accents ?? ACCENTS;
   const layer = new TextLayer();
   const T = (str, o) => layer.text(str, o);
   const [cal, stan] = board.sides;
@@ -158,10 +209,10 @@ export function renderSvg(board) {
     const nudgeColor = side.trailing ? side.primary : INK_SOFT;
     const nudgeFace = side.trailing ? 'display700' : 'display500';
     return `
-    ${lockup(side, { cx })}
+    ${lockup(side, { cx, opts })}
     ${T(side.raisedText, { face: 'display700', size: 66, x: cx, y: Y.amount, anchor: 'middle', spacing: -1, fill: side.primary })}
     ${T(side.goalText ? `${side.pctOfGoal}% OF ${side.goalText} GOAL` : 'RAISED SO FAR', { face: 'display500', size: 20, x: cx, y: Y.pct, anchor: 'middle', spacing: 1.5, fill: INK_SOFT })}
-    ${thermometer(side, { cx, flip, T })}
+    ${thermometer(side, { cx, flip, T, accents })}
     ${T(side.nudge.toUpperCase(), { face: nudgeFace, size: 25, x: cx, y: Y.nudge, anchor: 'middle', spacing: 1, fill: nudgeColor })}`;
   };
 
@@ -171,9 +222,9 @@ export function renderSvg(board) {
   const body = `
     <rect x="0" y="0" width="${W}" height="${H}" fill="${PAPER}"/>
     <rect x="0" y="0" width="${W / 2}" height="12" fill="url(#band-cal)"/>
-    <rect x="0" y="12" width="${W / 2}" height="4" fill="${cal.accent}"/>
+    ${accents === 'brand' ? `<rect x="0" y="12" width="${W / 2}" height="4" fill="${cal.accent}"/>` : ''}
     <rect x="${W / 2}" y="0" width="${W / 2}" height="12" fill="url(#band-stan)"/>
-    <rect x="${W / 2}" y="12" width="${W / 2}" height="4" fill="${stan.accent}"/>
+    ${accents === 'brand' ? `<rect x="${W / 2}" y="12" width="${W / 2}" height="4" fill="${stan.accent}"/>` : ''}
 
     ${T(board.event.toUpperCase(), { face: 'display700', size: 46, x: W / 2, y: Y.title, anchor: 'middle', spacing: 5, fill: INK })}
     ${T(`${board.countdown} · NOV 21`, { face: 'display500', size: 20, x: W / 2, y: Y.countdown, anchor: 'middle', spacing: 3, fill: INK_SOFT })}

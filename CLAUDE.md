@@ -21,9 +21,10 @@ are. Update `CHANGELOG.md` and the relevant doc with every change (commit docs w
 - The SVG has **no `<text>`, `@font-face` or font-family**: all text is outlined (`src/text.js`).
   An SVG in an `<img>` paints once, so font-dependent text is invisible on first load.
 - The board is 600 wide (Givebutter story max); keep type sizes legible at ~340 px.
-- **Neither paper may look favoured.** Anything shown per paper (nameplates, tiles, amounts) is drawn
-  at equal visual size: nameplates share one cap height and baseline (`nameplateLayout()`), tiles are
-  the same size. Never size by width alone; check the phone preview side by side.
+- **Neither paper may look favoured** (`docs/FAIRNESS.md`). Anything shown per paper is sized for equal visual
+  size, never by one dimension: nameplates share a baseline and equal footprint (`nameplateLayout()`), logo
+  marks equal ink (`markLayout()`), accents neutral and identical (`ACCENTS`). Check every visual change at
+  phone width, including the swapped case, and keep the `FAIRNESS:` tests passing.
 - Server-side PNG stays off (`SERVER_PNG=false`) on Workers Free (10 ms CPU). Staff use `/png`.
 - KV writes stay write-on-change (Free allows 1,000/day).
 - `https://inkbowl.giving` must keep serving the page to browsers and the SVG to image requests.
@@ -36,5 +37,5 @@ npm run test:integration     # wrangler dev in workerd + browser PNG export (nee
 npm run preview -- 1391 2805 # docs/preview-{desktop,phone}.png
 ```
 Regenerate generated data only when inputs change: `scripts/build-glyphs.py` (typefaces),
-`scripts/trace-logos.py` (avatars), `scripts/trace-wordmarks.py` (nameplates). Check any visual
+`scripts/trace-logos.py` (avatars), `scripts/trace-wordmarks.py` (nameplates), then `node scripts/measure-ink.cjs`. Check any visual
 change at phone width (`docs/preview-phone.png`) before pushing.

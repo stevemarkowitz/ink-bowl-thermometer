@@ -50,8 +50,8 @@ Whoever ran the earlier thermometer is not documented; we could not confirm what
    are substantial; the gap is stated as an actionable number under the trailing side ("$1,415 takes
    the lead"). Goal shown as a percentage and a dashed line once within range.
 4. **Mobile-first**: a Givebutter story image shows at ~340 px on a phone; type sizes are chosen for
-   that. Official palettes: Berkeley Blue `#003262` / California Gold `#FDB515`; Stanford Cardinal
-   `#8C1515` / Sandstone `#D2C295`.
+   that. Official primaries: Berkeley Blue `#003262` and Stanford Cardinal `#8C1515`
+   (the brands' secondary accents, California Gold `#FDB515` and Sandstone `#D2C295`, are unused: see decision 10).
 5. **PNG for email without Worker CPU:** staff download it from `/png`, rendered in their browser.
    Server-side PNG exists but is off (Workers Free CPU limit).
 6. **One address.** `https://inkbowl.giving` serves the page to browsers and the image to image
@@ -63,10 +63,12 @@ Whoever ran the earlier thermometer is not documented; we could not confirm what
 9. **Paper brand vs team colours.** The Daily Cal's logo tile uses the paper's own light blue; the
    thermometer, amount and nameplate use Berkeley Blue. Distinct brands, coherent column; light-blue
    lettering failed on legibility (see `docs/design/daily-cal-colour-options.png`).
-10. **Neither paper looks favoured: equal cap height, shared baseline.** Equal nameplate width left
-   Stanford's blackletter capitals ~1.5x taller (and much heavier) than the Daily Cal's. Cap height (the letters themselves) is what the eye
-   compares, so both nameplates use one cap height and one baseline; widths follow the names
-   (`docs/design/nameplate-sizing.png`). Apply the same rule to anything else shown per paper.
+10. **Fairness in all respects** (see `FAIRNESS.md`). Sizing by one measure always favoured someone: equal
+   width made Stanford's blackletter look bigger, equal cap height made the Daily Cal's very wide line
+   look bigger. Nameplates are now sized to equal footprint on a shared baseline, logo marks to equal ink,
+   and decorative accents are neutral and identical (gold is more vivid than sandstone). Rule of thumb:
+   never size per-paper art by a single dimension; compare rules visually at phone size
+   (`docs/design/`) and guard the result with tests.
 
 ## Incidents and lessons
 - **Invisible text on a phone's first load.** An SVG in an `<img>` paints once; text waiting on an

@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { buildBoard } from '../src/model.js';
-import { renderSvg, nameplateLayout, W, H } from '../src/render.js';
+import { renderSvg, nameplateLayout, markLayout, W, H } from '../src/render.js';
 import { TextLayer } from '../src/text.js';
 
 const side = (raised, goal = 10000) => ({ raised, goal, ok: true, stale: false, url: 'x' });
@@ -73,10 +73,28 @@ test('the Daily Cal logo tile uses the paper\'s own blue; the thermometer stays 
   assert.match(svg, /stop-color="#003262"/);       // the mercury
 });
 
-test('both nameplates have the same cap height and share a baseline, so neither paper looks favoured', () => {
-  const nl = nameplateLayout();
-  assert.ok(Math.abs(nl.cal.capH - nl.stanford.capH) < 1e-9, 'same cap height');
-  assert.equal(nl.cal.baseline, nl.stanford.baseline, 'same baseline');
-  assert.ok(nl.cal.capH > 12, `cap height ${nl.cal.capH} stays legible at phone size`);
-  for (const k of ['cal', 'stanford']) assert.ok(nl[k].width <= 264 + 1e-9, `${k} fits its column`);
+test('FAIRNESS: the two nameplates are sized to equal visual size and share a baseline', () => {
+  const n = nameplateLayout();
+  const ratio = (f) => n.stanford[f] / n.cal[f];
+  assert.ok(Math.abs(ratio('footprint') - 1) < 1e-6, 'equal footprint (the chosen rule)');
+  assert.equal(n.cal.baseline, n.stanford.baseline, 'same baseline');
+  // The measures cannot all be equal (the shapes differ), but none may drift far: guard against either paper looking favoured.
+  assert.ok(ratio('capH') > 0.9 && ratio('capH') < 1.2, `cap height ratio ${ratio('capH')}`);
+  assert.ok(ratio('ink') > 0.8 && ratio('ink') < 1.4, `ink ratio ${ratio('ink')}`);
+  assert.ok(ratio('width') > 0.65 && ratio('width') < 1.5, `width ratio ${ratio('width')}`);
+  assert.ok(n.cal.capH > 12 && n.stanford.capH > 12, 'legible at phone size');
+  for (const k of ['cal', 'stanford']) assert.ok(n[k].width <= 264 + 1e-9, `${k} fits its column`);
+});
+
+test('FAIRNESS: the two logo marks carry equal ink inside equal-size tiles', () => {
+  const m = markLayout();
+  assert.ok(Math.abs(m.stanford.ink / m.cal.ink - 1) < 0.01, `mark ink ratio ${m.stanford.ink / m.cal.ink}`);
+  for (const k of ['cal', 'stanford']) assert.ok(m[k].width <= 76 * 0.88 + 1e-9 && m[k].height <= 76 * 0.8 + 1e-9, `${k} mark fits its tile`);
+});
+
+test('FAIRNESS: decorative accents are identical for both sides (no vivid gold vs muted sandstone)', () => {
+  const svg = renderSvg(board);
+  assert.doesNotMatch(svg, /#FDB515|#D2C295/i);
+  const other = renderSvg(buildBoard({ event: 'X', gameDate: '2026-11-21', now: new Date('2026-11-12T20:00:00Z'), cal: side(3000), stanford: side(1000) }));
+  assert.doesNotMatch(other, /#FDB515|#D2C295/i);
 });
