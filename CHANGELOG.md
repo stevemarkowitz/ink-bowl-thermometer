@@ -3,7 +3,16 @@
 All notable changes. Newest first. Everything below shipped on 2026-11-12 unless noted; commit
 hashes are on `main`. Live site: **https://inkbowl.giving**.
 
-## Daily Cal logo tile in the paper's own blue (this change)
+## Equal nameplate size (this change)
+- **Problem:** both nameplates were the same *width*, but at equal width Stanford's blackletter capitals
+  were ~1.5x taller than the Daily Cal's (overall height ~1.7x, with descenders), so Stanford looked
+  bigger and bolder.
+- **Fix:** both are now drawn at the **same cap height on the same baseline** (`nameplateLayout()` in
+  `src/render.js`; per-nameplate `top`/`base` recorded by `scripts/trace-wordmarks.py`). Widths differ
+  because the names differ in length. Common cap height is capped so the wider Daily Cal line fits its
+  column. A test fails if the two ever differ. Before/after: `docs/design/nameplate-sizing.png`.
+
+## Daily Cal logo tile in the paper's own blue (`6b7b425`)
 - The Daily Cal's logo tile uses its avatar's own light blue (`#4B9BD0`); thermometer, amount and
   nameplate stay Berkeley Blue (`#003262`). Four options were compared at phone size
   (`docs/design/daily-cal-colour-options.png`): light-blue lettering was too faint on cream, so the

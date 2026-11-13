@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { buildBoard } from '../src/model.js';
-import { renderSvg, W, H } from '../src/render.js';
+import { renderSvg, nameplateLayout, W, H } from '../src/render.js';
 import { TextLayer } from '../src/text.js';
 
 const side = (raised, goal = 10000) => ({ raised, goal, ok: true, stale: false, url: 'x' });
@@ -71,4 +71,12 @@ test('the Daily Cal logo tile uses the paper\'s own blue; the thermometer stays 
   const svg = renderSvg(board);
   assert.match(svg, /fill="#4B9BD0"/);             // the tile
   assert.match(svg, /stop-color="#003262"/);       // the mercury
+});
+
+test('both nameplates have the same cap height and share a baseline, so neither paper looks favoured', () => {
+  const nl = nameplateLayout();
+  assert.ok(Math.abs(nl.cal.capH - nl.stanford.capH) < 1e-9, 'same cap height');
+  assert.equal(nl.cal.baseline, nl.stanford.baseline, 'same baseline');
+  assert.ok(nl.cal.capH > 12, `cap height ${nl.cal.capH} stays legible at phone size`);
+  for (const k of ['cal', 'stanford']) assert.ok(nl[k].width <= 264 + 1e-9, `${k} fits its column`);
 });

@@ -39,7 +39,10 @@ def trace_dark(path):
             if seg.is_corner: d.append("L" + f(seg.c) + "L" + f(seg.end_point))
             else: d.append("C" + f(seg.c1) + " " + f(seg.c2) + " " + f(seg.end_point))
         d.append("Z")
-    return {"d": "".join(d), "x": 0, "y": 0, "w": round((x1 - x0) / UP, 2), "h": round((y1 - y0) / UP, 2), "rule": "evenodd"}
+    h = round((y1 - y0) / UP, 2)
+    # Daily Cal's nameplate is all capitals / small capitals sitting on one baseline with no descenders:
+    # the top is the cap line and the baseline is the bottom.
+    return {"d": "".join(d), "x": 0, "y": 0, "w": round((x1 - x0) / UP, 2), "h": h, "rule": "evenodd", "top": 0, "base": h}
 
 def from_svg(path):
     svg = pathlib.Path(path).read_text(encoding="utf-8")
@@ -47,7 +50,12 @@ def from_svg(path):
     d = "".join(ds)
     xmin, xmax, ymin, ymax = parse_path(d).bbox()
     r = lambda v: round(v, 2)
-    return {"d": d, "x": r(xmin), "y": r(ymin), "w": r(xmax - xmin), "h": r(ymax - ymin), "rule": "nonzero"}
+    # The artwork is one path per letter. Top = the tallest letter's top; baseline = the median bottom of
+    # the letters (descenders such as the y and h tails sit below it, overshoot is a few tenths of a unit).
+    boxes = [parse_path(p).bbox() for p in ds]
+    top = min(b[2] for b in boxes)
+    base = sorted(b[3] for b in boxes)[len(boxes) // 2]
+    return {"d": d, "x": r(xmin), "y": r(ymin), "w": r(xmax - xmin), "h": r(ymax - ymin), "rule": "nonzero", "top": r(top), "base": r(base)}
 
 if len(sys.argv) != 3: sys.exit(__doc__)
 words = {"cal": trace_dark(sys.argv[1]), "stanford": from_svg(sys.argv[2])}

@@ -21,6 +21,9 @@ are. Update `CHANGELOG.md` and the relevant doc with every change (commit docs w
 - The SVG has **no `<text>`, `@font-face` or font-family**: all text is outlined (`src/text.js`).
   An SVG in an `<img>` paints once, so font-dependent text is invisible on first load.
 - The board is 600 wide (Givebutter story max); keep type sizes legible at ~340 px.
+- **Neither paper may look favoured.** Anything shown per paper (nameplates, tiles, amounts) is drawn
+  at equal visual size: nameplates share one cap height and baseline (`nameplateLayout()`), tiles are
+  the same size. Never size by width alone; check the phone preview side by side.
 - Server-side PNG stays off (`SERVER_PNG=false`) on Workers Free (10 ms CPU). Staff use `/png`.
 - KV writes stay write-on-change (Free allows 1,000/day).
 - `https://inkbowl.giving` must keep serving the page to browsers and the SVG to image requests.

@@ -162,7 +162,9 @@ Layout: `src/model.js` (board maths, team palettes) â†’ `src/render.js` (SVG) â†
 - Each side's identity is its **logo plus its own nameplate**: the paper's white mark on a tile in
   its team colour (ringed in gold for Cal, sandstone for Stanford), with the paper's nameplate
   beneath it. One identity element per side, so the board gains recognition without clutter. The
-  Stanford Daily nameplate is its published SVG; the Daily Cal nameplate is traced from its site
+  Both nameplates are drawn at the **same cap height on the same baseline** so neither paper looks
+  bigger (equal width would not do it; see `docs/design/nameplate-sizing.png`). The Stanford Daily
+  nameplate is its published SVG; the Daily Cal nameplate is traced from its site
   (`scripts/trace-wordmarks.py`), and the marks are traced from the avatars
   (`scripts/trace-logos.py`). All are vectors, so they are sharp at any size and nothing loads. If
   either paper has an official vector, paste its path into `src/logos.js` / `src/wordmarks.js`.

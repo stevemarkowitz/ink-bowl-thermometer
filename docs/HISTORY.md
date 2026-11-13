@@ -63,6 +63,10 @@ Whoever ran the earlier thermometer is not documented; we could not confirm what
 9. **Paper brand vs team colours.** The Daily Cal's logo tile uses the paper's own light blue; the
    thermometer, amount and nameplate use Berkeley Blue. Distinct brands, coherent column; light-blue
    lettering failed on legibility (see `docs/design/daily-cal-colour-options.png`).
+10. **Neither paper looks favoured: equal cap height, shared baseline.** Equal nameplate width left
+   Stanford's blackletter capitals ~1.5x taller (and much heavier) than the Daily Cal's. Cap height (the letters themselves) is what the eye
+   compares, so both nameplates use one cap height and one baseline; widths follow the names
+   (`docs/design/nameplate-sizing.png`). Apply the same rule to anything else shown per paper.
 
 ## Incidents and lessons
 - **Invisible text on a phone's first load.** An SVG in an `<img>` paints once; text waiting on an

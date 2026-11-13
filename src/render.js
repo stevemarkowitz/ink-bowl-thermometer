@@ -43,7 +43,6 @@ const r2 = (n) => Math.round(n * 100) / 100;
 const Y = {
   title: 72, countdown: 105, rule: 126,
   tileTop: 146,                     // logo lockup: tile, then the paper's nameplate beneath
-  wmTop: 236,                       // nameplate box top (box height WM_BOX)
   amount: 348, pct: 378,
   tubeTop: 404, tubeBottom: 640,
   nudge: 762,
@@ -51,9 +50,24 @@ const Y = {
   footer: 880,
 };
 const TILE = 76;                    // logo tile size
-const WM_BOX = 40;                  // vertical room for the nameplate
-const WM_MAX_W = 246;               // widest a nameplate may be: leaves a clear gutter between the two columns
-const WM_TARGET_H = { cal: 22, stanford: 36 }; // each nameplate's natural weight; the wide thin Cal line is capped by width                // tile -> name
+const WM_MAX_W = 264;               // widest a nameplate may be (a column is 300 wide); leaves a clear gutter
+const WM_BASE = 264;                // both nameplates sit on this baseline
+const WM_CAP_MAX = 18;              // preferred cap height in board units
+
+/**
+ * Both nameplates are drawn at the SAME CAP HEIGHT on the SAME BASELINE, so neither paper looks bigger
+ * or favoured. (Matching widths would not do it: Stanford's blackletter is far taller than the Daily
+ * Cal's thin small capitals at equal width.) The wide Daily Cal line is what limits the common cap
+ * height; the narrower Stanford nameplate simply takes less width.
+ */
+export function nameplateLayout() {
+  const cap = (m) => m.base - m.top;
+  const capH = Math.min(WM_CAP_MAX, ...Object.values(WORDMARKS).map((m) => (WM_MAX_W / m.w) * cap(m)));
+  return Object.fromEntries(Object.entries(WORDMARKS).map(([k, m]) => {
+    const scale = capH / cap(m);
+    return [k, { scale, capH, baseline: WM_BASE, width: m.w * scale }];
+  }));
+}
 const TUBE_W = 78;
 const BULB_R = 48;
 const COL = { cal: 158, stanford: 442 };
@@ -67,9 +81,10 @@ function lockup(side, { cx }) {
   const my = Y.tileTop + (TILE - L.h * sc) / 2;
 
   const W_ = WORDMARKS[side.key];
-  const ws = Math.min(WM_MAX_W / W_.w, WM_TARGET_H[side.key] / W_.h);
+  const nl = nameplateLayout()[side.key];
+  const ws = nl.scale;
   const wx = cx - (W_.w * ws) / 2 - W_.x * ws;
-  const wy = Y.wmTop + (WM_BOX - W_.h * ws) / 2 - W_.y * ws;
+  const wy = nl.baseline - W_.base * ws;
   return `
     <rect x="${r2(left)}" y="${Y.tileTop}" width="${TILE}" height="${TILE}" rx="17" fill="${side.tileFill ?? side.primary}"/>
     <rect x="${r2(left + 1.5)}" y="${Y.tileTop + 1.5}" width="${TILE - 3}" height="${TILE - 3}" rx="15.5" fill="none" stroke="${side.ring ?? side.accent}" stroke-width="3"/>
