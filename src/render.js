@@ -25,7 +25,7 @@ import { WORDMARKS } from './wordmarks.js';
 import { INK_AREA } from './ink.js';
 
 export const W = 600;
-export const H = 900;
+export const H = 912;
 
 const PAPER = '#FBFAF6';
 const INK = '#161616';
@@ -47,10 +47,14 @@ const Y = {
   amount: 348, pct: 378,
   tubeTop: 404, tubeBottom: 640,
   nudge: 762,
-  bandTop: 792, bandH: 60, bandText: 832,
-  footer: 880,
+  noticeTop: 730,                   // pending-campaign notice box (sits under the thermometer)
+  bandTop: 804, bandH: 60, bandText: 844,
+  footer: 892,
 };
 const TILE = 76;                    // logo tile size
+const NOTICE_W = 272, NOTICE_H = 64;
+/** A side awaiting its campaign is drawn grayed out (same shapes, no brand colour) so it can't be mistaken for a real $0. */
+const MUTED = { tile: '#A9A69D', ring: '#CFCCC3', wm: '#8F8C84', amount: '#A5A29A', bulbHi: '#BDBAB1', bulbLo: '#8F8C84' };
 const WM_MAX_W = 264;               // widest a nameplate may be (a column is 300 wide); leaves a clear gutter
 const WM_BASE = 264;                // both nameplates sit on this baseline
 const MARK_MAX_W = TILE * 0.88;     // widest/tallest a logo mark may be inside its tile
@@ -152,15 +156,20 @@ function lockup(side, { cx, opts }) {
   const ws = nl.scale;
   const wx = cx - (W_.w * ws) / 2 - W_.x * ws;
   const wy = nl.baseline - W_.base * ws;
+  const tileFill = side.pending ? MUTED.tile : (side.tileFill ?? side.primary);
+  const ring = side.pending ? { color: MUTED.ring, opacity: 1 } : acc;
+  const wmFill = side.pending ? MUTED.wm : (side.wmFill ?? side.primary);
   return `
-    <rect x="${r2(left)}" y="${Y.tileTop}" width="${TILE}" height="${TILE}" rx="17" fill="${side.tileFill ?? side.primary}"/>
-    <rect x="${r2(left + 1.5)}" y="${Y.tileTop + 1.5}" width="${TILE - 3}" height="${TILE - 3}" rx="15.5" fill="none" stroke="${acc.color}" stroke-opacity="${acc.opacity}" stroke-width="3"/>
+    <rect x="${r2(left)}" y="${Y.tileTop}" width="${TILE}" height="${TILE}" rx="17" fill="${tileFill}"/>
+    <rect x="${r2(left + 1.5)}" y="${Y.tileTop + 1.5}" width="${TILE - 3}" height="${TILE - 3}" rx="15.5" fill="none" stroke="${ring.color}" stroke-opacity="${ring.opacity}" stroke-width="3"/>
     <use xlink:href="#logo-${side.key}" transform="translate(${r2(mx)} ${r2(my)}) scale(${Math.round(sc * 10000) / 10000})" fill="#FFFFFF"/>
-    <use xlink:href="#wm-${side.key}" transform="translate(${r2(wx)} ${r2(wy)}) scale(${Math.round(ws * 10000) / 10000})" fill="${side.wmFill ?? side.primary}"/>`;
+    <use xlink:href="#wm-${side.key}" transform="translate(${r2(wx)} ${r2(wy)}) scale(${Math.round(ws * 10000) / 10000})" fill="${wmFill}"/>`;
 }
 
 function thermometer(side, { cx, flip, T, accents }) {
   const acc = accentFor(side, accents);
+  const hi = side.pending ? MUTED.bulbHi : side.primary;     // mercury / bulb colours (gray while awaiting data)
+  const lo = side.pending ? MUTED.bulbLo : side.primaryDeep;
   const tubeH = Y.tubeBottom - Y.tubeTop;
   const x = cx - TUBE_W / 2;
   const rx = TUBE_W / 2;
@@ -192,17 +201,17 @@ function thermometer(side, { cx, flip, T, accents }) {
     <defs>
       <clipPath id="tube-${id}"><rect x="${x}" y="${Y.tubeTop}" width="${TUBE_W}" height="${tubeH + BULB_R}" rx="${rx}"/></clipPath>
       <linearGradient id="merc-${id}" x1="0" x2="1" y1="0" y2="0">
-        <stop offset="0" stop-color="${side.primary}" stop-opacity="0.82"/>
-        <stop offset="0.45" stop-color="${side.primary}"/>
-        <stop offset="1" stop-color="${side.primaryDeep}"/>
+        <stop offset="0" stop-color="${hi}" stop-opacity="0.82"/>
+        <stop offset="0.45" stop-color="${hi}"/>
+        <stop offset="1" stop-color="${lo}"/>
       </linearGradient>
       <linearGradient id="glass-${id}" x1="0" x2="1" y1="0" y2="0">
         <stop offset="0" stop-color="#F4F1EA"/><stop offset="0.5" stop-color="${TRACK}"/><stop offset="1" stop-color="#DDD8CC"/>
       </linearGradient>
       <radialGradient id="bulb-${id}" cx="0.38" cy="0.32" r="0.8">
-        <stop offset="0" stop-color="${side.primary}" stop-opacity="0.75"/>
-        <stop offset="0.55" stop-color="${side.primary}"/>
-        <stop offset="1" stop-color="${side.primaryDeep}"/>
+        <stop offset="0" stop-color="${hi}" stop-opacity="0.75"/>
+        <stop offset="0.55" stop-color="${hi}"/>
+        <stop offset="1" stop-color="${lo}"/>
       </radialGradient>
     </defs>
     ${ticks}
@@ -214,6 +223,26 @@ function thermometer(side, { cx, flip, T, accents }) {
     <circle cx="${cx - BULB_R * 0.3}" cy="${bulbCy - BULB_R * 0.32}" r="${BULB_R * 0.22}" fill="#FFFFFF" fill-opacity="0.22"/>
     ${goal}
   </g>`;
+}
+
+/** The unmissable "awaiting data" notice: a dashed box with a clock, drawn under a pending side's thermometer. */
+function noticeBox(side, { cx, layer, T }) {
+  const left = cx - NOTICE_W / 2;
+  const inner = NOTICE_W - 28;
+  const t1 = 'AWAITING CAMPAIGN DATA';
+  const s1 = Math.min(19, ((inner - 32) / layer.measure('display700', t1, 19, 1)) * 19);
+  const w1 = layer.measure('display700', t1, s1, 1);
+  const startX = cx - (30 + w1) / 2;                 // clock (22) + gap (8) + text
+  const base1 = Y.noticeTop + 28, base2 = Y.noticeTop + 52;
+  const t2 = `FROM ${side.masthead.toUpperCase()}`;
+  const s2 = Math.min(18, (inner / layer.measure('display500', t2, 18, 0.8)) * 18);
+  const ic = { x: startX + 11, y: base1 - 7 };
+  return `
+    <rect x="${r2(left)}" y="${Y.noticeTop}" width="${NOTICE_W}" height="${NOTICE_H}" rx="14" fill="#F3F1EA" stroke="#8F8C84" stroke-width="2" stroke-dasharray="7 5"/>
+    <circle cx="${r2(ic.x)}" cy="${r2(ic.y)}" r="10" fill="none" stroke="#2E2D2A" stroke-width="2.4"/>
+    <path d="M${r2(ic.x)} ${r2(ic.y - 6)}V${r2(ic.y)}L${r2(ic.x + 5)} ${r2(ic.y + 3)}" fill="none" stroke="#2E2D2A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+    ${T(t1, { face: 'display700', size: s1, x: startX + 30, y: base1, spacing: 1, fill: '#2E2D2A' })}
+    ${T(t2, { face: 'display500', size: s2, x: cx, y: base2, anchor: 'middle', spacing: 0.8, fill: '#55534E' })}`;
 }
 
 export function renderSvg(board, opts = {}) {
@@ -228,10 +257,10 @@ export function renderSvg(board, opts = {}) {
     const nudgeFace = side.trailing ? 'display700' : 'display500';
     return `
     ${lockup(side, { cx, opts })}
-    ${T(side.raisedText, { face: 'display700', size: 66, x: cx, y: Y.amount, anchor: 'middle', spacing: -1, fill: side.primary })}
-    ${T(side.pending ? 'CAMPAIGN OPENING SOON' : side.goalText ? `${side.pctOfGoal}% OF ${side.goalText} GOAL` : 'RAISED SO FAR', { face: 'display500', size: 20, x: cx, y: Y.pct, anchor: 'middle', spacing: 1.5, fill: INK_SOFT })}
+    ${T(side.raisedText, { face: 'display700', size: 66, x: cx, y: Y.amount, anchor: 'middle', spacing: -1, fill: side.pending ? MUTED.amount : side.primary })}
+    ${T(side.pending ? 'NO TOTAL YET' : side.goalText ? `${side.pctOfGoal}% OF ${side.goalText} GOAL` : 'RAISED SO FAR', { face: 'display500', size: 20, x: cx, y: Y.pct, anchor: 'middle', spacing: 1.5, fill: INK_SOFT })}
     ${thermometer(side, { cx, flip, T, accents })}
-    ${T(side.nudge.toUpperCase(), { face: nudgeFace, size: 25, x: cx, y: Y.nudge, anchor: 'middle', spacing: 1, fill: nudgeColor })}`;
+    ${side.pending ? noticeBox(side, { cx, layer, T }) : T(side.nudge.toUpperCase(), { face: nudgeFace, size: 25, x: cx, y: Y.nudge, anchor: 'middle', spacing: 1, fill: nudgeColor })}`;
   };
 
   const updated = `${board.stale ? 'LAST KNOWN · ' : ''}UPDATED ${board.updatedText.toUpperCase()}`;
@@ -260,7 +289,7 @@ export function renderSvg(board, opts = {}) {
     ${T(`TOGETHER ${board.combinedText} FOR STUDENT JOURNALISM`, { face: 'display500', size: 18, x: 24, y: Y.footer, spacing: 0.8, fill: INK_FAINT })}
     ${T(updated, { face: 'display500', size: 18, x: W - 24, y: Y.footer, anchor: 'end', spacing: 0.8, fill: INK_FAINT })}`;
 
-  return `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(board.event)}: ${esc(board.headline)}. ${esc(cal.short)} ${esc(cal.raisedText)}, ${esc(stan.short)} ${esc(stan.raisedText)}.">
+  return `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(board.event)}: ${esc(board.headline)}. ${esc(cal.short)} ${cal.pending ? 'awaiting campaign data' : esc(cal.raisedText)}, ${esc(stan.short)} ${stan.pending ? 'awaiting campaign data' : esc(stan.raisedText)}.">
   <defs>
     <linearGradient id="band-cal" x1="0" x2="1"><stop offset="0" stop-color="${cal.primaryDeep}"/><stop offset="1" stop-color="${cal.primary}"/></linearGradient>
     <linearGradient id="band-stan" x1="0" x2="1"><stop offset="0" stop-color="${stan.primary}"/><stop offset="1" stop-color="${stan.primaryDeep}"/></linearGradient>

@@ -8,7 +8,11 @@ const CSS = `
   .row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
   .btn{display:block;text-align:center;padding:15px 10px;border-radius:12px;color:#fff;font-weight:700;text-decoration:none;font-size:16px;letter-spacing:.2px;border:0;cursor:pointer}
   .btn:hover{filter:brightness(1.08)}
-  .btn.off{background:#B9B6AE !important;color:#fff;cursor:default}.btn.off:hover{filter:none}
+  .btn small{display:block;font-weight:500;font-size:12px;letter-spacing:.3px;margin-top:4px}
+  .btn.off{background:#EFEDE6 !important;color:#8F8C84;border:2px dashed #B9B6AE;padding:13px 10px;cursor:not-allowed;user-select:none}
+  .btn.off:hover{filter:none}.btn.off svg{vertical-align:-2px;margin-right:6px}
+  .pending-note{margin:12px 0 0;padding:11px 14px;border:2px dashed #B9B6AE;border-radius:12px;background:#F3F1EA;color:#2E2D2A;font-size:14px;line-height:1.4}
+  .pending-note strong{letter-spacing:.2px}
   .btn.dark{background:#161616}
   p.note{text-align:center;color:#8a877f;font-size:12px;margin:14px 0 0}
   p.note a{color:#8a877f}
@@ -25,13 +29,20 @@ ${ogImage ? `<meta property="og:image" content="${esc(origin)}/thermometer.png">
 /** Shared rivalry page: the board plus a donate button for each paper. Also what an iframe embed shows. */
 export function embedPage(board, { origin, serverPng = false }) {
   const [cal, stan] = board.sides;
+  const clock = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>';
+  // A side whose campaign isn't public yet keeps its place (buttons stay at the bottom) but is visibly disabled, with the reason.
   const btn = (s) => s.pending || !s.url
-    ? `<span class="btn off" aria-disabled="true">${esc(s.masthead)}: campaign opening soon</span>`
+    ? `<span class="btn off" role="link" aria-disabled="true" tabindex="-1">${clock}Give to ${esc(s.masthead)}<small>${s.url ? 'Campaign not public yet' : 'Awaiting campaign link'}</small></span>`
     : `<a class="btn" style="background:${s.primary}" href="${esc(s.url)}" target="_top" rel="noopener">Give to ${esc(s.masthead)}</a>`;
+  const waiting = board.sides.filter((x) => x.pending).map((x) => x.masthead);
+  const pendingNote = waiting.length
+    ? `<p class="pending-note"><strong>Awaiting campaign data:</strong> ${esc(waiting.join(' and '))} ${waiting.length > 1 ? "haven't" : "hasn't"} opened ${waiting.length > 1 ? 'their' : 'its'} ${esc(board.event.replace(/^Ink Bowl /, ''))} campaign yet. The total and the donate button will appear here automatically.</p>`
+    : '';
   return `${head(`${board.event} — ${board.headline}`, `${cal.masthead} vs. ${stan.masthead}: a live fundraising race for student journalism ahead of Big Game. ${cal.short} ${cal.raisedText} · ${stan.short} ${stan.raisedText}.`, { origin, ogImage: serverPng })}
 <body><main>
   <img class="board" src="/thermometer.svg?v=${Date.now()}" width="${W}" height="${H}" alt="${esc(board.event)}: ${esc(board.headline)}. ${esc(cal.short)} ${esc(cal.raisedText)}, ${esc(stan.short)} ${esc(stan.raisedText)}.">
   <div class="row">${btn(cal)}${btn(stan)}</div>
+  ${pendingNote}
   <p class="note">Totals refresh automatically. Reload to see the latest. <a href="/png">PNG for email</a></p>
 </main></body></html>`;
 }

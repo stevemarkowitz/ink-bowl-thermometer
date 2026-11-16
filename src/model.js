@@ -105,7 +105,9 @@ export function buildBoard({ event, gameDate, now = new Date(), cal, stanford })
     s.scaleLabels = { 0.5: formatMoney(scaleMax / 2), 1: formatMoney(scaleMax) };
   }
 
-  const diff = a.raised - b.raised;
+  // A side whose campaign is not public yet has no real total, so nobody "leads": no lead/gap/trailing language at all.
+  const anyPending = sides.some((s) => s.pending);
+  const diff = anyPending ? 0 : a.raised - b.raised;
   const leader = diff === 0 ? null : diff > 0 ? a : b;
   const trailer = leader ? (leader === a ? b : a) : null;
   const gap = Math.abs(diff);
@@ -115,12 +117,14 @@ export function buildBoard({ event, gameDate, now = new Date(), cal, stanford })
     s.trailing = trailer === s;
     // The single most motivating number on the board.
     s.nudge = s.pending
-      ? 'Opening soon'
-      : s.trailing
-        ? `${formatMoney(gap + 1)} takes the lead`
-        : s.leading
-          ? `Ahead by ${formatMoney(gap)}`
-          : 'Dead even';
+      ? 'Awaiting campaign data'
+      : anyPending
+        ? 'Every gift counts'
+        : s.trailing
+          ? `${formatMoney(gap + 1)} takes the lead`
+          : s.leading
+            ? `Ahead by ${formatMoney(gap)}`
+            : 'Dead even';
   }
 
   const days = daysUntil(gameDate, now);
@@ -130,9 +134,11 @@ export function buildBoard({ event, gameDate, now = new Date(), cal, stanford })
         : 'FINAL';
 
   const combined = a.raised + b.raised;
-  const headline = leader
-    ? `${leader.short} LEADS BY ${formatMoney(gap)}`
-    : combined > 0 ? `DEAD EVEN AT ${formatMoney(a.raised)}` : 'THE RACE IS ON';
+  const headline = anyPending
+    ? 'THE RACE IS ON'
+    : leader
+      ? `${leader.short} LEADS BY ${formatMoney(gap)}`
+      : combined > 0 ? `DEAD EVEN AT ${formatMoney(a.raised)}` : 'THE RACE IS ON';
 
   const anyStale = sides.some((s) => s.stale || !s.ok);
 
@@ -140,7 +146,7 @@ export function buildBoard({ event, gameDate, now = new Date(), cal, stanford })
     event, gameDate, gameDateText: formatGameDate(gameDate), days, countdown, headline,
     scaleMax, scaleMaxText: formatMoney(scaleMax),
     combined, combinedText: formatMoney(combined),
-    leader: leader?.key ?? null, gap, gapText: formatMoney(gap),
+    leader: leader?.key ?? null, gap, gapText: formatMoney(gap), pending: anyPending,
     updatedText: formatUpdated(now),
     stale: anyStale,
     sides,

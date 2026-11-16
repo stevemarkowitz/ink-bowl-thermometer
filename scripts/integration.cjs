@@ -24,7 +24,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 (async () => {
   fs.rmSync(path.join(__dirname, '..', '.wrangler', 'state'), { recursive: true, force: true }); // stale local edge cache
   await new Promise((r) => fixtures.listen(ORIGIN_PORT, '127.0.0.1', r));
-  const dev = spawn('npx', ['wrangler', 'dev', '--port', String(DEV_PORT), '--ip', '127.0.0.1', '--var', `GIVEBUTTER_ORIGIN:http://127.0.0.1:${ORIGIN_PORT}`, '--var', 'ADMIN_TOKEN:test-token', '--var', 'SERVER_PNG:true'], { stdio: ['ignore', 'pipe', 'pipe'] });
+  const dev = spawn('npx', ['wrangler', 'dev', '--port', String(DEV_PORT), '--ip', '127.0.0.1', '--var', `GIVEBUTTER_ORIGIN:http://127.0.0.1:${ORIGIN_PORT}`, '--var', 'ADMIN_TOKEN:test-token', '--var', 'SERVER_PNG:true', '--var', 'SEASON:2025'], { stdio: ['ignore', 'pipe', 'pipe'] });
   let log = ''; dev.stdout.on('data', (d) => (log += d)); dev.stderr.on('data', (d) => (log += d));
   try {
     for (let i = 0; i < 90; i++) { try { if ((await get('/health')).status === 200) break; } catch {} await sleep(1000); }

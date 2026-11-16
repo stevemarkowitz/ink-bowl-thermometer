@@ -153,3 +153,10 @@ test('custom-named (vanity) links parse like code links', () => {
   const r = parseCampaign(vanity, 'daily-cal-membership-campaign');
   assert.equal(r.source, 'json-scoped'); assert.equal(r.raised, 3133.5);
 });
+
+test('the real, live Daily Cal 2026 campaign page (captured 2026-11-16) parses: $605 of $10,000', () => {
+  const live2026 = readFileSync(new URL('./fixtures/dailycal-2026-live.html', import.meta.url), 'utf8');
+  const r = parseCampaign(live2026, 'inkbowl-2026-hgksv5');
+  assert.equal(r.source, 'json-scoped'); assert.equal(r.raised, 605); assert.equal(r.goal, 10000);
+  assert.match(r.title, /Ink Bowl Competitive Fund Drive 2026/);
+});

@@ -3,6 +3,21 @@
 All notable changes. Newest first. Everything below shipped on 2026-11-12 unless noted; commit
 hashes are on `main`. Live site: **https://inkbowl.giving**.
 
+## LIVE ON 2026 (this change): Daily Cal live, Stanford awaiting its link
+- **`SEASON = "2026"`** (2026-11-16). The Daily Cal's campaign (`inkbowl-2026-hgksv5`, "Ink Bowl Competitive Fund Drive 2026")
+  is live and read from its real page ($605 of $10,000 when taken live). `STANFORD_SLUG_2026` is blank (no Stanford 2026
+  campaign existed on its Givebutter hub when checked), so Stanford is *pending* until its link is shared. Title, page, PNG and
+  countdown read 2026 (5 days to Big Game on Nov. 21 when taken live). The real live Daily Cal page is a test fixture.
+- **Pending state redesigned so it can't be mistaken for a real $0:** the pending side's column is grayed out (tile,
+  nameplate, `$0`, bulb), reads "NO TOTAL YET", and a dashed clock notice under its thermometer says **"AWAITING CAMPAIGN DATA
+  FROM THE STANFORD DAILY"**; the thermometer stays visible at zero. Symmetric: the Daily Cal gets the same treatment if it is
+  the one awaiting data (`docs/design/2026-pending-states.png`).
+- **No false lead claims:** while either side is pending, nobody "leads": the banner says "THE RACE IS ON" (neutral), the
+  live side says "EVERY GIFT COUNTS", and the API returns `leader: null`, `gap: 0`, `pending: true`.
+- **Page:** the donate buttons stay at the bottom; the pending side's button is visibly disabled (dashed, grayed, clock,
+  "Awaiting campaign link"), not a link, with a plain-language note under the buttons
+  (`docs/design/page-with-pending-button.png`). The deploy smoke test now also prints `season` and each side's `pending`.
+
 ## 2026 readiness: season switch, "not public yet" handling, last-known fix (this change)
 - **Season switch:** `SEASON` in `wrangler.toml` picks the campaigns and the label ("Ink Bowl <SEASON>"); per-season slugs
   `CAL_SLUG_2025/2026`, `STANFORD_SLUG_2025/2026` (`src/config.js`). The Daily Cal's 2026 link

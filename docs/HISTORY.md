@@ -76,6 +76,10 @@ Whoever ran the earlier thermometer is not documented; we could not confirm what
 12. **2026 season handling.** A campaign that is not public yet is a first-class *pending* state ($0, "opening soon",
    disabled donate button, re-checked each request), distinct from an outage (keeps last known). One `SEASON` switch picks the
    year's campaigns and label. "Last known" is per campaign link, so a new season can never inherit the old total.
+13. **Going live with one campaign (2026-11-16).** The owner chose to launch 2026 with the Daily Cal's live campaign and The
+   Stanford Daily awaiting its link, rather than wait. A pending side is grayed out with an explicit "Awaiting campaign data"
+   notice (a bare $0 could read as a real tiny total), and while any side is pending nobody "leads" (a lead claimed over a
+   side with no data would be inaccurate and unfair to it). Donate buttons stay at the bottom; the pending side's is disabled.
 
 ## Incidents and lessons
 - **Invisible text on a phone's first load.** An SVG in an `<img>` paints once; text waiting on an

@@ -9,7 +9,7 @@
  * CAL_SLUG / STANFORD_SLUG / EVENT_LABEL, if set, override the season-derived values (handy for a one-off test).
  */
 export const DEFAULTS = {
-  SEASON: '2025',
+  SEASON: '2026',
   GAME_DATE: '2026-11-21',
   CAL_SLUG_2025: 'HbHXTN',
   STANFORD_SLUG_2025: 'msB1YJ',

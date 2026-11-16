@@ -40,7 +40,7 @@ const step = (m) => console.log('  … ' + m);
     assert.equal(t.headline, 'THE RACE IS ON'); assert.equal(t.stale, false);
     const svg = await get('/thermometer.svg?nocache=1'); assert.equal(svg.status, 200); assert.match(svg.text, /^<svg/); assert.match(svg.text, /INK BOWL 2026|aria-label="Ink Bowl 2026/);
     const page = await get('/', { accept: 'text/html', 'sec-fetch-dest': 'document' });
-    assert.match(page.text, /Ink Bowl 2026/); assert.match(page.text, /campaign opening soon/); assert.doesNotMatch(page.text, /Give to The Daily Californian/);
+    assert.match(page.text, /Ink Bowl 2026/); assert.match(page.text, /Awaiting campaign data/); assert.match(page.text, /Awaiting campaign link/); assert.doesNotMatch(page.text, /<a class="btn"/); assert.match(page.text, /Give to The Daily Californian<small>/); // both disabled while both pending
     step('the Daily Cal link publishes: its side flips to real numbers on the next read, Stanford stays pending');
     published = true;
     let flipped = null;
@@ -50,7 +50,9 @@ const step = (m) => console.log('  … ' + m);
     }
     assert.ok(flipped, 'the Daily Cal side never flipped to live numbers');
     assert.equal(flipped.sides.cal.raised, 3133.5); assert.equal(flipped.sides.cal.source, 'json-scoped'); assert.equal(flipped.sides.stanford.pending, true);
-    assert.equal(flipped.leader, 'cal');
+    assert.equal(flipped.leader, null, 'nobody leads while Stanford has no data'); assert.equal(flipped.headline, 'THE RACE IS ON');
+    const pageAfter = await get('/', { accept: 'text/html', 'sec-fetch-dest': 'document' });
+    assert.equal([...pageAfter.text.matchAll(/<a class="btn"/g)].length, 1, 'the Daily Cal button is now a real link'); assert.match(pageAfter.text, /Give to The Stanford Daily<small>Awaiting campaign link/);
     console.log('integration-2026: pending -> live flip verified in workerd');
   } catch (e) {
     console.error('integration-2026 FAILED:', e.message); console.error(log.split('\n').filter((l) => /error|ERROR|failed/i.test(l)).slice(-15).join('\n'));

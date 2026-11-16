@@ -70,7 +70,7 @@ jobs:
             curl "${EXTRA[@]}" -fsS --max-time 20 "https://${HOST}/api/totals.json" -o totals.json && break
             echo "not ready (attempt ${i}); waiting"; sleep 10
           done
-          jq '{headline, leader, store, stale, sides: (.sides | map_values({raised, goal, source, ok}))}' totals.json
+          jq '{event, season, headline, leader, store, stale, sides: (.sides | map_values({slug, raised, goal, source, ok, pending}))}' totals.json
           jq -e '.sides.cal.ok and .sides.stanford.ok and .store == "kv"' totals.json
           # The image and page routes are the CPU-heavy ones (Workers Free allows 10ms): request them for real.
           curl "${EXTRA[@]}" -fsS --max-time 20 "https://${HOST}/thermometer.svg?nocache=1" -o board.svg

@@ -58,9 +58,11 @@ STANFORD_SLUG_2026 = ""                      # empty until shared
 SERVER_PNG         = "false"
 ```
 
-**Switching to 2026** is: fill in `STANFORD_SLUG_2026`, set `SEASON = "2026"`, push. A campaign that is not public yet
-counts as **$0, "Campaign opening soon"** and is re-checked on every request, so real numbers appear the moment it
-publishes (even $0). Last season's total is never shown under a new link. Full checklist: `docs/STATUS.md`.
+**2026 is live** (`SEASON = "2026"`). The Daily Cal's campaign is live; `STANFORD_SLUG_2026` is blank until The Stanford Daily's
+link is shared: paste the slug there and push. A campaign that is not public yet is shown **grayed out with an "Awaiting
+campaign data from <paper>" notice** (thermometer at zero, donate button disabled), nobody is declared the leader while a side
+has no data, and it is re-checked on every request, so real numbers appear the moment it publishes (even $0). Last season's
+total is never shown under a new link. Checklist: `docs/STATUS.md`.
 
 Secrets (`wrangler secret put NAME`, never in the repo):
 
