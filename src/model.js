@@ -90,16 +90,23 @@ export function buildBoard({ event, gameDate, now = new Date(), cal, stanford })
 
   const [a, b] = sides;
   const top = Math.max(a.raised, b.raised);
-  // Scale to the leader with headroom, so the race always fills the frame.
-  // Falls back to a goal (or $1k) before any money arrives.
-  const scaleMax = niceCeiling(top > 0 ? top * 1.12 : (a.goal ?? b.goal ?? 4000) * 0.25);
+  // HONEST SCALE: when a goal is known the tube IS the goal (top of the tube = the goal), so how full it is always agrees
+  // with "N% of $G goal". It only grows if someone raises past the goal. (An earlier version scaled to the leader, so the
+  // leading tube looked nearly full at 6% of goal, which was misleading.) The scale is shared by both sides, in dollars,
+  // so the taller tube is still the side that has raised more. With no goal at all, fall back to the leader with headroom.
+  const goalTop = Math.max(0, ...sides.map((s) => s.goal ?? 0));
+  const scaleMax = goalTop > 0
+    ? niceCeiling(Math.max(goalTop, top * 1.05))
+    : niceCeiling(top > 0 ? top * 1.12 : 1000);
 
   const MIN_VISIBLE = 0.035; // a $5 gift should still be visible as mercury
   for (const s of sides) {
     const frac = scaleMax > 0 ? s.raised / scaleMax : 0;
     s.frac = s.raised > 0 ? Math.max(MIN_VISIBLE, Math.min(1, frac)) : 0;
     s.pctOfGoal = s.goal ? Math.min(999, Math.round((s.raised / s.goal) * 100)) : null;
-    s.goalFrac = s.goal && s.goal <= scaleMax ? s.goal / scaleMax : null;
+    // The goal line only appears when the goal sits below the top of the tube (i.e. someone has passed it); otherwise the
+    // top of the tube is the goal and the top tick says so.
+    s.goalFrac = s.goal && s.goal / scaleMax < 0.995 ? s.goal / scaleMax : null;
     s.raisedText = formatMoney(s.raised);
     s.goalText = s.goal ? formatMoney(s.goal) : null;
     s.scaleLabels = { 0.5: formatMoney(scaleMax / 2), 1: formatMoney(scaleMax) };

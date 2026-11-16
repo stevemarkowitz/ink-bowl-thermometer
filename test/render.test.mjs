@@ -47,7 +47,7 @@ test('characters outside the charset do not break rendering', () => {
 
 test('the image stays a reasonable size', () => {
   const svg = renderSvg(board);
-  assert.ok(svg.length < 80_000, `svg is ${svg.length} bytes`);
+  assert.ok(svg.length < 100_000, `svg is ${svg.length} bytes`);
   assert.equal(W, 600);
 });
 

@@ -33,6 +33,9 @@ nobody "leads" (no lead claims). Never let last season's total appear under a ne
   marks equal footprint (`markLayout()`), accents structurally identical (`ACCENTS`; the owner chose the brand
   gold/sandstone knowing gold is more vivid, so do not "fix" that without asking). Check every visual change at
   phone width, including the swapped case, and keep the `FAIRNESS:` tests passing.
+- **The thermometer must agree with the labels:** when a goal is known the top of the tube is the goal and fill = raised / goal,
+  so "6% of goal" can never look nearly full (the `FILL AGREES WITH THE GOAL LABEL` test guards it). Never rescale the tube to
+  the leader.
 - Server-side PNG stays off (`SERVER_PNG=false`) on Workers Free (10 ms CPU). Staff use `/png`.
 - KV writes stay write-on-change (Free allows 1,000/day).
 - `https://inkbowl.giving` must keep serving the page to browsers and the SVG to image requests.

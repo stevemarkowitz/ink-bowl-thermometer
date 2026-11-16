@@ -3,7 +3,19 @@
 All notable changes. Newest first. Everything below shipped on 2026-11-12 unless noted; commit
 hashes are on `main`. Live site: **https://inkbowl.giving**.
 
-## LIVE ON 2026 (this change): Daily Cal live, Stanford awaiting its link
+## Fix: the thermometer now agrees with "% of goal" (this change)
+- **Bug (reported 2026-11-16):** the board said "6% of $10,000 goal" but the thermometer looked almost full. The tubes were
+  scaled to the *leader* (leader's total + 12%), so the leading tube was always ~90% full however little had been raised.
+- **Fix:** when a goal is known the **tube is the goal**: the top of the tube is the goal ($10,000 -> ticks at $5,000 and
+  $10,000), so fill = raised / goal and always matches the label. The scale is still shared and in dollars, so the taller tube is
+  still the side that has raised more; it only grows (with a dashed goal line) if someone passes the goal. With no goal known it
+  falls back to the leader with headroom.
+- **Zero at the bulb, not inside it:** a small total used to sit entirely behind the bulb so the tube looked empty. Zero is now
+  where the tube meets the bulb (as on a real thermometer), so 6% is a visible sliver of mercury. Mercury is only drawn when
+  there is some (no stray gray bar on an empty tube). The "GOAL" label (shown once the goal is passed) moved beside the tube.
+- Tests: `FILL AGREES WITH THE GOAL LABEL` (the exact complaint, across several states), over-goal and no-goal cases.
+
+## LIVE ON 2026 (`b02235d`): Daily Cal live, Stanford awaiting its link
 - **`SEASON = "2026"`** (2026-11-16). The Daily Cal's campaign (`inkbowl-2026-hgksv5`, "Ink Bowl Competitive Fund Drive 2026")
   is live and read from its real page ($605 of $10,000 when taken live). `STANFORD_SLUG_2026` is blank (no Stanford 2026
   campaign existed on its Givebutter hub when checked), so Stanford is *pending* until its link is shared. Title, page, PNG and

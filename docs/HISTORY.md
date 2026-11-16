@@ -46,8 +46,10 @@ Whoever ran the earlier thermometer is not documented; we could not confirm what
    manual pin -> API -> public page -> last good value -> $0. The board never blanks.
 2. **Cloudflare Worker + KV**, deployed by GitHub Actions on push to `main`, pinned to one
    Cloudflare account so the wrong environment fails instead of landing elsewhere.
-3. **One shared scale keyed to the leader** (not the goal), so the race looks close and both tubes
-   are substantial; the gap is stated as an actionable number under the trailing side ("$1,415 takes
+3. **~~One shared scale keyed to the leader~~ REVERSED 2026-11-16: the tube is the goal.** The original choice kept the race
+   looking close but made the leading tube look nearly full at 6% of goal, contradicting the "% of goal" label (reported by the
+   owner). Now top of tube = the goal and fill = raised / goal, shared in dollars across both sides. Original rationale:
+   a leader-keyed scale kept both tubes substantial; the gap is stated as an actionable number under the trailing side ("$1,415 takes
    the lead"). Goal shown as a percentage and a dashed line once within range.
 4. **Mobile-first**: a Givebutter story image shows at ~340 px on a phone; type sizes are chosen for
    that. Official primaries: Berkeley Blue `#003262` and Stanford Cardinal `#8C1515`

@@ -174,22 +174,26 @@ function thermometer(side, { cx, flip, T, accents }) {
   const x = cx - TUBE_W / 2;
   const rx = TUBE_W / 2;
   const bulbCy = Y.tubeBottom + BULB_R * 0.62;
-  const fillH = r2(tubeH * side.frac);
-  const fillY = r2(Y.tubeBottom - fillH);
+  // Zero is where the tube meets the bulb (as on a real thermometer), not inside the bulb: otherwise a small total sits
+  // entirely behind the bulb and the tube looks empty. The scale runs from `zeroY` up to the top of the tube.
+  const zeroY = bulbCy - BULB_R + 2;
+  const span = zeroY - Y.tubeTop;
+  const fillH = r2(span * side.frac);
+  const fillY = r2(zeroY - fillH);
   const id = side.key;
   const dir = flip ? -1 : 1;              // ticks + labels on the OUTER edge
   const tickX = cx + dir * (TUBE_W / 2 + 8);
 
   const ticks = [0.5, 1].map((f) => {
-    const y = r2(Y.tubeBottom - tubeH * f);
+    const y = r2(zeroY - span * f);
     return `<line x1="${tickX}" y1="${y}" x2="${tickX + dir * 12}" y2="${y}" stroke="${INK_FAINT}" stroke-width="2" stroke-linecap="round"/>
       ${T(side.scaleLabels[f], { face: 'display500', size: 18, x: tickX + dir * 18, y: y + 6, anchor: flip ? 'end' : 'start', spacing: 0.5, fill: INK_FAINT })}`;
   }).join('');
 
   const goal = side.goalFrac != null ? (() => {
-    const y = r2(Y.tubeBottom - tubeH * side.goalFrac);
+    const y = r2(zeroY - span * side.goalFrac);
     return `<line x1="${x - 10}" y1="${y}" x2="${x + TUBE_W + 10}" y2="${y}" stroke="${INK}" stroke-width="2" stroke-dasharray="4 4"/>
-      ${T('GOAL', { face: 'display700', size: 16, x: cx, y: y - 7, anchor: 'middle', spacing: 1.5, fill: INK })}`;
+      ${T('GOAL', { face: 'display700', size: 16, x: flip ? x + TUBE_W + 14 : x - 14, y: y + 5, anchor: flip ? 'start' : 'end', spacing: 1.5, fill: INK })}`;
   })() : '';
 
   const cap = side.frac > 0
@@ -216,7 +220,7 @@ function thermometer(side, { cx, flip, T, accents }) {
     </defs>
     ${ticks}
     <rect x="${x}" y="${Y.tubeTop}" width="${TUBE_W}" height="${tubeH + BULB_R * 0.6}" rx="${rx}" fill="url(#glass-${id})" stroke="${RULE}" stroke-width="2"/>
-    <rect x="${x}" y="${fillY}" width="${TUBE_W}" height="${fillH + BULB_R}" fill="url(#merc-${id})" clip-path="url(#tube-${id})"/>
+    ${side.frac > 0 ? `<rect x="${x}" y="${fillY}" width="${TUBE_W}" height="${fillH + 20}" fill="url(#merc-${id})" clip-path="url(#tube-${id})"/>` : ''}
     ${cap}
     <rect x="${x + 9}" y="${Y.tubeTop + 12}" width="8" height="${tubeH - 24}" rx="4" fill="#FFFFFF" fill-opacity="0.28"/>
     <circle cx="${cx}" cy="${bulbCy}" r="${BULB_R}" fill="url(#bulb-${id})" stroke="${PAPER}" stroke-width="5"/>

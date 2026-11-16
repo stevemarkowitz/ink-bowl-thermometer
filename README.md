@@ -9,7 +9,7 @@ Givebutter campaign pages, any web page, and (as a PNG) in email.
 - Reads each paper's total from its **public Givebutter campaign page** — no API key
   needed from either side. If a paper does share a Givebutter API key, that side
   switches to the API automatically; the two sides are independent.
-- One **shared scale keyed to the leader**, so the taller tube is always the side
+- An **honest shared scale: the tube is the goal** (top of the tube = the goal), so how full it is always agrees with "% of goal", and the taller tube is always the side
   that's ahead, with the gap stated as an actionable number under the trailing side
   (`$1,415 TAKES THE LEAD`), a Big Game countdown, and a combined total.
 - **Mobile-first**: designed for the ~340px a phone gives a Givebutter story image.
@@ -151,10 +151,11 @@ Layout: `src/model.js` (board maths, team palettes) → `src/render.js` (SVG) �
 
 ## Design notes
 
-- A thermometer scaled to the $10k goal would show two nearly-empty tubes for most
-  of the drive; scaling to the leader (with headroom, on a "nice" ceiling) keeps the
-  race visibly close and both tubes substantial. The goal still appears as a
-  percentage, and as a dashed line once a side gets within range.
+- **The tube is the goal.** Fill = raised / goal, so a tube can never look nearly full at 6% of goal (an earlier leader-keyed
+  scale did, which was misleading and was fixed 2026-11-16). The scale is shared and in dollars, so the taller tube is still the side
+  that has raised more; it extends (with a dashed goal line) only if someone passes the goal. Zero sits where the tube meets the
+  bulb, so a small total shows as a visible sliver of mercury. The cost is that early in a drive both tubes are short: that is
+  the honest picture, and the trailing side's "$X takes the lead" line carries the drama.
 - The trailing side's line is the persuasive one: a concrete dollar figure that
   would take the lead. The leader's line is deliberately quieter.
 - Typefaces: Oswald (scoreboard numerals, condensed so big numbers fit a phone
