@@ -17,6 +17,13 @@ are. Update `CHANGELOG.md` and the relevant doc with every change (commit docs w
 - Logos and nameplates are the papers' trademarks used for their joint fundraiser; keep the approval
   note in `docs/STATUS.md` until both papers have confirmed.
 
+## Standing instruction: the 2026 flip (owner, 2026-11-16)
+The Daily Cal's 2026 link (`inkbowl-2026-hgksv5`) is on file in `wrangler.toml`. Keep `SEASON = "2025"` until the owner
+shares The Stanford Daily's 2026 link, then follow the **Flip checklist** in `docs/STATUS.md` straight away. A link that is
+still private counts as $0 ("opening soon") and the board updates itself when it publishes (even at $0); both private means
+both start at $0. Everything must read 2026 with the correct Big Game countdown. Never let last season's total appear under
+a new link (the `THE TRAP` test guards it).
+
 ## Invariants (tests enforce most of these)
 - The SVG has **no `<text>`, `@font-face` or font-family**: all text is outlined (`src/text.js`).
   An SVG in an `<img>` paints once, so font-dependent text is invisible on first load.
@@ -35,6 +42,7 @@ are. Update `CHANGELOG.md` and the relevant doc with every change (commit docs w
 npm ci
 npm test                     # unit tests (parser, board maths, sources, renderer, redirects)
 npm run test:integration     # wrangler dev in workerd + browser PNG export (needs Playwright)
+npm run test:integration:2026 # SEASON=2026: both-pending start, then a campaign publishing (real not-published page)
 npm run preview -- 1391 2805 # docs/preview-{desktop,phone}.png
 ```
 Regenerate generated data only when inputs change: `scripts/build-glyphs.py` (typefaces),

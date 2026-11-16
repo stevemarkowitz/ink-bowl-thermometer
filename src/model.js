@@ -58,6 +58,11 @@ export function daysUntil(dateISO, now = new Date(), tz = 'America/Los_Angeles')
   return Math.round((toUtcDay(new Date(dateISO + 'T12:00:00Z')) - toUtcDay(now)) / 86400000);
 }
 
+/** "2026-11-21" -> "NOV 21" (the date is a calendar date, so format it in UTC to avoid a day slip). */
+export function formatGameDate(dateISO) {
+  return new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' }).format(new Date(`${dateISO}T12:00:00Z`)).toUpperCase();
+}
+
 export function formatUpdated(date, tz = 'America/Los_Angeles') {
   return new Intl.DateTimeFormat('en-US', {
     timeZone: tz, hour: 'numeric', minute: '2-digit', timeZoneName: 'short',
@@ -80,13 +85,14 @@ export function buildBoard({ event, gameDate, now = new Date(), cal, stanford })
   for (const s of sides) {
     s.raised = Number.isFinite(s.raised) ? Math.max(0, s.raised) : 0;
     s.goal = Number.isFinite(s.goal) && s.goal > 0 ? s.goal : null;
+    s.pending = Boolean(s.pending); // campaign not public yet: shown as $0, "opening soon"
   }
 
   const [a, b] = sides;
   const top = Math.max(a.raised, b.raised);
   // Scale to the leader with headroom, so the race always fills the frame.
   // Falls back to a goal (or $1k) before any money arrives.
-  const scaleMax = niceCeiling(top > 0 ? top * 1.12 : (a.goal ?? b.goal ?? 1000) * 0.25);
+  const scaleMax = niceCeiling(top > 0 ? top * 1.12 : (a.goal ?? b.goal ?? 4000) * 0.25);
 
   const MIN_VISIBLE = 0.035; // a $5 gift should still be visible as mercury
   for (const s of sides) {
@@ -108,11 +114,13 @@ export function buildBoard({ event, gameDate, now = new Date(), cal, stanford })
     s.leading = leader === s;
     s.trailing = trailer === s;
     // The single most motivating number on the board.
-    s.nudge = s.trailing
-      ? `${formatMoney(gap + 1)} takes the lead`
-      : s.leading
-        ? `Ahead by ${formatMoney(gap)}`
-        : 'Dead even';
+    s.nudge = s.pending
+      ? 'Opening soon'
+      : s.trailing
+        ? `${formatMoney(gap + 1)} takes the lead`
+        : s.leading
+          ? `Ahead by ${formatMoney(gap)}`
+          : 'Dead even';
   }
 
   const days = daysUntil(gameDate, now);
@@ -129,7 +137,7 @@ export function buildBoard({ event, gameDate, now = new Date(), cal, stanford })
   const anyStale = sides.some((s) => s.stale || !s.ok);
 
   return {
-    event, gameDate, days, countdown, headline,
+    event, gameDate, gameDateText: formatGameDate(gameDate), days, countdown, headline,
     scaleMax, scaleMaxText: formatMoney(scaleMax),
     combined, combinedText: formatMoney(combined),
     leader: leader?.key ?? null, gap, gapText: formatMoney(gap),

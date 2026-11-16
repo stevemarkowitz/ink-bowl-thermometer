@@ -129,7 +129,21 @@ export function parseCampaign(html, slug) {
   return out;
 }
 
-/** Fetch + parse one campaign. Throws on a non-200 so callers can fall back. */
+/**
+ * The campaign exists in the owner's plan but is not public yet: Givebutter answers an unpublished campaign with a
+ * small HTTP 200 page ("This fundraiser has not been published.", no totals), and a link that does not exist with a
+ * plain 404. Both mean "not live", which the board shows as $0 (opening soon) rather than as an error.
+ * A 5xx or a timeout is NOT this: that is a transient outage and keeps the last known value.
+ */
+export class NotLiveError extends Error {
+  constructor(message) { super(message); this.name = 'NotLiveError'; }
+}
+
+export function isUnpublishedPage(html) {
+  return /this fundraiser has not been published/i.test(html);
+}
+
+/** Fetch + parse one campaign. Throws NotLiveError if it is not public yet, an Error on any other failure. */
 export async function fetchCampaign(slug, { fetchImpl = fetch, cacheTtl = 60, origin = DEFAULT_ORIGIN } = {}) {
   const res = await fetchImpl(campaignUrl(slug, origin), {
     headers: {
@@ -142,8 +156,13 @@ export async function fetchCampaign(slug, { fetchImpl = fetch, cacheTtl = 60, or
     // Collapse bursts of requests into one origin hit per TTL.
     cf: { cacheTtl, cacheEverything: true },
   });
+  if (res.status === 404 || res.status === 410) throw new NotLiveError(`givebutter ${slug}: HTTP ${res.status} (no such campaign yet)`);
   if (!res.ok) throw new Error(`givebutter ${slug}: HTTP ${res.status}`);
-  const parsed = parseCampaign(await res.text(), slug);
-  if (parsed.raised == null) throw new Error(`givebutter ${slug}: no raised amount found`);
+  const html = await res.text();
+  const parsed = parseCampaign(html, slug);
+  if (parsed.raised == null) {
+    if (isUnpublishedPage(html)) throw new NotLiveError(`givebutter ${slug}: not published yet`);
+    throw new Error(`givebutter ${slug}: no raised amount found`);
+  }
   return parsed;
 }

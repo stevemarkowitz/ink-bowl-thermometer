@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs';
 import { readSide } from '../src/sources.js';
 import { fetchCampaignViaApi } from '../src/givebutter-api.js';
 import { makeStore } from '../src/store.js';
+import { NotLiveError, fetchCampaign, parseCampaign } from '../src/givebutter.js';
 
 const page = readFileSync(new URL('./fixtures/HbHXTN.html', import.meta.url), 'utf8');
 const json = (obj, status = 200) => ({ ok: status < 400, status, json: async () => obj, text: async () => JSON.stringify(obj) });
@@ -58,7 +59,7 @@ test('API failure falls back to the page, and the error is recorded', async () =
 
 test('total failure serves the last good number, marked stale', async () => {
   const store = makeStore({});
-  await store.setLastGood('cal', { raised: 1391, goal: 10000, source: 'json-scoped', ok: true, stale: false });
+  await store.setLastGood('cal', { slug: 'HbHXTN', raised: 1391, goal: 10000, source: 'json-scoped', ok: true, stale: false });
   const fetchImpl = async () => html('<html>down</html>', 503);
   const r = await readSide({ key: 'cal', slug: 'HbHXTN', apiKey: null }, { fetchImpl, store });
   assert.equal(r.ok, false);
@@ -83,4 +84,72 @@ test('unchanged reads do not rewrite last-good (KV Free write budget)', async ()
   // unique side key: the in-memory store is module-global, shared with the other tests
   for (let i = 0; i < 5; i++) await readSide({ key: 'write-budget', slug: 'HbHXTN', apiKey: null }, { fetchImpl, store });
   assert.equal(writes, 1);
+});
+
+// ---- 2026 readiness: a campaign that is not public yet ----
+const unpublished = readFileSync(new URL('./fixtures/unpublished.html', import.meta.url), 'utf8');
+const vanity = readFileSync(new URL('./fixtures/vanity-slug.html', import.meta.url), 'utf8');
+const notLiveFetch = async () => html(unpublished);          // Givebutter: HTTP 200 + "This fundraiser has not been published."
+const noSuchFetch = async () => html('<title>Butter 404</title>', 404);
+
+test('an unpublished campaign is recognised as not live (not as an error)', async () => {
+  await assert.rejects(() => fetchCampaign('inkbowl-2026-hgksv5', { fetchImpl: notLiveFetch }), NotLiveError);
+  await assert.rejects(() => fetchCampaign('nope', { fetchImpl: noSuchFetch }), NotLiveError);
+  // a transient outage is NOT "not live"
+  await assert.rejects(() => fetchCampaign('x', { fetchImpl: async () => html('', 503) }), (e) => !(e instanceof NotLiveError));
+  await assert.rejects(() => fetchCampaign('x', { fetchImpl: async () => html('<html>weird page</html>') }), (e) => !(e instanceof NotLiveError));
+});
+
+test('never-live campaign counts as $0, pending, ok (so the board shows "opening soon")', async () => {
+  // unique side key: the in-memory store is module-global (an earlier test pins 'cal')
+  const r = await readSide({ key: 'pending-test', slug: 'inkbowl-2026-hgksv5', apiKey: null }, { fetchImpl: notLiveFetch, store: makeStore({}) });
+  assert.equal(r.pending, true); assert.equal(r.ok, true); assert.equal(r.stale, false);
+  assert.equal(r.raised, 0); assert.equal(r.goal, null); assert.equal(r.source, 'pending');
+  assert.match(r.reason, /not published/);
+});
+
+test('a missing slug (link not shared yet) is pending too, with no donate URL', async () => {
+  const r = await readSide({ key: 'stanford', slug: null, apiKey: null }, { fetchImpl: async () => { throw new Error('must not fetch'); }, store: makeStore({}) });
+  assert.equal(r.pending, true); assert.equal(r.url, null); assert.equal(r.raised, 0);
+});
+
+test('pending becomes real numbers as soon as the campaign publishes (even $0)', async () => {
+  const store = makeStore({});
+  const cfg = { key: 'wake-up', slug: 'daily-cal-membership-campaign', apiKey: null };
+  const first = await readSide(cfg, { fetchImpl: notLiveFetch, store });
+  assert.equal(first.pending, true);
+  const second = await readSide(cfg, { fetchImpl: async () => html(vanity) , store });   // now public
+  assert.equal(second.pending, false); assert.equal(second.ok, true); assert.equal(second.source, 'json-scoped');
+  assert.equal(second.raised, 3133.5);
+});
+
+test('THE TRAP: last season\'s total is never shown under a new campaign link', async () => {
+  const store = makeStore({});
+  await store.setLastGood('trap', { slug: 'HbHXTN', raised: 1391, goal: 10000, source: 'json-scoped', ok: true, stale: false }); // 2025
+  const r = await readSide({ key: 'trap', slug: 'inkbowl-2026-hgksv5', apiKey: null }, { fetchImpl: notLiveFetch, store });         // 2026
+  assert.equal(r.pending, true); assert.equal(r.raised, 0, '2025 money must not appear under the 2026 link');
+  const down = await readSide({ key: 'trap', slug: 'inkbowl-2026-hgksv5', apiKey: null }, { fetchImpl: async () => html('', 503), store });
+  assert.equal(down.raised, 0, 'nor during an outage'); assert.equal(down.ok, false);
+});
+
+test('a campaign that was live keeps its last known value if it is later unpublished or the site is down', async () => {
+  const store = makeStore({});
+  await store.setLastGood('stays', { slug: 'live-one', raised: 500, goal: 1000, source: 'json-scoped', ok: true, stale: false });
+  const a = await readSide({ key: 'stays', slug: 'live-one', apiKey: null }, { fetchImpl: notLiveFetch, store });
+  assert.equal(a.raised, 500); assert.equal(a.stale, true); assert.equal(a.pending, false);
+  const b = await readSide({ key: 'stays', slug: 'live-one', apiKey: null }, { fetchImpl: async () => html('', 503), store });
+  assert.equal(b.raised, 500); assert.equal(b.stale, true);
+});
+
+test('first write for a new slug always persists, even if the numbers match the old slug', async () => {
+  const store = makeStore({});
+  await store.setLastGood('same', { slug: 'old', raised: 0, goal: null, source: 'json-scoped', ok: true, stale: false, writtenAt: Date.now() });
+  const zero = `<html>"url":"https:\\/\\/givebutter.com\\/new-one","creator_name":"X","goal":0,"raised":"0.00","raised_percentage":0</html>`;
+  await readSide({ key: 'same', slug: 'new-one', apiKey: null }, { fetchImpl: async () => html(zero), store });
+  assert.equal((await store.getLastGood('same')).slug, 'new-one');
+});
+
+test('custom-named (vanity) links parse like code links', () => {
+  const r = parseCampaign(vanity, 'daily-cal-membership-campaign');
+  assert.equal(r.source, 'json-scoped'); assert.equal(r.raised, 3133.5);
 });

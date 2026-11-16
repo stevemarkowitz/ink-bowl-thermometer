@@ -3,7 +3,25 @@
 All notable changes. Newest first. Everything below shipped on 2026-11-12 unless noted; commit
 hashes are on `main`. Live site: **https://inkbowl.giving**.
 
-## Equal-footprint logo marks; brand accents restored (this change)
+## 2026 readiness: season switch, "not public yet" handling, last-known fix (this change)
+- **Season switch:** `SEASON` in `wrangler.toml` picks the campaigns and the label ("Ink Bowl <SEASON>"); per-season slugs
+  `CAL_SLUG_2025/2026`, `STANFORD_SLUG_2025/2026` (`src/config.js`). The Daily Cal's 2026 link
+  (`inkbowl-2026-hgksv5`) is on file; Stanford's is blank until shared. Still `SEASON = "2025"`.
+- **Not public yet = $0, then real numbers:** Givebutter serves an unpublished campaign as HTTP 200 with "This fundraiser has
+  not been published." (and a missing link as 404). That is now a distinct *pending* state: $0, "Campaign opening soon",
+  disabled donate button on the page, re-checked on every request; real numbers appear the moment it publishes (even $0).
+  Outages (5xx) are not "not live" and keep the last known value.
+- **Bug fixed (would have shown the wrong money):** "last known" was stored per side, not per campaign, so a new season's
+  link could have shown last season's total during a failure. It is now only reused for the same link (test `THE TRAP`).
+  The first write for a new link always persists.
+- **Date from config:** "NOV 21" was hard-coded; it now comes from `GAME_DATE` (the countdown already did).
+- Default empty-state thermometer scale is $1,000 (was $250) when no goals are known.
+- Tests: pending/live/trap/outage behaviour, config, vanity-slug parsing, pending rendering; new
+  `scripts/integration-2026.cjs` runs the real Worker against local fixtures including Givebutter's real unpublished page
+  and a not-public-to-live flip. (It caught a missing `memo` definition before deploy.)
+- Docs: the owner's standing 2026 instructions and a flip checklist in `docs/STATUS.md` and `CLAUDE.md`.
+
+## Equal-footprint logo marks; brand accents restored (`13baed3`)
 - **Brand accents back** (California Gold / Stanford Sandstone) at the owner's request, after seeing the
   vividness asymmetry side by side. Treatment stays structurally identical for both sides; tests now assert
   that. `ACCENTS = 'neutral'` reverts. Recorded as the owner's decision in `docs/FAIRNESS.md`.

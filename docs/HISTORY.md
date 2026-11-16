@@ -73,6 +73,9 @@ Whoever ran the earlier thermometer is not documented; we could not confirm what
    chose California Gold and Stanford Sandstone (2026-11-13). The treatment is identical in structure; the
    inherent difference in vividness is accepted and recorded in `FAIRNESS.md`. Logo marks use the same
    equal-footprint rule as the nameplates.
+12. **2026 season handling.** A campaign that is not public yet is a first-class *pending* state ($0, "opening soon",
+   disabled donate button, re-checked each request), distinct from an outage (keeps last known). One `SEASON` switch picks the
+   year's campaigns and label. "Last known" is per campaign link, so a new season can never inherit the old total.
 
 ## Incidents and lessons
 - **Invisible text on a phone's first load.** An SVG in an `<img>` paints once; text waiting on an
@@ -83,6 +86,8 @@ Whoever ran the earlier thermometer is not documented; we could not confirm what
   Cloudflare's edge when public DNS lags (`b83af31`).
 - **KV Free write budget.** Writing last-good on every read would exceed 1,000 writes/day; now
   write-on-change (`eb72b6a`).
+- **Last season's total under a new link (caught before it shipped).** "Last known" was keyed by side, so a failing 2026 link
+  could have shown 2025's money. Now keyed by campaign link and tested.
 - **Tracing tool quirk:** `potracer` traces the cells that are *False*; `scripts/trace-*.py` account
   for it.
 

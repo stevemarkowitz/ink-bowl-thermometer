@@ -7,6 +7,7 @@
   "scripts": {
     "test": "node --test test/*.test.mjs",
     "test:integration": "node scripts/integration.cjs",
+    "test:integration:2026": "node scripts/integration-2026.cjs",
     "preview": "node scripts/preview.cjs",
     "dev": "wrangler dev",
     "deploy": "wrangler deploy"

@@ -10,11 +10,20 @@ account_id = "3698908aee438e9c20994f722c7e6098"
 workers_dev = false   # served only at the custom domain below
 
 [vars]
-# --- the only lines that change for 2026: paste the new campaign slugs here ---
-EVENT_LABEL = "Ink Bowl 2025"
-GAME_DATE = "2026-11-21"
-CAL_SLUG = "HbHXTN"          # https://givebutter.com/HbHXTN  (Daily Cal, "Ink Bowl 2025")
-STANFORD_SLUG = "msB1YJ"     # https://givebutter.com/msB1YJ  (Stanford Daily, "Big Game 2025")
+# ===== THE SEASON SWITCH =====
+# SEASON picks which campaigns the board reads and the label ("Ink Bowl <SEASON>"). While SEASON = "2025" the board
+# shows the 2025 Ink Bowl campaigns. To go live with 2026: set SEASON = "2026" and fill in STANFORD_SLUG_2026
+# (the Daily Cal's is already on file). A campaign that is not public yet counts as $0 ("opening soon") and is
+# polled until it publishes. See docs/STATUS.md.
+SEASON = "2025"
+GAME_DATE = "2026-11-21"           # Big Game 2026 (Cal Memorial Stadium); drives the countdown and the date shown
+
+CAL_SLUG_2025 = "HbHXTN"           # https://givebutter.com/HbHXTN  (Daily Cal, "Ink Bowl 2025")
+STANFORD_SLUG_2025 = "msB1YJ"      # https://givebutter.com/msB1YJ  (Stanford Daily, "Big Game 2025")
+
+CAL_SLUG_2026 = "inkbowl-2026-hgksv5"   # https://givebutter.com/inkbowl-2026-hgksv5  (Daily Cal; not published yet as of 2026-11-16)
+STANFORD_SLUG_2026 = ""                 # <- paste the Stanford Daily's 2026 slug here when it is shared
+# Optional one-off overrides (normally unset): EVENT_LABEL, CAL_SLUG, STANFORD_SLUG.
 # Server-side PNG at /thermometer.png. Leave "false" on the Workers Free plan
 # (the raster needs ~300ms CPU; Free allows 10ms). Staff get PNGs from /png
 # regardless, rendered in their own browser.

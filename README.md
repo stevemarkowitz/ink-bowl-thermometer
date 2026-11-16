@@ -46,18 +46,21 @@ say which step produced each number (`json-scoped`, `api`, `pin`, `…(last-good
 
 ## Configuration
 
-Everything that changes between years lives in `wrangler.toml` `[vars]`:
+Everything that changes between years lives in `wrangler.toml` `[vars]`. One switch picks the season:
 
 ```toml
-EVENT_LABEL   = "Ink Bowl 2025"
-GAME_DATE     = "2026-11-21"
-CAL_SLUG      = "HbHXTN"   # https://givebutter.com/HbHXTN
-STANFORD_SLUG = "msB1YJ"   # https://givebutter.com/msB1YJ
-SERVER_PNG    = "false"
+SEASON             = "2025"                  # "2026" to go live with 2026 (label becomes "Ink Bowl 2026")
+GAME_DATE          = "2026-11-21"            # drives the countdown and the date on the board
+CAL_SLUG_2025      = "HbHXTN"                # https://givebutter.com/HbHXTN
+STANFORD_SLUG_2025 = "msB1YJ"                # https://givebutter.com/msB1YJ
+CAL_SLUG_2026      = "inkbowl-2026-hgksv5"   # Daily Cal 2026 (not published yet as of 2026-11-16)
+STANFORD_SLUG_2026 = ""                      # empty until shared
+SERVER_PNG         = "false"
 ```
 
-**Switching to the 2026 campaigns** is: paste the two new slugs (the part after
-`givebutter.com/`), set `EVENT_LABEL = "Ink Bowl 2026"`, deploy. Nothing else.
+**Switching to 2026** is: fill in `STANFORD_SLUG_2026`, set `SEASON = "2026"`, push. A campaign that is not public yet
+counts as **$0, "Campaign opening soon"** and is re-checked on every request, so real numbers appear the moment it
+publishes (even $0). Last season's total is never shown under a new link. Full checklist: `docs/STATUS.md`.
 
 Secrets (`wrangler secret put NAME`, never in the repo):
 

@@ -229,7 +229,7 @@ export function renderSvg(board, opts = {}) {
     return `
     ${lockup(side, { cx, opts })}
     ${T(side.raisedText, { face: 'display700', size: 66, x: cx, y: Y.amount, anchor: 'middle', spacing: -1, fill: side.primary })}
-    ${T(side.goalText ? `${side.pctOfGoal}% OF ${side.goalText} GOAL` : 'RAISED SO FAR', { face: 'display500', size: 20, x: cx, y: Y.pct, anchor: 'middle', spacing: 1.5, fill: INK_SOFT })}
+    ${T(side.pending ? 'CAMPAIGN OPENING SOON' : side.goalText ? `${side.pctOfGoal}% OF ${side.goalText} GOAL` : 'RAISED SO FAR', { face: 'display500', size: 20, x: cx, y: Y.pct, anchor: 'middle', spacing: 1.5, fill: INK_SOFT })}
     ${thermometer(side, { cx, flip, T, accents })}
     ${T(side.nudge.toUpperCase(), { face: nudgeFace, size: 25, x: cx, y: Y.nudge, anchor: 'middle', spacing: 1, fill: nudgeColor })}`;
   };
@@ -245,7 +245,7 @@ export function renderSvg(board, opts = {}) {
     ${accents === 'brand' ? `<rect x="${W / 2}" y="12" width="${W / 2}" height="4" fill="${stan.accent}"/>` : ''}
 
     ${T(board.event.toUpperCase(), { face: 'display700', size: 46, x: W / 2, y: Y.title, anchor: 'middle', spacing: 5, fill: INK })}
-    ${T(`${board.countdown} · NOV 21`, { face: 'display500', size: 20, x: W / 2, y: Y.countdown, anchor: 'middle', spacing: 3, fill: INK_SOFT })}
+    ${T(`${board.countdown} · ${board.gameDateText}`, { face: 'display500', size: 20, x: W / 2, y: Y.countdown, anchor: 'middle', spacing: 3, fill: INK_SOFT })}
     <line x1="40" y1="${Y.rule}" x2="${W - 40}" y2="${Y.rule}" stroke="${RULE}" stroke-width="1.5"/>
 
     ${column(cal, COL.cal, true)}

@@ -7,6 +7,7 @@ see `../CHANGELOG.md`.
 - **Live:** https://inkbowl.giving (page for browsers, thermometer image for `<img>` requests);
   `www.inkbowl.giving` redirects to it. Explicit image: `https://inkbowl.giving/thermometer.svg`.
   Staff PNG for email: `https://inkbowl.giving/png`.
+- **Season: 2025** (`SEASON` in `wrangler.toml`) until the owner shares The Stanford Daily's 2026 link; see **2026 season plan** below.
 - **Reading the 2025 Ink Bowl campaigns** (proof of concept): Daily Cal `HbHXTN`, Stanford
   `msB1YJ` (titled "Big Game 2025" on Stanford's side). No 2026 Ink Bowl *fundraising* campaign
   existed on either paper's Givebutter hub when checked (2026-11-12; the Daily Cal had only an
@@ -15,6 +16,33 @@ see `../CHANGELOG.md`.
   when checked). `GAME_DATE` in `wrangler.toml` drives the countdown.
 - **Deploys:** every push to `main` runs the Deploy workflow (tests, KV, `wrangler deploy`,
   smoke test against the live domain). Manual run: Actions -> Deploy -> Run workflow.
+
+## 2026 season plan (standing instructions from the owner, recorded 2026-11-16)
+- **Daily Cal 2026 link is on file:** `https://givebutter.com/inkbowl-2026-hgksv5` (`CAL_SLUG_2026`). As of 2026-11-16
+  it is **not published**: Givebutter serves a small page saying "This fundraiser has not been published."
+- **Until the owner shares The Stanford Daily's 2026 link, keep 2025** (`SEASON = "2025"`) and the 2025 numbers.
+- **When the owner shares the Stanford link: flip to 2026 immediately** (checklist below). Everything then reads 2026: the
+  title ("Ink Bowl 2026"), the page, the PNG, and the countdown to Big Game 2026 (Sat 2026-11-21; `GAME_DATE`).
+- **A link that is still private at the flip counts as $0** (shown as "Campaign opening soon") and the Worker keeps checking
+  (every request re-reads it, the fetch is edge-cached 60 s, and a cron runs every 5 min). **The moment a campaign publishes,
+  real numbers appear, even if $0.** If both are still private the 2026 board starts with both at $0 and updates the same way.
+- A campaign that *was* live and later errors or is unpublished keeps its **last known** value (marked `LAST KNOWN`).
+- **Last season's money never appears under a new link:** "last known" is only reused for the same campaign link (guarded by a
+  test). A missing/unshared link is "opening soon" with a disabled donate button, not an error.
+- Not built / not promised: nothing notifies the owner when a campaign goes public (the board just updates itself). Say so if you
+  want a notification.
+
+### Flip checklist (do this when the Stanford 2026 link arrives)
+1. Take the slug from the link (`givebutter.com/<slug>`). In `wrangler.toml`: set `STANFORD_SLUG_2026 = "<slug>"` and
+   `SEASON = "2026"`. Do not touch the 2025 values (kept for reference).
+2. `npm test`; `npm run test:integration:2026` (real runtime: pending -> live flip). Regenerate previews for the docs:
+   `npm run preview -- pending pending docs/preview "Ink Bowl 2026"` (use real numbers instead of `pending` for any side that
+   is already live), and view `docs/preview-phone.png` at phone width.
+3. Update `CHANGELOG.md`, this file (Current state, Season), and commit to `main`; the Deploy workflow runs.
+4. Verify live: `https://inkbowl.giving/api/totals.json` shows `season: "2026"`, each side's `slug`, and
+   `pending` / `source` / `raised` as expected; load `https://inkbowl.giving` on a phone and check the title, countdown and
+   both sides. Tell the owner exactly which sides are live and which are pending.
+5. Later, when a pending campaign publishes, no change is needed; just confirm the numbers if asked.
 
 ## Where things live
 | Thing | Value |
@@ -28,10 +56,7 @@ see `../CHANGELOG.md`.
 | Cloudflare token needs | Workers Scripts: Edit, Workers KV Storage: Edit, plus Zone: DNS Edit and Workers Routes Edit on `inkbowl.giving` (custom domains) |
 
 ## Runbooks
-**Switch to the 2026 campaigns.** Get each paper's 2026 Givebutter campaign link
-(`givebutter.com/<slug>`), then in `wrangler.toml` set `CAL_SLUG`, `STANFORD_SLUG` and
-`EVENT_LABEL = "Ink Bowl 2026"`. Commit to `main`; the deploy does the rest. Check
-`https://inkbowl.giving/api/totals.json` (both sides `ok: true`, `source: "json-scoped"`).
+**Switch seasons.** See the **Flip checklist** above (one `SEASON` value plus the missing slug).
 
 **Turn on the Givebutter API for a side.** The key must be a *Worker* secret named `CAL_API_KEY` or
 `STANFORD_API_KEY` (a GitHub repo secret alone does nothing: the workflow currently only forwards

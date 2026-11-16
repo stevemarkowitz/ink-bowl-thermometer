@@ -22,21 +22,16 @@ import { makeStore } from './store.js';
 import { ensureResvg, svgToPng } from './png.js';
 import { embedPage, pngPage } from './page.js';
 import { canonicalRedirect } from './host.js';
+import { resolveConfig } from './config.js';
 import resvgWasm from '../node_modules/@resvg/resvg-wasm/index_bg.wasm';
 
 const FRESH_MS = 120_000;      // reuse a side's last read for 2 min before re-fetching
 const EDGE_TTL = 60;           // seconds a rendered image stays in the edge cache
 
-const DEFAULTS = {
-  EVENT_LABEL: 'Ink Bowl 2025',
-  GAME_DATE: '2026-11-21',
-  CAL_SLUG: 'HbHXTN',          // Daily Cal "Ink Bowl 2025"
-  STANFORD_SLUG: 'msB1YJ',     // Stanford Daily "Big Game 2025"
-};
-
 function cfg(env) {
-  const e = { ...DEFAULTS, ...env };
-  return e;
+  const c = resolveConfig(env);
+  // Season-derived values feed the same names the rest of the Worker already reads.
+  return { ...env, SEASON: c.season, EVENT_LABEL: c.eventLabel, GAME_DATE: c.gameDate, CAL_SLUG: c.slugs.cal, STANFORD_SLUG: c.slugs.stanford };
 }
 
 const memo = new Map(); // per-isolate: side key -> { at, slug, value }
@@ -52,7 +47,9 @@ async function collect(env, { force = false } = {}) {
       sides[key] = m.value; return;
     }
     const value = await readSide(c, { store, now, log: (msg) => console.log(msg) });
-    if (value.ok) memo.set(key, { at: now.getTime(), slug: c.slug, value });
+    // A campaign that is not public yet is NOT reused for 2 minutes: re-check it each time (the fetch itself is edge-cached
+    // for 60 s) so real numbers appear as soon as it publishes.
+    if (value.ok && !value.pending) memo.set(key, { at: now.getTime(), slug: c.slug, value });
     sides[key] = value;
   }));
   return { store, now, sides };
@@ -141,13 +138,13 @@ export default {
       res = new Response(png, { headers: imageHeaders('image/png', data.sides) });
     } else if (path === '/api/totals.json') {
       const body = {
-        event: board.event, headline: board.headline, leader: board.leader, gap: board.gap,
+        event: board.event, season: env.SEASON, headline: board.headline, leader: board.leader, gap: board.gap,
         combined: board.combined, countdown: board.countdown, updated: data.now.toISOString(),
         store: data.store.backend, stale: board.stale,
         sides: Object.fromEntries(SIDE_KEYS.map((k) => {
           const s = data.sides[k];
           return [k, { slug: s.slug, url: s.url, title: s.title, raised: s.raised, goal: s.goal, source: s.source,
-            apiEnabled: s.apiEnabled, rawRaised: s.rawRaised ?? null, ok: s.ok, stale: s.stale,
+            apiEnabled: s.apiEnabled, rawRaised: s.rawRaised ?? null, ok: s.ok, stale: s.stale, pending: s.pending, reason: s.reason,
             readAt: s.readAt ? new Date(s.readAt).toISOString() : null, error: s.error }];
         })),
       };

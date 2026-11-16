@@ -8,6 +8,7 @@ const CSS = `
   .row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
   .btn{display:block;text-align:center;padding:15px 10px;border-radius:12px;color:#fff;font-weight:700;text-decoration:none;font-size:16px;letter-spacing:.2px;border:0;cursor:pointer}
   .btn:hover{filter:brightness(1.08)}
+  .btn.off{background:#B9B6AE !important;color:#fff;cursor:default}.btn.off:hover{filter:none}
   .btn.dark{background:#161616}
   p.note{text-align:center;color:#8a877f;font-size:12px;margin:14px 0 0}
   p.note a{color:#8a877f}
@@ -24,7 +25,9 @@ ${ogImage ? `<meta property="og:image" content="${esc(origin)}/thermometer.png">
 /** Shared rivalry page: the board plus a donate button for each paper. Also what an iframe embed shows. */
 export function embedPage(board, { origin, serverPng = false }) {
   const [cal, stan] = board.sides;
-  const btn = (s) => `<a class="btn" style="background:${s.primary}" href="${esc(s.url)}" target="_top" rel="noopener">Give to ${esc(s.masthead)}</a>`;
+  const btn = (s) => s.pending || !s.url
+    ? `<span class="btn off" aria-disabled="true">${esc(s.masthead)}: campaign opening soon</span>`
+    : `<a class="btn" style="background:${s.primary}" href="${esc(s.url)}" target="_top" rel="noopener">Give to ${esc(s.masthead)}</a>`;
   return `${head(`${board.event} — ${board.headline}`, `${cal.masthead} vs. ${stan.masthead}: a live fundraising race for student journalism ahead of Big Game. ${cal.short} ${cal.raisedText} · ${stan.short} ${stan.raisedText}.`, { origin, ogImage: serverPng })}
 <body><main>
   <img class="board" src="/thermometer.svg?v=${Date.now()}" width="${W}" height="${H}" alt="${esc(board.event)}: ${esc(board.headline)}. ${esc(cal.short)} ${esc(cal.raisedText)}, ${esc(stan.short)} ${esc(stan.raisedText)}.">
