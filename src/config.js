@@ -4,7 +4,8 @@
  * Flip a season by setting SEASON in wrangler.toml (and filling in any missing slug); nothing else changes.
  *   SEASON            "2025" or "2026": picks the *_SLUG_<SEASON> pair below and the label "Ink Bowl <SEASON>"
  *   CAL_SLUG_<yyyy>   the Daily Cal campaign's slug (the part after givebutter.com/)
- *   STANFORD_SLUG_<yyyy>  the Stanford Daily campaign's slug; empty = not shared yet (shown as "opening soon")
+ *   STANFORD_SLUG_<yyyy>  the Stanford Daily campaign; empty = not shared yet (shown as "awaiting campaign data")
+ *   Each *_SLUG_<yyyy> may be a Givebutter slug or link, OR a Neon CRM campaign link (the Stanford Daily uses Neon CRM): see campaign.js.
  *   GAME_DATE         the Big Game's calendar date, drives the countdown and the date on the board
  * CAL_SLUG / STANFORD_SLUG / EVENT_LABEL, if set, override the season-derived values (handy for a one-off test).
  */
@@ -14,7 +15,7 @@ export const DEFAULTS = {
   CAL_SLUG_2025: 'HbHXTN',
   STANFORD_SLUG_2025: 'msB1YJ',
   CAL_SLUG_2026: 'inkbowl-2026-hgksv5',
-  STANFORD_SLUG_2026: '',
+  STANFORD_SLUG_2026: 'https://friendsstanforddaily.app.neoncrm.com/campaigns/big-game-2026',
 };
 
 export function resolveConfig(env = {}) {

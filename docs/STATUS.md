@@ -7,9 +7,9 @@ see `../CHANGELOG.md`.
 - **Live:** https://inkbowl.giving (page for browsers, thermometer image for `<img>` requests);
   `www.inkbowl.giving` redirects to it. Explicit image: `https://inkbowl.giving/thermometer.svg`.
   Staff PNG for email: `https://inkbowl.giving/png`.
-- **LIVE ON 2026** since 2026-11-16 (`SEASON = "2026"`). **The Daily Cal is live** (`inkbowl-2026-hgksv5`); **The Stanford Daily is
-  pending** (no 2026 campaign link yet: `STANFORD_SLUG_2026` is blank), shown grayed out as "Awaiting campaign data". To add
-  Stanford: paste its slug into `STANFORD_SLUG_2026` and push (see **2026 season plan**).
+- **LIVE ON 2026** since 2026-11-16 (`SEASON = "2026"`). **Both sides are live** since 2026-11-17: **The Daily Cal** on
+  **Givebutter** (`inkbowl-2026-hgksv5`) and **The Stanford Daily on Neon CRM** (`friendsstanforddaily.app.neoncrm.com/campaigns/big-game-2026`,
+  "Big Game 2026"). Stanford chose Neon CRM, not Givebutter, so each side is read from its own platform (see **Data sources**).
 - 2025 reference (the proof of concept's campaigns, no longer displayed): Daily Cal `HbHXTN`, Stanford
   `msB1YJ` (titled "Big Game 2025" on Stanford's side). No 2026 Ink Bowl *fundraising* campaign
   existed on either paper's Givebutter hub when checked (2026-11-12; the Daily Cal had only an
@@ -22,9 +22,9 @@ see `../CHANGELOG.md`.
 ## 2026 season plan (standing instructions from the owner, recorded 2026-11-16)
 - **Daily Cal 2026 link is on file:** `https://givebutter.com/inkbowl-2026-hgksv5` (`CAL_SLUG_2026`). As of 2026-11-16
   it is **not published**: Givebutter serves a small page saying "This fundraiser has not been published."
-- **DONE 2026-11-16:** the owner took 2026 live with the Daily Cal's campaign and Stanford pending (no link yet), rather than
-  waiting for Stanford's link.
-- **When the owner shares the Stanford link: add it immediately** (checklist below). Everything reads 2026: the
+- **DONE 2026-11-16:** the owner took 2026 live with the Daily Cal's campaign and Stanford awaiting its link.
+- **DONE 2026-11-17:** Stanford's link arrived (Neon CRM, not Givebutter) and is wired in (`STANFORD_SLUG_2026` holds the Neon link).
+- **Everything reads 2026:** the
   title ("Ink Bowl 2026"), the page, the PNG, and the countdown to Big Game 2026 (Sat 2026-11-21; `GAME_DATE`).
 - **A link that is not public yet counts as $0** (shown grayed out as "Awaiting campaign data") and the Worker keeps checking
   (every request re-reads it, the fetch is edge-cached 60 s, and a cron runs every 5 min). **The moment a campaign publishes,
@@ -35,9 +35,11 @@ see `../CHANGELOG.md`.
 - Not built / not promised: nothing notifies the owner when a campaign goes public (the board just updates itself). Say so if you
   want a notification.
 
-### Checklist: add the Stanford link when it arrives (the 2026 flip itself is already done)
-1. Take the slug from the link (`givebutter.com/<slug>`). In `wrangler.toml`: set `STANFORD_SLUG_2026 = "<slug>"`.
-   `SEASON` is already `"2026"`; do not touch the 2025 values (kept for reference).
+### Checklist: add or change a campaign link (either side; either platform)
+1. In `wrangler.toml` set the side's `*_SLUG_2026` to the campaign link: a Givebutter slug or link, **or a Neon CRM campaign link**
+   (`https://<org>.app.neoncrm.com/campaigns/<page>`). The platform is detected from the link. `SEASON` is already `"2026"`;
+   do not touch the 2025 values (kept for reference). If the read-only host is not already allowed in a Claude session's network
+   settings, it must be added to test it (Neon: `friendsstanforddaily.app.neoncrm.com`).
 2. `npm test`; `npm run test:integration:2026` (real runtime: pending -> live flip). Regenerate previews for the docs:
    `npm run preview -- <cal> <stanford> docs/preview "Ink Bowl 2026"` (real numbers, or `pending` for a side that is
    not live yet), and view `docs/preview-phone.png` at phone width.
@@ -46,6 +48,19 @@ see `../CHANGELOG.md`.
    `pending` / `source` / `raised` as expected; load `https://inkbowl.giving` on a phone and check the title, countdown and
    both sides. Tell the owner exactly which sides are live and which are pending.
 5. Later, when a pending campaign publishes, no change is needed; just confirm the numbers if asked.
+
+## Data sources (each side is read from its own platform)
+| Side | Platform | How the total is read |
+| --- | --- | --- |
+| The Daily Californian | Givebutter | The public campaign page embeds the totals as JSON (`"goal":10000,"raised":"605.00"`); an API key for that side, if ever provided, takes over. |
+| The Stanford Daily | **Neon CRM** (Friends of the Stanford Daily Foundation) | Neon's campaign page is rendered in the browser; the Worker makes the **same two requests the page itself makes**: the page (for the campaign's internal id, goal and include-flags) then `POST /nx/portal/landing-page/retrieveCampaignStatics` -> `{"raisedTotal":52.04,"donorCount":1}`. It uses the page's own include-flags, so the number equals the page's "SO FAR, WE HAVE RAISED". No login, cookie or API key. |
+
+Neon caveats (honest): the statistics call is public but **undocumented**, so Neon could change it; if it breaks the board keeps
+the last known value (`LAST KNOWN`) and `npm test` fails first against the captured real page (`test/fixtures/neon-*.html`).
+A campaign that does not exist or is not published returns a generic organisation page: treated as "not live yet" ($0, pending).
+Upgrade path: Neon's official API with an API key from the foundation's account (not built). The "raised" figure follows the
+campaign page's own settings (it currently counts sub-campaigns and pledges, not events); if Stanford changes those, our number
+follows the page. Neon's `donorCount` is available (1 at launch) but not shown.
 
 ## Where things live
 | Thing | Value |

@@ -12,9 +12,9 @@ workers_dev = false   # served only at the custom domain below
 [vars]
 # ===== THE SEASON SWITCH =====
 # SEASON picks which campaigns the board reads and the label ("Ink Bowl <SEASON>"). LIVE ON 2026 since 2026-11-16:
-# the Daily Cal's campaign is live; STANFORD_SLUG_2026 is blank until the Stanford Daily's link is shared, so Stanford
-# shows $0 ("campaign opening soon"). A campaign that is not public yet counts as $0 and is polled until it publishes.
-# TO ADD STANFORD: paste its slug into STANFORD_SLUG_2026 and push. See docs/STATUS.md.
+# the Daily Cal's campaign is on Givebutter; the Stanford Daily's is on NEON CRM (link received 2026-11-17). Each *_SLUG_<yyyy>
+# below may be a Givebutter slug/link OR a Neon CRM campaign link; the Worker reads each from its own platform. A campaign
+# that is not public yet counts as $0 ("awaiting campaign data") and is polled until it publishes. See docs/STATUS.md.
 SEASON = "2026"
 GAME_DATE = "2026-11-21"           # Big Game 2026 (Cal Memorial Stadium); drives the countdown and the date shown
 
@@ -22,7 +22,7 @@ CAL_SLUG_2025 = "HbHXTN"           # https://givebutter.com/HbHXTN  (Daily Cal, 
 STANFORD_SLUG_2025 = "msB1YJ"      # https://givebutter.com/msB1YJ  (Stanford Daily, "Big Game 2025")
 
 CAL_SLUG_2026 = "inkbowl-2026-hgksv5"   # https://givebutter.com/inkbowl-2026-hgksv5  (Daily Cal, "Ink Bowl Competitive Fund Drive 2026"; live)
-STANFORD_SLUG_2026 = ""                 # <- paste the Stanford Daily's 2026 slug here when it is shared
+STANFORD_SLUG_2026 = "https://friendsstanforddaily.app.neoncrm.com/campaigns/big-game-2026"   # Stanford Daily, "Big Game 2026" (Neon CRM, not Givebutter)
 # Optional one-off overrides (normally unset): EVENT_LABEL, CAL_SLUG, STANFORD_SLUG.
 # Server-side PNG at /thermometer.png. Leave "false" on the Workers Free plan
 # (the raster needs ~300ms CPU; Free allows 10ms). Staff get PNGs from /png

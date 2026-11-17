@@ -143,7 +143,7 @@ export default {
         store: data.store.backend, stale: board.stale,
         sides: Object.fromEntries(SIDE_KEYS.map((k) => {
           const s = data.sides[k];
-          return [k, { slug: s.slug, url: s.url, title: s.title, raised: s.raised, goal: s.goal, source: s.source,
+          return [k, { slug: s.slug, provider: s.provider, url: s.url, title: s.title, raised: s.raised, goal: s.goal, source: s.source,
             apiEnabled: s.apiEnabled, rawRaised: s.rawRaised ?? null, ok: s.ok, stale: s.stale, pending: s.pending, reason: s.reason,
             readAt: s.readAt ? new Date(s.readAt).toISOString() : null, error: s.error }];
         })),

@@ -15,11 +15,12 @@ test('the default season is 2026 (the live season)', () => {
   assert.equal(resolveConfig({}).season, '2026'); assert.equal(resolveConfig({}).eventLabel, 'Ink Bowl 2026');
 });
 
-test('SEASON 2026 reads the 2026 slugs and says 2026; a missing slug is null (opening soon)', () => {
+test('SEASON 2026: the Daily Cal is a Givebutter slug, the Stanford Daily a Neon CRM link; a blank link is null (awaiting)', () => {
   const c = resolveConfig({ SEASON: '2026' });
   assert.equal(c.eventLabel, 'Ink Bowl 2026');
   assert.equal(c.slugs.cal, 'inkbowl-2026-hgksv5');
-  assert.equal(c.slugs.stanford, null, 'Stanford link not shared yet');
+  assert.equal(c.slugs.stanford, 'https://friendsstanforddaily.app.neoncrm.com/campaigns/big-game-2026');
+  assert.equal(resolveConfig({ SEASON: '2026', STANFORD_SLUG_2026: '' }).slugs.stanford, null, 'link not shared yet');
   assert.equal(resolveConfig({ SEASON: '2026', STANFORD_SLUG_2026: 'abc123' }).slugs.stanford, 'abc123');
 });
 

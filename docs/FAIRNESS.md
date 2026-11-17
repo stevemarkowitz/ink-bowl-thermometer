@@ -16,7 +16,7 @@ checked here. Rules live in `src/render.js`; tests in `test/render.test.mjs` enf
 | **Leader / trailer messaging** | Symmetric logic | The trailing side gets the "$X takes the lead" call to action in its team colour; the leader's line is quieter; a tie reads "Dead even" for both. Data-driven, not paper-driven. |
 | **Headline band** | Takes the leader's colour | Data-driven. |
 | **Donate buttons** (page) | Same size and style, one per paper | Only the label length differs (the names differ). |
-| **Data** | Both read the same way (public campaign page; API per side when a key exists) | Neither side is favoured by the reader; each side's failure is independent and shown honestly (`LAST KNOWN`). |
+| **Data** | Each side is read from its own platform (Daily Cal: Givebutter page; Stanford Daily: Neon CRM, the page's own statistics call) with the same fallback chain | Neither side is favoured by the reader; each side's failure is independent and shown honestly (`LAST KNOWN`). The numbers are whatever each paper's own campaign page shows. See `STATUS.md`, *Data sources*. |
 
 ## Differences we cannot, and should not, remove
 - **Accent vividness** (accepted by the owner; see the accents row): gold is more vivid than sandstone.

@@ -17,12 +17,13 @@ are. Update `CHANGELOG.md` and the relevant doc with every change (commit docs w
 - Logos and nameplates are the papers' trademarks used for their joint fundraiser; keep the approval
   note in `docs/STATUS.md` until both papers have confirmed.
 
-## Standing instruction: 2026 (owner, 2026-11-16)
-The board is **live on 2026** (`SEASON = "2026"`): the Daily Cal's campaign (`inkbowl-2026-hgksv5`) is live and The Stanford
-Daily is **pending** (no link yet, `STANFORD_SLUG_2026` blank), shown grayed out as "Awaiting campaign data". When the owner
-shares Stanford's 2026 link, add its slug to `STANFORD_SLUG_2026` straight away (checklist in `docs/STATUS.md`). A link that is
-still private counts as $0 / pending and the board updates itself when it publishes (even at $0). While any side is pending
-nobody "leads" (no lead claims). Never let last season's total appear under a new link (the `THE TRAP` test guards it).
+## Standing instruction: 2026 (owner, 2026-11-16, updated 2026-11-17)
+The board is **live on 2026** (`SEASON = "2026"`) with both sides reporting: the Daily Cal from **Givebutter**
+(`inkbowl-2026-hgksv5`) and The Stanford Daily from **Neon CRM** (`friendsstanforddaily.app.neoncrm.com/campaigns/big-game-2026`;
+Stanford did not use Givebutter). A `*_SLUG_<yyyy>` holds a Givebutter slug/link or a Neon CRM campaign link, and each side is read
+from its own platform. A link that is not public yet counts as $0 / pending ("Awaiting campaign data") and the board updates itself
+when it publishes (even at $0); while any side is pending nobody "leads". Never let last season's total (or another platform's
+total) appear under a new link (the `THE TRAP` tests guard it).
 
 ## Invariants (tests enforce most of these)
 - The SVG has **no `<text>`, `@font-face` or font-family**: all text is outlined (`src/text.js`).
@@ -45,7 +46,7 @@ nobody "leads" (no lead claims). Never let last season's total appear under a ne
 npm ci
 npm test                     # unit tests (parser, board maths, sources, renderer, redirects)
 npm run test:integration     # wrangler dev in workerd + browser PNG export (needs Playwright)
-npm run test:integration:2026 # SEASON=2026: both-pending start, then a campaign publishing (real not-published page)
+npm run test:integration:2026 # SEASON=2026: both awaiting -> Daily Cal (Givebutter) live -> Stanford (Neon) live, real pages
 npm run preview -- 1391 2805 # docs/preview-{desktop,phone}.png
 ```
 Regenerate generated data only when inputs change: `scripts/build-glyphs.py` (typefaces),

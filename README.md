@@ -6,7 +6,7 @@ Givebutter campaign pages, any web page, and (as a PNG) in email.
 
 ![Ink Bowl board](docs/preview-desktop.png)
 
-- Reads each paper's total from its **public Givebutter campaign page** — no API key
+- Reads each paper's total from its **public campaign page**, on whichever platform that paper uses (Givebutter, or Neon CRM) — no API key
   needed from either side. If a paper does share a Givebutter API key, that side
   switches to the API automatically; the two sides are independent.
 - An **honest shared scale: the tube is the goal** (top of the tube = the goal), so how full it is always agrees with "% of goal", and the taller tube is always the side
@@ -53,16 +53,17 @@ SEASON             = "2025"                  # "2026" to go live with 2026 (labe
 GAME_DATE          = "2026-11-21"            # drives the countdown and the date on the board
 CAL_SLUG_2025      = "HbHXTN"                # https://givebutter.com/HbHXTN
 STANFORD_SLUG_2025 = "msB1YJ"                # https://givebutter.com/msB1YJ
-CAL_SLUG_2026      = "inkbowl-2026-hgksv5"   # Daily Cal 2026 (not published yet as of 2026-11-16)
-STANFORD_SLUG_2026 = ""                      # empty until shared
+CAL_SLUG_2026      = "inkbowl-2026-hgksv5"   # Daily Cal 2026 (Givebutter; live)
+STANFORD_SLUG_2026 = "https://friendsstanforddaily.app.neoncrm.com/campaigns/big-game-2026"   # Stanford Daily: Neon CRM, not Givebutter
 SERVER_PNG         = "false"
 ```
 
-**2026 is live** (`SEASON = "2026"`). The Daily Cal's campaign is live; `STANFORD_SLUG_2026` is blank until The Stanford Daily's
-link is shared: paste the slug there and push. A campaign that is not public yet is shown **grayed out with an "Awaiting
-campaign data from <paper>" notice** (thermometer at zero, donate button disabled), nobody is declared the leader while a side
-has no data, and it is re-checked on every request, so real numbers appear the moment it publishes (even $0). Last season's
-total is never shown under a new link. Checklist: `docs/STATUS.md`.
+**2026 is live** (`SEASON = "2026"`) with both sides reporting: the Daily Cal from Givebutter and The Stanford Daily from
+**Neon CRM** (Stanford chose Neon, not Givebutter). Each `*_SLUG_<yyyy>` may be a Givebutter slug/link **or a Neon CRM campaign
+link**; the platform is detected from it and each side is read from its own platform (`docs/STATUS.md`, *Data sources*). A campaign
+that is not public yet is shown **grayed out with an "Awaiting campaign data from <paper>" notice** (thermometer at zero, donate
+button disabled), nobody is declared the leader while a side has no data, and it is re-checked on every request, so real numbers
+appear the moment it publishes (even $0). Last season's total is never shown under a new link.
 
 Secrets (`wrangler secret put NAME`, never in the repo):
 

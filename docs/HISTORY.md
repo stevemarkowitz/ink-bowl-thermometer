@@ -82,6 +82,12 @@ Whoever ran the earlier thermometer is not documented; we could not confirm what
    Stanford Daily awaiting its link, rather than wait. A pending side is grayed out with an explicit "Awaiting campaign data"
    notice (a bare $0 could read as a real tiny total), and while any side is pending nobody "leads" (a lead claimed over a
    side with no data would be inaccurate and unfair to it). Donate buttons stay at the bottom; the pending side's is disabled.
+14. **The Stanford Daily is on Neon CRM, not Givebutter (2026-11-17).** Its campaign link was a Neon CRM page. Neon's page is
+   rendered in the browser (the HTML has templates, not numbers), so a plain page read would show nothing; but the page gets its total
+   from one public call, so the Worker makes the page's own two requests and uses its include-flags (so our total equals the page's).
+   No credential from Stanford was needed. A campaign reference is now a Givebutter slug/link or a Neon link and each side is read from
+   its own platform. Trade-off: the Neon call is undocumented (fixtures + last-known protect against change; official API is the
+   upgrade path).
 
 ## Incidents and lessons
 - **Invisible text on a phone's first load.** An SVG in an `<img>` paints once; text waiting on an

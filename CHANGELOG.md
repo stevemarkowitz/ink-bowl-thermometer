@@ -3,7 +3,22 @@
 All notable changes. Newest first. Everything below shipped on 2026-11-12 unless noted; commit
 hashes are on `main`. Live site: **https://inkbowl.giving**.
 
-## Fix: the thermometer now agrees with "% of goal" (this change)
+## The Stanford Daily is on Neon CRM: multi-platform sources (this change), both sides live
+- Stanford's 2026 campaign is a **Neon CRM** page (`friendsstanforddaily.app.neoncrm.com/campaigns/big-game-2026`), not Givebutter.
+  Neon's page is built in the browser, so the Worker makes the page's **own two requests**: the page (campaign id 6, goal $10,000, the
+  page's include-flags) and `POST /nx/portal/landing-page/retrieveCampaignStatics` -> `raisedTotal`. No login, cookie or key. Real
+  total at launch: **$52.04, 1 donor**. (`src/neon.js`)
+- **Campaign references** (`src/campaign.js`): each `*_SLUG_<yyyy>` may be a Givebutter slug/link or a Neon CRM campaign link; each side
+  is read from its own platform. `STANFORD_SLUG_2026` is now the Neon link; **both sides are live** (checked end-to-end against the
+  real Givebutter and Neon sites: Daily Cal $1,215, Stanford $52.04).
+- "Not live yet" works for Neon too (a missing/unpublished campaign returns a generic org page without the campaign data -> pending);
+  outages keep the last known value; last-known is keyed per campaign link so a total can never cross platforms or seasons.
+- `/api/totals.json` shows each side's `provider`. The donate link for Stanford is its Neon campaign page.
+- Tests: Neon page parsing (the real captured page), the exact request sent, not-live/outage/trap cases, reference parsing, and a
+  rewritten `scripts/integration-2026.cjs` (both awaiting -> Daily Cal live -> Stanford live, Givebutter + Neon, in workerd).
+- Docs: *Data sources* in `docs/STATUS.md` with the honest Neon caveats; HISTORY decision 14; README, FAIRNESS, `CLAUDE.md`.
+
+## Fix: the thermometer now agrees (`e334676`) with "% of goal" (this change)
 - **Bug (reported 2026-11-16):** the board said "6% of $10,000 goal" but the thermometer looked almost full. The tubes were
   scaled to the *leader* (leader's total + 12%), so the leading tube was always ~90% full however little had been raised.
 - **Fix:** when a goal is known the **tube is the goal**: the top of the tube is the goal ($10,000 -> ticks at $5,000 and
