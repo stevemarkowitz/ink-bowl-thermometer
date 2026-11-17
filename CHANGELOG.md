@@ -17,6 +17,7 @@ hashes are on `main`. Live site: **https://inkbowl.giving**.
 - Tests: Neon page parsing (the real captured page), the exact request sent, not-live/outage/trap cases, reference parsing, and a
   rewritten `scripts/integration-2026.cjs` (both awaiting -> Daily Cal live -> Stanford live, Givebutter + Neon, in workerd).
 - Docs: *Data sources* in `docs/STATUS.md` with the honest Neon caveats; HISTORY decision 14; README, FAIRNESS, `CLAUDE.md`.
+- **Verified by the owner (2026-11-17):** Stanford's page, visited directly, shows $52.04 of $10,000, matching the board.
 
 ## Fix: the thermometer now agrees (`e334676`) with "% of goal" (this change)
 - **Bug (reported 2026-11-16):** the board said "6% of $10,000 goal" but the thermometer looked almost full. The tubes were

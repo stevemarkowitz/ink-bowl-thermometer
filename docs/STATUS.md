@@ -55,6 +55,9 @@ see `../CHANGELOG.md`.
 | The Daily Californian | Givebutter | The public campaign page embeds the totals as JSON (`"goal":10000,"raised":"605.00"`); an API key for that side, if ever provided, takes over. |
 | The Stanford Daily | **Neon CRM** (Friends of the Stanford Daily Foundation) | Neon's campaign page is rendered in the browser; the Worker makes the **same two requests the page itself makes**: the page (for the campaign's internal id, goal and include-flags) then `POST /nx/portal/landing-page/retrieveCampaignStatics` -> `{"raisedTotal":52.04,"donorCount":1}`. It uses the page's own include-flags, so the number equals the page's "SO FAR, WE HAVE RAISED". No login, cookie or API key. |
 
+**Verified 2026-11-17:** the owner visited Stanford's Neon campaign page directly and confirmed it shows $52.04 of the
+$10,000 goal, the same figure the board read through the statistics call. Re-check against the page if the numbers ever look off.
+
 Neon caveats (honest): the statistics call is public but **undocumented**, so Neon could change it; if it breaks the board keeps
 the last known value (`LAST KNOWN`) and `npm test` fails first against the captured real page (`test/fixtures/neon-*.html`).
 A campaign that does not exist or is not published returns a generic organisation page: treated as "not live yet" ($0, pending).
